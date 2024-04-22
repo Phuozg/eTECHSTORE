@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1032898699752",
+    "project_id": "etechstore-abe5c",
+    "storage_bucket": "etechstore-abe5c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1032898699752:android:73052006a006bfb281045d",
+        "android_client_info": {
+          "package_name": "com.example.etechstore"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1032898699752-hevt5q55asprs4e0s937b1vuhfb16jb7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYtv_3ogD_d7NqhZlNwgkQMV4LNs-2hp4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1032898699752-hevt5q55asprs4e0s937b1vuhfb16jb7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
