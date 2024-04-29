@@ -45,8 +45,9 @@ class TColros {
   static const Color black_3 = Color(0xFF333333);
   static const Color purple_line = Color(0xFF383CA0);
   static const Color grey_line = Color(0xFFC4C4C4);
+  static const Color grey_very_light = Color(0xFFD9D9D9);
 
-  static  TextStyle white_12 = const TextStyle(
+  static TextStyle white_12 = const TextStyle(
     fontWeight: FontWeight.normal,
     fontSize: 12,
     color: Colors.white,
@@ -58,7 +59,7 @@ class TColros {
     color: purple_line,
   );
 
-    static const TextStyle grey_lavender_14 = TextStyle(
+  static const TextStyle grey_lavender_14 = TextStyle(
     fontWeight: FontWeight.normal,
     fontSize: 14,
     color: grey_lavender,
