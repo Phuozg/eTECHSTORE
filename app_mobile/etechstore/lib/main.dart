@@ -1,20 +1,37 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:etechstore/firebase_options.dart';
+import 'package:etechstore/module/auth/views/reset_password_screen.dart';
+import 'package:etechstore/module/auth/views/splash_screen.dart';
+import 'package:etechstore/services/auth/auth_gate.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:get/get.dart';
 
-void main() {
-  runApp(const MainApp());
-}
-
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
-    );
-  }
+void main() async {
+  ErrorWidget.builder = (FlutterErrorDetails details) {
+    return const Material();
+  };
+  WidgetsFlutterBinding.ensureInitialized();
+  final savedThemeMode = await AdaptiveTheme.getThemeMode();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(AdaptiveTheme(
+    light: ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.light,
+      colorSchemeSeed: Colors.blue,
+    ),
+    dark: ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.dark,
+      colorSchemeSeed: Colors.blue,
+    ),
+    initial: savedThemeMode ?? AdaptiveThemeMode.light,
+    builder: (light, dark) => GetMaterialApp(
+      theme: light,
+      darkTheme: dark,
+      home: const SplashScreen()
+    ),
+  ));
 }
