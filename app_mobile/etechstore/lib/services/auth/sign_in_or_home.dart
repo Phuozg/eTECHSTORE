@@ -1,5 +1,5 @@
-import 'package:etechstore/module/views/auth/sign_in_screen.dart';
-import 'package:etechstore/module/views/home/home_screen.dart';
+import 'package:etechstore/module/auth/views/sign_in_screen.dart';
+import 'package:etechstore/module/home/home_screen.dart';
 import 'package:flutter/material.dart';
 
 
