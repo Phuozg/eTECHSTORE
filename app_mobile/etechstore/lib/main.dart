@@ -31,7 +31,8 @@ void main() async {
     builder: (light, dark) => GetMaterialApp(
       theme: light,
       darkTheme: dark,
-      home: const SplashScreen()
+      debugShowCheckedModeBanner: false,
+      home: const SplashScreen(),
     ),
   ));
 }
