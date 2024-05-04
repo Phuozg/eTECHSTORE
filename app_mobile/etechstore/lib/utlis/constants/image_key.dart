@@ -8,4 +8,5 @@ class ImageKey {
   static const String successAnimation = 'assets/icons/success_animation.json';
   static const String loadingAnimation = 'assets/icons/loading_animation.json';
   static const String smsPhoneAnimation = 'assets/icons/sms_phone_animation.json';
+  static const String iconMessage = 'assets/icons/icon_message.png';
 }

@@ -22,10 +22,7 @@ class AuthServices extends GetxController {
       email: email,
       password: password,
     );
-    firestore.collection('Users').doc(userCredential.user!.uid).set({
-      'password': password,
-      'email': email,
-    });
+    await firestore.collection('Users').where('email', isEqualTo: email).limit(1).get();
     return userCredential;
   }
 
