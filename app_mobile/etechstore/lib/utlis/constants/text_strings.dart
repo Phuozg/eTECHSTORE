@@ -39,4 +39,6 @@ class TTexts {
   static String maOTPThieu = "Cần nhập chính xác mã OTP";
   static String chuaNhapSoDienThoai = "Chưa nhập số điện thoại";
   static String taiKhoanDaTonTai = "Tài khoản đã tồn tại";
+    static String guiTinNhan = "Gửi tin nhắn ...";
+
 }
