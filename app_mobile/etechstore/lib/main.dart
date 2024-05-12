@@ -2,6 +2,7 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:etechstore/firebase_options.dart';
 import 'package:etechstore/module/auth/views/reset_password_screen.dart';
 import 'package:etechstore/module/auth/views/splash_screen.dart';
+import 'package:etechstore/module/bottom_nav_bar/nav_menu.dart';
 import 'package:etechstore/services/auth/auth_gate.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
