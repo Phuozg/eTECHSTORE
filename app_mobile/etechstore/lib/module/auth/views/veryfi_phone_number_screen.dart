@@ -108,17 +108,13 @@ class VerifyPhoneNumberScreen extends GetView<SignUpController> {
                     },
                     child: Text(TTexts.xacMinhSoDienThoai)),
               ),
-              Row(
-                children: [
-                  TextButton(
-                      onPressed: () {
-                        Get.off(const SignInPhoneNumberScreen());
-                      },
-                      child: Text(
-                        TTexts.chinhSuaSoDienThoai,
-                        style: const TextStyle(color: Colors.black),
-                      ))
-                ],
+              Center(
+                child: TextButton(
+                    onPressed: () {},
+                    child: const Text(
+                      "Gửi lại mã OTP",
+                      style: TextStyle(color: Colors.blue),
+                    )),
               )
             ],
           ),

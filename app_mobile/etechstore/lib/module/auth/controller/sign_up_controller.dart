@@ -63,7 +63,6 @@ class SignUpController extends GetxController {
 
       //showSuccess
       TLoaders.successSnackBar(title: 'Đăng ký tài khoản thành công', message: 'Hãy sử dụng tài khoản đã đăng ký để tiếp tục.');
-
       /*   //Move to LoginScreen
       Get.offAll(const SignInScreen()); */
     } catch (e) {

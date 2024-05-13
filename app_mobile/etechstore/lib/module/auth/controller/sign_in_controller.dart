@@ -1,3 +1,4 @@
+import 'package:country_picker/country_picker.dart';
 import 'package:etechstore/module/auth/views/veryfi_phone_number_screen.dart';
 import 'package:etechstore/module/home/home_screen.dart';
 import 'package:etechstore/services/auth/auth_gate.dart';
@@ -28,6 +29,18 @@ class SignInController extends GetxController {
   final phoneNumber = TextEditingController();
   Rx<String> verify = "".obs;
   Rx<String> code = "".obs;
+
+  Country selectCountry = Country(
+      phoneCode: "84",
+      countryCode: "VN",
+      e164Sc: 0,
+      geographic: true,
+      level: 1,
+      name: "VietNam",
+      example: "VietNam",
+      displayName: "VietNam",
+      displayNameNoCountryCode: "VN",
+      e164Key: "");
 
   //SignIn
   void signIn() async {
@@ -66,7 +79,7 @@ class SignInController extends GetxController {
   Future<void> signInPhoneNumber() async {
     try {
       //loading
-      FullScreenLoader.openLoadingDialog('Quá trình đang diễn ra...', ImageKey.loadingAnimation);
+      //  FullScreenLoader.openLoadingDialog('Quá trình đang diễn ra...', ImageKey.loadingAnimation);
 
       //check Internet connected
       final isconnected = await network.isConneted();
@@ -76,16 +89,16 @@ class SignInController extends GetxController {
       }
 
       //validation
-      if (!signInFormKey.currentState!.validate()) {
-        FullScreenLoader.stopLoading();
-        return;
-      }
+      //  if (!signInFormKey.currentState!.validate()) {
+      //    FullScreenLoader.stopLoading();
+      //    return;
+      //  }
 
       //send OTP
       authServices.signInWithPhoneNumber(
         60,
-        phoneNumber.text.trim(),
-        '${Get.off(VerifyPhoneNumberScreen(phoneNumber: phoneNumber.text.trim(), verifyId: verify.toString()))}',
+        "+${selectCountry.phoneCode}${phoneNumber.text.toString().trim()}",
+        '${Get.off(VerifyPhoneNumberScreen(phoneNumber: phoneNumber.text.toString().trim(), verifyId: verify.toString()))}',
       );
     } catch (e) {
       FullScreenLoader.stopLoading();

@@ -1,7 +1,9 @@
+import 'package:country_picker/country_picker.dart';
 import 'package:etechstore/module/auth/controller/sign_in_controller.dart';
 import 'package:etechstore/module/auth/views/veryfi_phone_number_screen.dart';
 import 'package:etechstore/utlis/constants/image_key.dart';
 import 'package:etechstore/utlis/validators/validation.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -55,23 +57,55 @@ class SignInPhoneNumberScreen extends GetView<SignInController> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const SizedBox(
-                      width: 10,
-                    ),
-                    const SizedBox(
-                      width: 10,
+                      width: 20,
                     ),
                     Expanded(
                       child: TextFormField(
+                        style: const TextStyle(fontSize: 18),
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly,
-                          LengthLimitingTextInputFormatter(10),
+                          LengthLimitingTextInputFormatter(9),
                         ],
                         controller: controller.phoneNumber,
+                        onChanged: (value) {
+                          controller.phoneNumber.text = value;
+                        },
                         keyboardType: TextInputType.phone,
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
-                          hintText: "Số điện thoại",
-                        ),
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "Số điện thoại",
+                            prefixIcon: Container(
+                              padding: const EdgeInsets.only(top: 13, right: 5),
+                              child: InkWell(
+                                onTap: () {
+                                  showCountryPicker(
+                                    countryListTheme: const CountryListThemeData(bottomSheetHeight: 500),
+                                    context: context,
+                                    onSelect: (value) {
+                                      controller.selectCountry = value;
+                                    },
+                                  );
+                                },
+                                child: Text(
+                                  "${controller.selectCountry.flagEmoji} +${controller.selectCountry.phoneCode}",
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            suffixIcon: controller.phoneNumber.text.length > 8
+                                ? Container(
+                                    decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.green),
+                                    margin: const EdgeInsets.all(10),
+                                    child: const Icon(
+                                      Icons.done,
+                                      color: Colors.white,
+                                      size: 15,
+                                    ),
+                                  )
+                                : null),
                       ),
                     )
                   ],
@@ -86,7 +120,7 @@ class SignInPhoneNumberScreen extends GetView<SignInController> {
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
                     onPressed: () {
-                      controller.signInPhoneNumber();
+                      controller.phoneNumber.text.length > 8 ? controller.signInPhoneNumber() : null;
                     },
                     child: const Text("Gửi mã OTP")),
               )
