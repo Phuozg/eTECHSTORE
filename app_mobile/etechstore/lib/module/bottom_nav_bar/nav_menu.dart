@@ -1,31 +1,74 @@
+import 'package:etechstore/module/favorite_product_screen/view/favorite_product_screen.dart';
 import 'package:etechstore/module/home/home_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
 class NavMenu extends StatelessWidget {
   const NavMenu({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(NavController());
-    return Scaffold(
-      bottomNavigationBar: Obx(
-        ()=> NavigationBar(
-          elevation: 0,
-          selectedIndex: controller.selectedIndex.value,
-          onDestinationSelected: (index) => controller.selectedIndex.value=index,
-          destinations: const [
-          NavigationDestination(icon: Icon(Icons.home), label: "Trang chủ"),
-          NavigationDestination(icon: Icon(Icons.favorite), label: "Yêu thích"),
-          NavigationDestination(icon: Icon(Icons.person), label: "Cá nhân"),
-        ],),
-      ),
-      body: Obx(()=>controller.screens[controller.selectedIndex.value]),
+    PersistentTabController _controller;
+    _controller = PersistentTabController(initialIndex: 0);
+
+    List<Widget> _buildScreens() {
+        return [
+          const HomeScreen(),
+          const FavoriteProductScreen(),
+          const FavoriteProductScreen()
+        ];
+    }
+     List<PersistentBottomNavBarItem> _navBarsItems() {
+        return [
+            PersistentBottomNavBarItem(
+                icon: const Icon(Icons.home),
+                title: ("Trang chủ"),
+                activeColorPrimary: CupertinoColors.activeBlue,
+                inactiveColorPrimary: CupertinoColors.systemGrey,
+            ),
+            PersistentBottomNavBarItem(
+                icon: const Icon(Icons.favorite),
+                title: ("Yêu thích"),
+                activeColorPrimary: CupertinoColors.activeBlue,
+                inactiveColorPrimary: CupertinoColors.systemGrey,
+            ),
+            PersistentBottomNavBarItem(
+                icon: const Icon(Icons.person),
+                title: ("Tài khoản"),
+                activeColorPrimary: CupertinoColors.activeBlue,
+                inactiveColorPrimary: CupertinoColors.systemGrey,
+            ),
+        ];
+    }
+    return PersistentTabView(
+        context,
+        controller: _controller,
+        screens: _buildScreens(),
+        items: _navBarsItems(),
+        confineInSafeArea: true,
+        backgroundColor: Colors.white, 
+        handleAndroidBackButtonPress: true,
+        resizeToAvoidBottomInset: true, 
+        stateManagement: true, 
+        hideNavigationBarWhenKeyboardShows: true,
+        decoration: NavBarDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+          colorBehindNavBar: Colors.white,
+        ),
+        popAllScreensOnTapOfSelectedTab: true,
+        popActionScreens: PopActionScreensType.all,
+        itemAnimationProperties: ItemAnimationProperties( 
+          duration: Duration(milliseconds: 200),
+          curve: Curves.ease,
+        ),
+        screenTransitionAnimation: ScreenTransitionAnimation(
+          animateTabTransition: true,
+          curve: Curves.ease,
+          duration: Duration(milliseconds: 200),
+        ),
+        navBarStyle: NavBarStyle.style1, 
     );
   }
-}
-
-class NavController extends GetxController{
-  final Rx<int> selectedIndex = 0.obs;
-  final screens = [const HomeScreen(),Container(color: Colors.red,),Container(color: Colors.blue,)];
 }
