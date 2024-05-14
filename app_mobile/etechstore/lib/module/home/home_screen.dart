@@ -1,7 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:etechstore/module/product_detail/view/controller_state_manage/detail_controller_state_manage.dart';
+import 'package:etechstore/module/product_detail/view/product_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:intl/intl.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -12,6 +16,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final controller = Get.put(HomeController());
+
   final db = FirebaseFirestore.instance;
   @override
   Widget build(BuildContext context) {
@@ -75,7 +81,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
     );
-
   }
 
   Widget sliderShow(){

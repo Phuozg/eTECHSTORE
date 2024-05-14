@@ -39,6 +39,19 @@ class TTexts {
   static String maOTPThieu = "Cần nhập chính xác mã OTP";
   static String chuaNhapSoDienThoai = "Chưa nhập số điện thoại";
   static String taiKhoanDaTonTai = "Tài khoản đã tồn tại";
-    static String guiTinNhan = "Gửi tin nhắn ...";
-
+  static String guiTinNhan = "Gửi tin nhắn ...";
+  static String xemTatCa = "Xem tất cả >";
+  static String muaVoiVoucher = "Mua với voucher";
+  static String themVaoGioHang = "Thêm vào giỏ hàng";
+  static String danhGiaSanPham = "Đánh giá sản phẩm";
+  static String thuGon = "Thu gọn";
+  static String chiTietSanPham = "Chi tiết sản phẩm";
+  static String xemThem = "Xem Thêm";
+  //  static String  = " ";
+  //  static String  = " ";
+  //  static String  = " ";
+  //  static String  = " ";
+  //  static String  = " ";
+  //  static String  = " ";
+  //  static String  = " ";
 }
