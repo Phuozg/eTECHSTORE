@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:intl/intl.dart';
+
 class StringHelper {
   static bool isNullOrEmpty(String? text) {
     if (text == null || text.isEmpty) return true;
@@ -11,4 +13,9 @@ class StringHelper {
     const chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
     return List.generate(len, (index) => chars[r.nextInt(chars.length)]).join();
   }
+
+ static String priceFormat(int price) {
+  final priceOutput = NumberFormat.currency(locale: 'vi_VN', symbol: 'đ');
+  return priceOutput.format(price);
+}
 }
