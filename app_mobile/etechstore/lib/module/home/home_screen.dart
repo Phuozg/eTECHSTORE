@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:etechstore/module/chat_with_admin/view/chat_home_screen.dart';
 import 'package:etechstore/module/product_detail/view/controller_state_manage/detail_controller_state_manage.dart';
 import 'package:etechstore/module/product_detail/view/product_detail_screen.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +39,13 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChatHomePageScreen(),
+                    ));
+              },
               style: ElevatedButton.styleFrom(shape: const CircleBorder(), backgroundColor: Colors.blue),
               child: const Icon(
                 Icons.message,
