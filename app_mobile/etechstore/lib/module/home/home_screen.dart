@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:etechstore/module/cart/view/cart_screen.dart';
 import 'package:etechstore/module/chat_with_admin/view/chat_home_screen.dart';
 import 'package:etechstore/module/product_detail/view/controller_state_manage/detail_controller_state_manage.dart';
 import 'package:etechstore/module/product_detail/view/product_detail_screen.dart';
@@ -10,14 +11,14 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:intl/intl.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+     HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final controller = Get.put(HomeController());
+  final controller = Get.put(DetailController());
 
   final db = FirebaseFirestore.instance;
   @override
@@ -26,14 +27,20 @@ class _HomeScreenState extends State<HomeScreen> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         flexibleSpace: Container(
-          decoration: const BoxDecoration(color: Colors.blue),
+          decoration:    BoxDecoration(color: Colors.blue),
         ),
         title: searchBar(),
         actions: [
           ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(shape: const CircleBorder(), backgroundColor: Colors.blue),
-            child: const Icon(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>    CartScreen(),
+                  ));
+            },
+            style: ElevatedButton.styleFrom(shape:    CircleBorder(), backgroundColor: Colors.blue),
+            child:    Icon(
               Icons.shopping_cart,
               color: Colors.white,
             ),
@@ -46,18 +53,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       builder: (context) => ChatHomePageScreen(),
                     ));
               },
-              style: ElevatedButton.styleFrom(shape: const CircleBorder(), backgroundColor: Colors.blue),
-              child: const Icon(
+              style: ElevatedButton.styleFrom(shape:    CircleBorder(), backgroundColor: Colors.blue),
+              child:    Icon(
                 Icons.message,
                 color: Colors.white,
               )),
         ],
       ),
       body: Container(
-        padding: const EdgeInsets.all(8),
+        padding:    EdgeInsets.all(8),
         child: ListView(
           shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
+          physics:    NeverScrollableScrollPhysics(),
           children: [
             //Banner khuyến mãi
             sliderShow(),
@@ -75,8 +82,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget searchBar() {
     return Container(
-      padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
-      child: const TextField(
+      padding:    EdgeInsets.fromLTRB(0, 0, 0, 8),
+      child:    TextField(
         decoration: InputDecoration(
             label: Text(
               "Tìm kiếm sản phẩm",
@@ -99,11 +106,11 @@ class _HomeScreenState extends State<HomeScreen> {
         stream: discounts,
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
-            return const Text('Something went wrong');
+            return    Text('Something went wrong');
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Text("Loading");
+            return    Text("Loading");
           }
 
           return CarouselSlider(
@@ -133,18 +140,18 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget category() {
     final Stream<QuerySnapshot> cateStream = FirebaseFirestore.instance.collection('DanhMucSanPham').snapshots();
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
+      padding:    EdgeInsets.fromLTRB(0, 15, 0, 15),
       child: SizedBox(
         height: MediaQuery.of(context).size.height / 15,
         child: StreamBuilder<QuerySnapshot>(
           stream: cateStream,
           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.hasError) {
-              return const Text('Something went wrong');
+              return    Text('Something went wrong');
             }
 
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Text("Loading");
+              return    Text("Loading");
             }
 
             return ListView(
@@ -153,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   .map((DocumentSnapshot document) {
                     Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
                     return Container(
-                      padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+                      padding:    EdgeInsets.fromLTRB(0, 0, 8, 0),
                       child: ElevatedButton(
                           onPressed: () {},
                           style: ElevatedButton.styleFrom(
@@ -164,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           child: Text(
                             data['TenDanhMuc'],
-                            style: const TextStyle(color: Colors.black),
+                            style:    TextStyle(color: Colors.black),
                           )),
                     );
                   })
@@ -181,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final CollectionReference fetchProduct = FirebaseFirestore.instance.collection('SanPham');
     return Column(
       children: [
-        const Row(
+           Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
@@ -199,7 +206,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 return SizedBox(
                   height: MediaQuery.of(context).size.height,
                   child: GridView.builder(
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 0.8),
+                      gridDelegate:    SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 0.8),
                       itemCount: snapshot.data!.docs.length,
                       itemBuilder: (context, index) {
                         final DocumentSnapshot documentSnapshot = snapshot.data!.docs[index];
@@ -207,7 +214,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         return GestureDetector(
                           onTap: () {
-                            controller.getImages();
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -244,30 +250,30 @@ class _HomeScreenState extends State<HomeScreen> {
                                               top: 0,
                                               left: 90,
                                               child: Container(
-                                                decoration: const BoxDecoration(shape: BoxShape.rectangle, color: Colors.red),
+                                                decoration:    BoxDecoration(shape: BoxShape.rectangle, color: Colors.red),
                                                 width: 100,
                                                 height: 50,
                                                 child: Padding(
-                                                  padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+                                                  padding:    EdgeInsets.fromLTRB(5, 0, 0, 0),
                                                   child: Row(
                                                     children: [
                                                       Text(
                                                         "${documentSnapshot['KhuyenMai']}%",
-                                                        style: const TextStyle(color: Colors.white),
+                                                        style:    TextStyle(color: Colors.white),
                                                       )
                                                     ],
                                                   ),
                                                 ),
                                               ));
                                         }
-                                        return const Text("");
+                                        return    Text("");
                                       },
                                     )
                                   ],
                                 ),
                                 Text(
                                   documentSnapshot['Ten'],
-                                  style: const TextStyle(fontWeight: FontWeight.bold),
+                                  style:    TextStyle(fontWeight: FontWeight.bold),
                                   textAlign: TextAlign.center,
                                 ),
                                 Builder(
@@ -277,17 +283,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                         children: [
                                           Text(
                                             priceFormat(documentSnapshot['GiaTien']),
-                                            style: const TextStyle(color: Colors.grey, decoration: TextDecoration.lineThrough),
+                                            style:    TextStyle(color: Colors.grey, decoration: TextDecoration.lineThrough),
                                           ),
                                           Text(
                                               priceFormat(((documentSnapshot['GiaTien'] -
                                                       (documentSnapshot['GiaTien'] * documentSnapshot['KhuyenMai'] / 100)))
                                                   .round()),
-                                              style: const TextStyle(color: Colors.red))
+                                              style:    TextStyle(color: Colors.red))
                                         ],
                                       );
                                     }
-                                    return Text(priceFormat(documentSnapshot['GiaTien']), style: const TextStyle(color: Colors.red));
+                                    return Text(priceFormat(documentSnapshot['GiaTien']), style:    TextStyle(color: Colors.red));
                                   },
                                 )
                               ],
@@ -297,9 +303,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       }),
                 );
               } else if (snapshot.hasError) {
-                return const Text('Something went wrong!');
+                return    Text('Something went wrong!');
               } else {
-                return const Text('Something went wrong!');
+                return    Text('Something went wrong!');
               }
             },
           ),

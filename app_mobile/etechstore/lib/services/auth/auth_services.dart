@@ -54,6 +54,7 @@ class AuthServices extends GetxController {
       'HoTen': hoten,
       'email': email,
       'password': password,
+      'uid': userCredential.user!.uid,
     });
     return userCredential;
   }

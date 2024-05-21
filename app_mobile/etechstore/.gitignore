@@ -1,3 +1,9 @@
+# Custom
+*.g.dart
+injector.config.dart
+assets.gen.dart
+lib/gen/*
+
 # Miscellaneous
 *.class
 *.log

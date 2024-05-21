@@ -32,9 +32,9 @@ class ChatServices {
       thoiGianNhan: timestamp,
       id: currentUserID,
     );
-//
+    //
     List<String> ids = [receiverID, currentUserID];
-//
+    //
     ids.sort();
     String chatRoomID = ids.join('_');
     //add new message DB

@@ -1,4 +1,6 @@
+import 'package:etechstore/module/cart/model/cart_model.dart';
 import 'package:etechstore/module/home/home_screen.dart';
+import 'package:etechstore/module/product_detail/view/controller_state_manage/detail_controller_state_manage.dart';
 import 'package:etechstore/utlis/constants/colors.dart';
 import 'package:etechstore/utlis/constants/image_key.dart';
 import 'package:etechstore/utlis/constants/text_strings.dart';
@@ -34,6 +36,7 @@ class FullScreenLoader {
   }
 
   static void show(BuildContext ctx, String hinhAnh, int soLuong, String mauSac, int giaTien, String ten, String giamGia) {
+    final controller = Get.put(DetailController());
     showModalBottomSheet(
       isDismissible: true,
       enableDrag: true,
@@ -133,14 +136,20 @@ class FullScreenLoader {
                     children: [
                       GestureDetector(
                         child: Container(child: const Text("-", style: TColros.black_20_w600)),
-                        onTap: () {},
+                        onTap: () {
+                          print("4444444444444444444444444444444");
+                          controller.decreaseQuantity();
+                          // controller.addToCart();
+                        },
                       ),
                       const Text(
                         "3",
                       ),
                       GestureDetector(
                         child: Container(child: const Text("+", style: TColros.black_14_w600)),
-                        onTap: () {},
+                        onTap: () {
+                          controller.increaseQuantity();
+                        },
                       ),
                     ],
                   ),
