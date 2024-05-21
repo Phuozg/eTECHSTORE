@@ -117,7 +117,7 @@ class SignInController extends GetxController {
       }
 
       //Send Email to reset password
-      await authServices.verifyPhoneNumber(verify.value, code.value)!.then((value) => Get.off(const HomeScreen()));
+      await authServices.verifyPhoneNumber(verify.value, code.value)!.then((value) => Get.off( HomeScreen()));
 
       //Redirect
     } catch (e) {
