@@ -1,12 +1,13 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:etechstore/module/cart/model/cart_model.dart';
+import 'package:uuid/uuid.dart';
 
 class ProductModel {
-  int id;
+  String id;
   String KhuyenMai;
   String moTa;
-  int maLoaiSanPham;
   int soLuong;
   String ten;
   bool trangThai;
@@ -24,7 +25,6 @@ class ProductModel {
     // required this.mauSac,
     required this.KhuyenMai,
     required this.moTa,
-    required this.maLoaiSanPham,
     required this.soLuong,
     required this.ten,
     required this.trangThai,
@@ -39,7 +39,6 @@ class ProductModel {
         giaTien: json['GiaTien'],
         id: json['id'],
         KhuyenMai: json['KhuyenMai'],
-        maLoaiSanPham: json['MaLoaiSanPham'],
         moTa: json['MoTa'],
         soLuong: json['SoLuong'],
         ten: json['Ten'],
@@ -55,7 +54,6 @@ class ProductModel {
       'GiaTien': giaTien,
       'id': id,
       'KhuyenMai': KhuyenMai,
-      'MaLoaiSanPham': maLoaiSanPham,
       'MoTa': moTa,
       'SoLuong': soLuong,
       'Ten': ten,
@@ -74,7 +72,6 @@ class ProductModel {
       //   mauSac: document['MauSac'],
       KhuyenMai: document['KhuyenMai'],
       moTa: document['MoTa'],
-      maLoaiSanPham: document['MaLoaiSanPham'],
       soLuong: document['SoLuong'],
       ten: document['Ten'],
       trangThai: document['TrangThai'],

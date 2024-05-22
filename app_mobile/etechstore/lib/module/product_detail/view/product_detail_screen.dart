@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:etechstore/module/bottom_nav_bar/nav_menu.dart';
+import 'package:etechstore/module/cart/controller/cart_controller.dart';
+import 'package:etechstore/module/cart/view/cart_screen1.dart';
 import 'package:etechstore/module/home/home_screen.dart';
 import 'package:etechstore/module/product_detail/controller/get_product_controller.dart';
-import 'package:etechstore/module/product_detail/model/product_detail_model.dart';
 import 'package:etechstore/module/product_detail/view/controller_state_manage/detail_controller_state_manage.dart';
 import 'package:etechstore/module/product_detail/view/detail_image_screen.dart';
 import 'package:etechstore/utlis/constants/colors.dart';
@@ -9,6 +11,7 @@ import 'package:etechstore/utlis/constants/image_key.dart';
 import 'package:etechstore/utlis/constants/text_strings.dart';
 import 'package:etechstore/utlis/helpers/popups/full_screen_loader.dart';
 import 'package:etechstore/utlis/helpers/popups/loader.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -16,7 +19,6 @@ import 'package:flutter_expandable_text/flutter_expandable_text.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-
 import 'package:get/get_core/src/get_main.dart';
 
 class DetailScreen extends GetView {
@@ -45,7 +47,7 @@ class DetailScreen extends GetView {
   List<dynamic> HinhAnh = [];
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(HomeController());
+    final controller = Get.put(DetailController());
 
     List<Widget> imageWidgets = HinhAnh.map((url) {
       return GestureDetector(
@@ -61,6 +63,22 @@ class DetailScreen extends GetView {
       );
     }).toList();
 
+    void addToCart() {
+      Map<String, dynamic> product = {
+        'GiaTien': GiaTien,
+        'KhuyenMai': KhuyenMai,
+        'MaDanhMuc': MaDanhMuc,
+        'MoTa': MoTa,
+        'SoLuong': SoLuong,
+        'Ten': Ten,
+        'TrangThai': TrangThai,
+        'id': id,
+        'thumbnail': thumbnail,
+        'HinhAnh': HinhAnh,
+      };
+      CartController.addProductToCart(product);
+    }
+
     return Scaffold(
       body: ScreenUtilInit(
         builder: (context, child) => SingleChildScrollView(
@@ -75,7 +93,8 @@ class DetailScreen extends GetView {
                       child: CarouselSlider(
                         items: imageWidgets,
                         options: CarouselOptions(
-                          viewportFraction: 0.8,
+                          height: double.infinity,
+                          viewportFraction: 1.2,
                           initialPage: 0,
                           enableInfiniteScroll: true,
                           // autoPlay: true,
@@ -91,12 +110,20 @@ class DetailScreen extends GetView {
                       children: [
                         IconButton(
                             onPressed: () {
-                              Get.off(const HomeScreen());
+                              Navigator.pop(context);
                             },
                             icon: const Icon(Icons.arrow_back_ios_new)),
                         IconButton(
                             onPressed: () {
                               //    controller.getImages();
+                              print(CartController.products.length);
+                              addToCart();
+                              CartController.addAllProductsToCart(7);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const CartScreen1(),
+                                  ));
                             },
                             icon: const Image(
                               image: AssetImage(ImageKey.iconCart),

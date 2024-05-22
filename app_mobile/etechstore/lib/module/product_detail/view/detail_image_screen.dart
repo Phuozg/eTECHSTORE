@@ -30,7 +30,10 @@ class DetailImageScreen extends GetView {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              child: Image.network(imageUrl),
+              child: Image.network(
+                imageUrl,
+                fit: BoxFit.cover,
+              ),
             ),
           ],
         ),

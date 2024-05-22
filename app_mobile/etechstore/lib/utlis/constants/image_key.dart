@@ -14,4 +14,9 @@ class ImageKey {
   static const String iconHeart = 'assets/icons/icon_heart.png';
   static const String iconAddCart1 = 'assets/icons/icon_cart1.png';
   static const String iconVoucher = 'assets/icons/icon_voucher.png';
+  static const String iconHelp = 'assets/icons/icon_help.png';
+  static const String iconSetting = 'assets/icons/icon_setting.png';
+  static const String iconBoxCart = 'assets/icons/icon_box_cart.png';
+  static const String iconLogOut = 'assets/icons/icon_log_out_outline.png';
+  static const String iconProfile = 'assets/icons/icon_profile.png';
 }
