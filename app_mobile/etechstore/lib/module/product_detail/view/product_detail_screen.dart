@@ -119,27 +119,43 @@ class DetailScreen extends GetView {
                       margin: EdgeInsets.only(top: 25.h, left: 21.w),
                       child: Column(
                         children: [
-                          Row(
-                            children: [
-                              Text(
-                                priceFormat(GiaTien),
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.w500,
+                          Builder(builder: (context) {
+                            if (KhuyenMai != 0) {
+                              return Row(
+                                children: [
+                                  Text(
+                                    priceFormat((GiaTien - (GiaTien * KhuyenMai / 100)).round()),
+                                    style: const TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  SizedBox(width: 10.w),
+                                  Text(
+                                    priceFormat(GiaTien),
+                                    style: TextStyle(
+                                      fontSize: 15.sp,
+                                      color: const Color(0xFFC4C4C4),
+                                      decoration: TextDecoration.lineThrough,
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }
+                            return Row(
+                              children: [
+                                Text(
+                                  priceFormat(GiaTien.round()),
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
-                              ),
-                              SizedBox(width: 10.w),
-                              Text(
-                                "4.000.000",
-                                style: TextStyle(
-                                  fontSize: 15.sp,
-                                  color: const Color(0xFFC4C4C4),
-                                  decoration: TextDecoration.lineThrough,
-                                ),
-                              ),
-                            ],
-                          ),
+                              ],
+                            );
+                          }),
                           Row(
                             children: [
                               SizedBox(
