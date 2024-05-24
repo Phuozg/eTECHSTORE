@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:etechstore/module/bottom_nav_bar/nav_menu.dart';
 import 'package:etechstore/module/cart/controller/cart_controller.dart';
 import 'package:etechstore/module/cart/view/cart_screen1.dart';
-import 'package:etechstore/module/home/home_screen.dart';
+import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/module/product_detail/controller/get_product_controller.dart';
 import 'package:etechstore/module/product_detail/view/controller_state_manage/detail_controller_state_manage.dart';
 import 'package:etechstore/module/product_detail/view/detail_image_screen.dart';

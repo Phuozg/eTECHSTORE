@@ -1,5 +1,5 @@
 import 'package:etechstore/module/cart/model/cart_model.dart';
-import 'package:etechstore/module/home/home_screen.dart';
+import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/module/product_detail/view/controller_state_manage/detail_controller_state_manage.dart';
 import 'package:etechstore/utlis/constants/colors.dart';
 import 'package:etechstore/utlis/constants/image_key.dart';

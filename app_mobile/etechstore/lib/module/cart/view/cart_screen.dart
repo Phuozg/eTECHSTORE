@@ -1,6 +1,6 @@
 import 'package:etechstore/module/cart/controller/cart_controller.dart';
 import 'package:etechstore/module/cart/controller/enum.dart';
-import 'package:etechstore/module/home/home_screen.dart';
+import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/module/product_detail/view/product_detail_screen.dart';
 import 'package:etechstore/utlis/constants/colors.dart';
 import 'package:flutter/cupertino.dart';
