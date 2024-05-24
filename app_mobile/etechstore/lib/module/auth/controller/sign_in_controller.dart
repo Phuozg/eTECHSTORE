@@ -1,5 +1,5 @@
 import 'package:etechstore/module/auth/views/veryfi_phone_number_screen.dart';
-import 'package:etechstore/module/home/home_screen.dart';
+import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/services/auth/auth_gate.dart';
 import 'package:etechstore/services/auth/auth_services.dart';
 import 'package:etechstore/utlis/connection/network_manager.dart';

@@ -1,6 +1,6 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:etechstore/module/auth/views/sign_in_screen.dart';
-import 'package:etechstore/module/home/home_screen.dart';
+import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/module/bottom_nav_bar/nav_menu.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

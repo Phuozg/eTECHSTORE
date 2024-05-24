@@ -1,5 +1,5 @@
 import 'package:etechstore/module/favorite_product_screen/view/favorite_product_screen.dart';
-import 'package:etechstore/module/home/home_screen.dart';
+import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/module/profile/views/profile_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
