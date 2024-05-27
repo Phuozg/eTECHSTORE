@@ -1,36 +1,35 @@
-import 'package:etechstore/module/product_detail/model/product_model.dart';
-
 class CartModel {
-  final String maGioHang;
-  final maSanPham;
-  final int soLuong;
-  final String id;
-  final String maKhachHang;
+  String id;
+  String maKhachHang;
+  int soLuong;
+  int trangThai;
+  Map<String, dynamic> maSanPham;
 
   CartModel({
-    required this.maGioHang,
-    required this.maSanPham,
-    required this.soLuong,
     required this.id,
     required this.maKhachHang,
+    required this.soLuong,
+    required this.trangThai,
+    required this.maSanPham,
   });
 
-  factory CartModel.fromJson(Map<String, dynamic> json) => CartModel(
-        maKhachHang: json['maKhachHang'],
-        maGioHang: json['MaGioHang'],
-        maSanPham: json['MaSanPham'],
-        soLuong: json['SoLuong'],
-        id: json['id'],
-      );
+  factory CartModel.fromMap(Map<String, dynamic> data) {
+    return CartModel(
+      id: data['id'],
+      maKhachHang: data['maKhachHang'],
+      soLuong: data['soLuong'],
+      trangThai: data['trangThai'],
+      maSanPham: data['mauSanPham'],
+    );
+  }
 
-  Map<String, dynamic> toJson() {
-    final json = {
-      'MaGioHang': maGioHang,
-      'MaSanPham': maSanPham,
-      'SoLuong': soLuong,
+  Map<String, dynamic> toMap() {
+    return {
       'id': id,
-      'MaKhachHang':maKhachHang
+      'maKhachHang': maKhachHang,
+      'soLuong': soLuong,
+      'trangThai': trangThai,
+      'mauSanPham': maSanPham,
     };
-    return json;
   }
 }

@@ -1,7 +1,6 @@
 import 'package:etechstore/module/cart/model/cart_model.dart';
-import 'package:etechstore/module/home/views/home_screen.dart';
-import 'package:etechstore/module/product_detail/view/controller_state_manage/detail_controller_state_manage.dart';
-import 'package:etechstore/utlis/constants/colors.dart';
+import 'package:etechstore/module/home/home_screen.dart';
+ import 'package:etechstore/utlis/constants/colors.dart';
 import 'package:etechstore/utlis/constants/image_key.dart';
 import 'package:etechstore/utlis/constants/text_strings.dart';
 import 'package:etechstore/utlis/helpers/popups/animation_loader.dart';
@@ -36,8 +35,7 @@ class FullScreenLoader {
   }
 
   static void show(BuildContext ctx, String hinhAnh, int soLuong, String mauSac, int giaTien, String ten, String giamGia) {
-    final controller = Get.put(DetailController());
-    showModalBottomSheet(
+     showModalBottomSheet(
       isDismissible: true,
       enableDrag: true,
       elevation: 10,
@@ -138,7 +136,7 @@ class FullScreenLoader {
                         child: Container(child: const Text("-", style: TColros.black_20_w600)),
                         onTap: () {
                           print("4444444444444444444444444444444");
-                          controller.decreaseQuantity();
+                       
                           // controller.addToCart();
                         },
                       ),
@@ -148,7 +146,7 @@ class FullScreenLoader {
                       GestureDetector(
                         child: Container(child: const Text("+", style: TColros.black_14_w600)),
                         onTap: () {
-                          controller.increaseQuantity();
+                          
                         },
                       ),
                     ],

@@ -1,135 +1,175 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:etechstore/module/cart/model/cart_model.dart';
+import 'package:etechstore/module/product_detail/model/product_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:path/path.dart';
 import 'package:uuid/uuid.dart';
 
-class CartController extends GetxController {
+import '../../product_detail/controller/product_controller.dart';
 
+class CartController extends GetxController {
   static CartController get instance => Get.find();
   GlobalKey<FormState> DetailProductFormKey = GlobalKey<FormState>();
-  static final firestore = FirebaseFirestore.instance;
-    static final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-  static final String currentUserID = firebaseAuth.currentUser!.uid;
-  final Rxn<int> selected = Rxn<int>();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance; // Firebase Auth instance
 
-  static Future<void> addToCart(DocumentSnapshot productDoc, int soLuong) async {
-    // Tạo UUID cho maGioHang
-    var uuid = const Uuid();
-    String GioHangId = uuid.v4();
-    //Tạo UUID cho idGioHang
-    var id = const Uuid();
-    String idGioHang = id.v4();
+  var cartItems = <CartModel>[].obs;
+  var products = <String, ProductModel>{}.obs;
+  var totalPrice = 0.0.obs;
+  var isSelectAll = false.obs;
+  var   selectedItems = <String, bool>{}.obs;
+  var isEditMode = false.obs;
 
-    // Lấy ID của sản phẩm hiện tại từ DocumentSnapshot
-    final maSanPham = productDoc.id;
-
-    CartModel cartModel = CartModel(
-      maKhachHang: currentUserID,
-      maGioHang: GioHangId,
-      maSanPham: maSanPham,
-      soLuong: soLuong,
-      id: idGioHang, // ID có thể được tạo ngẫu nhiên hoặc theo logic riêng
-    );
-
-    // Thêm sản phẩm vào giỏ hàng
-    await firestore.collection('SanPhamTrongGioHang').doc(GioHangId).collection('GioHang').add(cartModel.toJson());
+  @override
+  void onInit() {
+    super.onInit();
+    fetchCartItems();
   }
 
-  static Future<void> addAllProductsToCart(int soLuong) async {
-    // Lấy tất cả các tài liệu trong bộ sưu tập 'SanPham'
-    final querySnapshot = await firestore.collection('SanPham').get();
 
-    // Duyệt qua tất cả các tài liệu và gọi addToCart cho mỗi tài liệu
-    for (var doc in querySnapshot.docs) {
-      await addToCart(doc, soLuong);
-    }
+
+  void toggleEditMode() {
+    isEditMode.value = !isEditMode.value;
   }
 
-/*   static Stream<List<Map<String, dynamic>>> getCartProduct() {
-    return firestore.collection('SanPhamTrongGioHang').where('GioHang', isEqualTo: currentUserID).snapshots().map((snapshot) {
-      return snapshot.docs.map((e) {
-        final maGioHang = e.data();
-        return maGioHang;
-      }).toList();
-    });
-  } */
-/*   static List<Map<String, dynamic>> products = [];
-  static Stream<List<Map<String, dynamic>>> getCartProduct(String currentUserID) async* {
-    var cartStream = firestore.collection('SanPhamTrongGioHang').doc(currentUserID).collection('GioHang').snapshots();
+  void fetchCartItems() async {
+    String? userId = _auth.currentUser?.uid;
+    if (userId != null) {
+      _firestore.collection('GioHang').where('maKhachHang', isEqualTo: userId).where('trangThai', isEqualTo: 1).snapshots().listen((snapshot) async {
+        var items = snapshot.docs.map((doc) => CartModel.fromMap(doc.data())).toList();
+        cartItems.value = items;
 
-    await for (var snapshot in cartStream) {
-      for (var doc in snapshot.docs) {
-        String maSanPham = doc['MaSanPham'];
-
-        var productDoc = await firestore.collection('SanPham').doc(maSanPham).get();
-
-        if (productDoc.exists) {
-          products.add(productDoc.data() as Map<String, dynamic>);
+        // Initialize selectedItems map
+        for (var item in cartItems) {
+          selectedItems[item.id] = false;
         }
-      }
 
-      yield products;
-    }
-  }
- */
-
-  static List<Map<String, dynamic>> products = [];
-
-  static void addProductToCart(Map<String, dynamic> product) {
-    products.add(product);
-  }
-
-  static Stream<List<Map<String, dynamic>>> getCartProduct(String currentUserID) async* {
-    var cartStream = firestore.collection('SanPhamTrongGioHang').doc(currentUserID).collection('GioHang').snapshots();
-
-    await for (var snapshot in cartStream) {
-      products.clear(); // Clear the current products list
-      for (var doc in snapshot.docs) {
-        String maSanPham = doc['MaSanPham'];
-        var productDoc = await firestore.collection('SanPham').doc(maSanPham).get();
-
-        if (productDoc.exists) {
-          products.add(productDoc.data() as Map<String, dynamic>);
+        // Fetch product details for each cart item
+        for (var item in items) {
+          var productDoc = await _firestore.collection('SanPham').doc(item.maSanPham['maSanPham']).get();
+          if (productDoc.exists) {
+            products[item.maSanPham['maSanPham']] = ProductModel.fromFirestore(productDoc.data() as Map<String, dynamic>);
+          }
         }
-      }
-      yield products;
+
+        // Calculate total price
+        calculateTotalPrice();
+      });
     }
   }
 
-  Future<void> incrementQuantity(String currentUserID, final productID) async {
-    var cartRef = firestore.collection('SanPhamTrongGioHang').doc(currentUserID).collection('GioHang').doc(productID);
-
-    firestore.runTransaction((transaction) async {
-      DocumentSnapshot snapshot = await transaction.get(cartRef);
-
-      if (snapshot.exists) {
-        int currentQuantity = snapshot.get('SoLuong');
-        transaction.update(cartRef, {'SoLuong': currentQuantity + 1});
+  Stream<int> calculateProductPrice(CartModel item) async* {
+    var productDocStream = _firestore.collection('SanPham').doc(item.maSanPham['maSanPham']).snapshots();
+    await for (var productDoc in productDocStream) {
+      if (productDoc.exists) {
+        int giaTien = productDoc.get('GiaTien');
+        int khuyenMai = productDoc.get('KhuyenMai');
+        yield ((giaTien * (1 - khuyenMai / 100)) * item.soLuong).toInt();
       } else {
-        transaction.set(cartRef, {'SoLuong': 1});
+        yield 0;
       }
-    });
+    }
   }
 
-  Future<void> decrementQuantity(String currentUserID, final productID) async {
-    var cartRef = firestore.collection('SanPhamTrongGioHang').doc(currentUserID).collection('GioHang').doc(productID);
-
-    firestore.runTransaction((transaction) async {
-      DocumentSnapshot snapshot = await transaction.get(cartRef);
-
-      if (snapshot.exists) {
-        int currentQuantity = snapshot.get('SoLuong');
-        if (currentQuantity > 1) {
-          transaction.update(cartRef, {'SoLuong': currentQuantity - 1});
-        } else {
-          transaction.delete(cartRef);
-        }
+  Stream<int> getProductPriceStream(CartModel item) async* {
+    await for (int price in calculateProductPrice(item)) {
+      if (selectedItems[item.id] == true) {
+        yield price;
+      } else {
+        yield 0;
       }
-    });
+    }
   }
 
-  
+  void calculateTotalPrice() {
+    double total = 0.0;
+    for (var item in cartItems) {
+      getProductPriceStream(item).listen((itemPrice) {
+        total += itemPrice;
+        totalPrice.value = total;
+      });
+    }
+  }
+
+  void toggleItemSelection(String itemId) {
+    selectedItems[itemId] = !selectedItems[itemId]!;
+    calculateTotalPrice();
+  }
+
+  void toggleSelectAll() {
+    isSelectAll.value = !isSelectAll.value;
+    for (var key in selectedItems.keys) {
+      selectedItems[key] = isSelectAll.value;
+    }
+    calculateTotalPrice();
+  }
+
+  void addItemToCart(CartModel newItem) async {
+    int index = cartItems.indexWhere((item) => item.maSanPham['maSanPham'] == newItem.maSanPham['maSanPham']);
+    if (index != -1) {
+      CartModel existingItem = cartItems[index];
+      existingItem.soLuong += newItem.soLuong;
+      existingItem.maSanPham['mauSac'] = newItem.maSanPham['mauSac'];
+      existingItem.maSanPham['cauHinh'] = newItem.maSanPham['cauHinh'];
+      updateCartItem(existingItem);
+    } else {
+      cartItems.add(newItem);
+      selectedItems[newItem.id] = false;
+      await saveCartItemToFirestore(newItem);
+    }
+
+    calculateTotalPrice();
+  }
+
+  void removeItemFromCart(CartModel item) async {
+    cartItems.remove(item);
+    selectedItems.remove(item.id);
+    await removeCartItemFromFirestore(item.id);
+    calculateTotalPrice();
+  }
+
+  void updateCartItem(CartModel item) async {
+    int index = cartItems.indexWhere((element) => element.id == item.id);
+    if (index != -1) {
+      cartItems[index] = item;
+      await updateCartItemInFirestore(item);
+      calculateTotalPrice();
+    }
+  }
+
+  void clearCart() async {
+    cartItems.clear();
+    selectedItems.clear();
+    totalPrice.value = 0.0;
+  }
+
+  Future<void> saveCartItemToFirestore(CartModel item) async {
+    await _firestore.collection('GioHang').add(item.toMap());
+  }
+
+  Future<void> removeCartItemFromFirestore(String itemId) async {
+    var doc = await _firestore.collection('GioHang').where('id', isEqualTo: itemId).get();
+    if (doc.docs.isNotEmpty) {
+      await _firestore.collection('GioHang').doc(doc.docs.first.id).delete();
+    }
+  }
+
+  Future<void> updateCartItemInFirestore(CartModel item) async {
+    var doc = await _firestore.collection('GioHang').where('id', isEqualTo: item.id).get();
+    if (doc.docs.isNotEmpty) {
+      await _firestore.collection('GioHang').doc(doc.docs.first.id).update(item.toMap());
+    }
+  }
+
+  Future<List<String>> getAvailableColors(String maSanPham) async {
+    DocumentSnapshot productDoc = await _firestore.collection('MauSanPham').doc(maSanPham).get();
+    return List<String>.from(productDoc.get('MauSac'));
+  }
+
+  Future<List<String>> getAvailableConfigs(String maSanPham) async {
+    DocumentSnapshot productDoc = await _firestore.collection('MauSanPham').doc(maSanPham).get();
+    return List<String>.from(productDoc.get('CauHinh'));
+  }
 }
