@@ -1,11 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:etechstore/module/bottom_nav_bar/nav_menu.dart';
 import 'package:etechstore/module/cart/controller/cart_controller.dart';
-import 'package:etechstore/module/cart/view/cart_screen1.dart';
+import 'package:etechstore/module/cart/model/cart_model.dart';
+import 'package:etechstore/module/cart/view/cart_screen.dart';
+import 'package:etechstore/module/cart/view/prodct_view.dart';
 import 'package:etechstore/module/home/home_screen.dart';
-import 'package:etechstore/module/product_detail/controller/get_product_controller.dart';
-import 'package:etechstore/module/product_detail/view/controller_state_manage/detail_controller_state_manage.dart';
+import 'package:etechstore/module/product_detail/controller/product_sample_controller.dart';
+import 'package:etechstore/module/product_detail/model/product_model.dart';
 import 'package:etechstore/module/product_detail/view/detail_image_screen.dart';
+
 import 'package:etechstore/utlis/constants/colors.dart';
 import 'package:etechstore/utlis/constants/image_key.dart';
 import 'package:etechstore/utlis/constants/text_strings.dart';
@@ -21,6 +24,8 @@ import 'package:get/get.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:get/get_core/src/get_main.dart';
 
+import '../controller/product_controller.dart';
+
 class DetailScreen extends GetView {
   DetailScreen({
     super.key,
@@ -28,7 +33,6 @@ class DetailScreen extends GetView {
     required this.KhuyenMai,
     required this.MaDanhMuc,
     required this.MoTa,
-    required this.SoLuong,
     required this.Ten,
     required this.TrangThai,
     required this.id,
@@ -39,15 +43,17 @@ class DetailScreen extends GetView {
   final KhuyenMai;
   final MaDanhMuc;
   final MoTa;
-  final SoLuong;
   final Ten;
   final TrangThai;
   final id;
   final thumbnail;
   List<dynamic> HinhAnh = [];
+
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(DetailController());
+    final CartController cartController = Get.put(CartController());
+    final ProductController productController = Get.put(ProductController());
+    final ProductSampleController productSampleController = Get.put(ProductSampleController());
 
     List<Widget> imageWidgets = HinhAnh.map((url) {
       return GestureDetector(
@@ -63,20 +69,17 @@ class DetailScreen extends GetView {
       );
     }).toList();
 
-    void addToCart() {
-      Map<String, dynamic> product = {
-        'GiaTien': GiaTien,
-        'KhuyenMai': KhuyenMai,
-        'MaDanhMuc': MaDanhMuc,
-        'MoTa': MoTa,
-        'SoLuong': SoLuong,
-        'Ten': Ten,
-        'TrangThai': TrangThai,
-        'id': id,
-        'thumbnail': thumbnail,
-        'HinhAnh': HinhAnh,
-      };
-      CartController.addProductToCart(product);
+    Widget ImageIndex(BuildContext context) {
+      return CarouselSlider.builder(
+          itemCount: imageWidgets.length,
+          itemBuilder: (context, index, realIndex) {
+            return SizedBox(
+              width: 30,
+              height: 15,
+              child: Text("${imageWidgets[index]} ${imageWidgets.length}"),
+            );
+          },
+          options: CarouselOptions());
     }
 
     return Scaffold(
@@ -115,14 +118,10 @@ class DetailScreen extends GetView {
                             icon: const Icon(Icons.arrow_back_ios_new)),
                         IconButton(
                             onPressed: () {
-                              //    controller.getImages();
-                              print(CartController.products.length);
-                              addToCart();
-                              CartController.addAllProductsToCart(7);
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const CartScreen1(),
+                                    builder: (context) => const CartScreen(),
                                   ));
                             },
                             icon: const Image(
@@ -313,24 +312,302 @@ class DetailScreen extends GetView {
           color: Colors.transparent,
           elevation: 0,
           child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceAround, children: <Widget>[
-            GestureDetector(
-              onTap: () {
-                FullScreenLoader.show(context, thumbnail, SoLuong, Ten, GiaTien, '5.000.000', '5.000.000');
-              },
-              child: Container(
-                alignment: Alignment.center,
-                width: 150.w,
-                height: 70.h,
-                decoration: BoxDecoration(
-                  border: Border.all(width: .5.w, color: TColros.purple_line),
-                  borderRadius: BorderRadius.circular(30.r),
-                ),
-                child: Text(
-                  TTexts.themVaoGioHang,
-                  style: const TextStyle(color: TColros.purple_line),
+            for (final sample in productSampleController.productSamples.where((p0) => id == p0.MaSanPham))
+              GestureDetector(
+                onTap: () {
+                  showModalBottomSheet(
+                      isDismissible: true,
+                      enableDrag: true,
+                      elevation: 10,
+                      backgroundColor: Colors.white,
+                      context: context,
+                      builder: (ctx) {
+                        String selectedColor = sample.mauSac.first;
+                        String selectedConfig = sample.cauHinh.first;
+                        int quantity = 1;
+                        return StatefulBuilder(
+                          builder: (context, setState) {
+                            return Container(
+                              padding: const EdgeInsets.only(top: 20, left: 30),
+                              width: double.infinity,
+                              height: 375,
+                              color: Colors.white,
+                              alignment: Alignment.center,
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(
+                                            width: 90,
+                                            height: 80,
+                                            child: Image.network(
+                                              thumbnail,
+                                              fit: BoxFit.fill,
+                                            )),
+                                        const SizedBox(width: 13),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Container(
+                                                  padding: const EdgeInsets.only(top: 5),
+                                                  child: const SizedBox(
+                                                    width: 15,
+                                                    height: 12,
+                                                    child: (Image(
+                                                      image: AssetImage(ImageKey.iconVoucher),
+                                                      fit: BoxFit.fill,
+                                                    )),
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 5),
+                                                Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      "${priceFormat((GiaTien - (GiaTien * KhuyenMai / 100)).round())} ",
+                                                      style: TColros.red_18_w500,
+                                                    ),
+                                                    Text(
+                                                      "${priceFormat(GiaTien)} ",
+                                                      style: const TextStyle(
+                                                        decoration: TextDecoration.lineThrough,
+                                                        fontSize: 14,
+                                                        color: Color(0xFFC4C4C4),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                                //   IconButton(onPressed: () {}, icon: const Icon(Icons.close))
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    const Padding(
+                                      padding: EdgeInsets.only(top: 25, bottom: 9),
+                                      child: Text("Màu sắc", style: TColros.black_13_w500),
+                                    ),
+                                    Column(
+                                      children: [
+                                        Container(
+                                          color: Colors.white,
+                                          width: double.infinity,
+                                          height: 70,
+                                          child: GridView.builder(
+                                            shrinkWrap: true,
+                                            physics: const NeverScrollableScrollPhysics(),
+                                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                              crossAxisCount: 3,
+                                              mainAxisExtent: 25,
+                                              mainAxisSpacing: 15,
+                                              crossAxisSpacing: CupertinoCheckbox.width,
+                                            ),
+                                            itemCount: sample.mauSac.length,
+                                            itemBuilder: (context, index) {
+                                              String color = sample.mauSac[index];
+
+                                              return GestureDetector(
+                                                onTap: () {
+                                                  setState(() {
+                                                    selectedColor = color;
+                                                  });
+                                                },
+                                                child: Container(
+                                                  alignment: Alignment.center,
+                                                  margin: const EdgeInsets.only(right: 15),
+                                                  decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                      width: 1,
+                                                      color: selectedColor == color ? Colors.redAccent : Colors.white,
+                                                    ),
+                                                    color: const Color.fromARGB(35, 158, 158, 158),
+                                                  ),
+                                                  child: Center(child: Text(color.toString())),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const Padding(
+                                      padding: EdgeInsets.only(top: 25, bottom: 9),
+                                      child: Text("Loại", style: TColros.black_14_w500),
+                                    ),
+                                    Column(
+                                      children: [
+                                        Container(
+                                          color: Colors.white,
+                                          width: double.infinity,
+                                          height: 70,
+                                          child: GridView.builder(
+                                            shrinkWrap: true,
+                                            physics: const NeverScrollableScrollPhysics(),
+                                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                              crossAxisCount: 3,
+                                              mainAxisExtent: 25,
+                                              mainAxisSpacing: 15,
+                                              crossAxisSpacing: CupertinoCheckbox.width,
+                                            ),
+                                            itemCount: sample.cauHinh.length,
+                                            itemBuilder: (context, index) {
+                                              String config = sample.cauHinh[index];
+                                              return GestureDetector(
+                                                onTap: () {
+                                                  setState(() {
+                                                    selectedConfig = config;
+                                                  });
+                                                },
+                                                child: Container(
+                                                  alignment: Alignment.center,
+                                                  margin: const EdgeInsets.only(right: 15),
+                                                  decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                      width: 1,
+                                                      color: selectedConfig == config ? Colors.redAccent : Colors.white,
+                                                    ),
+                                                    color: const Color.fromARGB(35, 158, 158, 158),
+                                                  ),
+                                                  child: Center(child: Text(config.toString())),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        const Text("Số lượng", style: TColros.black_14_w500),
+                                        Container(
+                                          margin: const EdgeInsets.only(right: 20),
+                                          width: 85,
+                                          height: 23,
+                                          decoration: BoxDecoration(
+                                              border: Border.all(width: .5), borderRadius: BorderRadius.circular(30), color: const Color(0xFFF3F3F4)),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                            children: [
+                                              GestureDetector(
+                                                  onTap: () {
+                                                    if (quantity > 1) {
+                                                      setState(() {
+                                                        quantity--;
+                                                      });
+                                                    }
+                                                  },
+                                                  child: Container(
+                                                    width: 8,
+                                                    height: 2,
+                                                    color: Colors.black,
+                                                    alignment: Alignment.center,
+                                                    margin: const EdgeInsets.only(left: 5),
+                                                  )),
+                                              Container(
+                                                height: double.infinity,
+                                                color: Colors.black,
+                                                width: .5,
+                                              ),
+                                              Container(
+                                                padding: const EdgeInsets.only(bottom: 1),
+                                                child: Text(
+                                                  quantity.toString(),
+                                                  style: const TextStyle(fontSize: 17),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                              Container(
+                                                height: double.infinity,
+                                                color: Colors.black,
+                                                width: .5,
+                                              ),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  setState(() {
+                                                    quantity++;
+                                                  });
+                                                },
+                                                child: Container(
+                                                    margin: const EdgeInsets.only(right: 5), child: const Text("+", style: TColros.black_14_w600)),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 35),
+                                    GestureDetector(
+                                      onTap: () {
+                                        final FirebaseAuth auth = FirebaseAuth.instance;
+
+                                        User? user = auth.currentUser;
+                                        var cartItem = CartModel(
+                                          id: sample.id,
+                                          maKhachHang: user!.uid,
+                                          soLuong: quantity,
+                                          trangThai: 1,
+                                          maSanPham: {
+                                            'maSanPham': sample.MaSanPham,
+                                            'mauSac': selectedColor,
+                                            'cauHinh': selectedConfig,
+                                          },
+                                        );
+                                        TLoaders.successSnackBar(title: "Thông báo", message: "Thêm thành công!");
+                                        cartController.addItemToCart(cartItem);
+                                        Navigator.pop(context);
+                                      },
+                                      child: Container(
+                                        margin: const EdgeInsets.only(left: 5, bottom: 20),
+                                        alignment: Alignment.center,
+                                        width: 287,
+                                        height: 40,
+                                        decoration: BoxDecoration(
+                                          color: TColros.purple_line,
+                                          border: Border.all(width: .5),
+                                          borderRadius: BorderRadius.circular(30),
+                                        ),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Text(
+                                              TTexts.themVaoGioHang,
+                                              style: TColros.white_14_w600,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      });
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  width: 150.w,
+                  height: 70.h,
+                  decoration: BoxDecoration(
+                    border: Border.all(width: .5.w, color: TColros.purple_line),
+                    borderRadius: BorderRadius.circular(30.r),
+                  ),
+                  child: Text(
+                    TTexts.themVaoGioHang,
+                    style: const TextStyle(color: TColros.purple_line),
+                  ),
                 ),
               ),
-            ),
             GestureDetector(
               onTap: () {},
               child: Container(
@@ -350,7 +627,7 @@ class DetailScreen extends GetView {
                       style: TColros.white_12_w300,
                     ),
                     Text(
-                      " ${priceFormat(GiaTien)}",
+                      " ${priceFormat((GiaTien - (GiaTien * KhuyenMai / 100)).round())}",
                       style: TColros.red_accent_15,
                     ),
                   ],

@@ -135,7 +135,13 @@ class TColros {
     color: black,
   );
 
-    static const TextStyle black_15_w400 = TextStyle(
+  static const TextStyle black_14_w500 = TextStyle(
+    fontWeight: FontWeight.w500,
+    fontSize: 14,
+    color: black,
+  );
+
+  static const TextStyle black_15_w400 = TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 15,
     color: black,
@@ -145,7 +151,7 @@ class TColros {
     fontWeight: FontWeight.w400,
     fontSize: 14,
     color: black,
-    wordSpacing: 25 ,
+    wordSpacing: 25,
   );
 
   static const TextStyle black_14_w600 = TextStyle(
@@ -215,7 +221,7 @@ class TColros {
   );
 
   static const TextStyle red_accent_15 = TextStyle(
-    fontWeight: FontWeight.normal,
+    fontWeight: FontWeight.w500,
     fontSize: 15,
     color: Colors.redAccent,
   );

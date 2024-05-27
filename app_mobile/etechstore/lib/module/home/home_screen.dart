@@ -2,7 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:etechstore/module/cart/view/cart_screen.dart';
 import 'package:etechstore/module/chat_with_admin/view/chat_home_screen.dart';
-import 'package:etechstore/module/product_detail/view/controller_state_manage/detail_controller_state_manage.dart';
+import 'package:etechstore/module/fake/views/auth_controller.dart';
 import 'package:etechstore/module/product_detail/view/product_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -11,15 +11,13 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:intl/intl.dart';
 
 class HomeScreen extends StatefulWidget {
-     HomeScreen({super.key});
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final controller = Get.put(DetailController());
-
   final db = FirebaseFirestore.instance;
   @override
   Widget build(BuildContext context) {
@@ -27,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         flexibleSpace: Container(
-          decoration:    BoxDecoration(color: Colors.blue),
+          decoration: const BoxDecoration(color: Colors.blue),
         ),
         title: searchBar(),
         actions: [
@@ -36,11 +34,11 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>    CartScreen(),
+                    builder: (context) => const CartScreen(),
                   ));
             },
-            style: ElevatedButton.styleFrom(shape:    CircleBorder(), backgroundColor: Colors.blue),
-            child:    Icon(
+            style: ElevatedButton.styleFrom(shape: const CircleBorder(), backgroundColor: Colors.blue),
+            child: const Icon(
               Icons.shopping_cart,
               color: Colors.white,
             ),
@@ -52,19 +50,21 @@ class _HomeScreenState extends State<HomeScreen> {
                     MaterialPageRoute(
                       builder: (context) => ChatHomePageScreen(),
                     ));
+
+                AuthController.instance.logout();
               },
-              style: ElevatedButton.styleFrom(shape:    CircleBorder(), backgroundColor: Colors.blue),
-              child:    Icon(
+              style: ElevatedButton.styleFrom(shape: const CircleBorder(), backgroundColor: Colors.blue),
+              child: const Icon(
                 Icons.message,
                 color: Colors.white,
               )),
         ],
       ),
       body: Container(
-        padding:    EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: ListView(
           shrinkWrap: true,
-          physics:    NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           children: [
             //Banner khuyến mãi
             sliderShow(),
@@ -82,8 +82,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget searchBar() {
     return Container(
-      padding:    EdgeInsets.fromLTRB(0, 0, 0, 8),
-      child:    TextField(
+      padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+      child: const TextField(
         decoration: InputDecoration(
             label: Text(
               "Tìm kiếm sản phẩm",
@@ -106,11 +106,11 @@ class _HomeScreenState extends State<HomeScreen> {
         stream: discounts,
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
-            return    Text('Something went wrong');
+            return const Text('Something went wrong');
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return    Text("Loading");
+            return const Text("Loading");
           }
 
           return CarouselSlider(
@@ -140,18 +140,18 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget category() {
     final Stream<QuerySnapshot> cateStream = FirebaseFirestore.instance.collection('DanhMucSanPham').snapshots();
     return Padding(
-      padding:    EdgeInsets.fromLTRB(0, 15, 0, 15),
+      padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
       child: SizedBox(
         height: MediaQuery.of(context).size.height / 15,
         child: StreamBuilder<QuerySnapshot>(
           stream: cateStream,
           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.hasError) {
-              return    Text('Something went wrong');
+              return const Text('Something went wrong');
             }
 
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return    Text("Loading");
+              return const Text("Loading");
             }
 
             return ListView(
@@ -160,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   .map((DocumentSnapshot document) {
                     Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
                     return Container(
-                      padding:    EdgeInsets.fromLTRB(0, 0, 8, 0),
+                      padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
                       child: ElevatedButton(
                           onPressed: () {},
                           style: ElevatedButton.styleFrom(
@@ -171,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           child: Text(
                             data['TenDanhMuc'],
-                            style:    TextStyle(color: Colors.black),
+                            style: const TextStyle(color: Colors.black),
                           )),
                     );
                   })
@@ -188,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final CollectionReference fetchProduct = FirebaseFirestore.instance.collection('SanPham');
     return Column(
       children: [
-           Row(
+        const Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
@@ -206,11 +206,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 return SizedBox(
                   height: MediaQuery.of(context).size.height,
                   child: GridView.builder(
-                      gridDelegate:    SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 0.8),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 0.8),
                       itemCount: snapshot.data!.docs.length,
                       itemBuilder: (context, index) {
                         final DocumentSnapshot documentSnapshot = snapshot.data!.docs[index];
-                        List<dynamic> HinhAnh = List<dynamic>.from(documentSnapshot['HinhAnh']);
+                        // List<dynamic> HinhAnh = List<dynamic>.from(documentSnapshot['DSHinhAnh']);
 
                         return GestureDetector(
                           onTap: () {
@@ -218,12 +218,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => DetailScreen(
-                                    HinhAnh: HinhAnh,
+                                    HinhAnh: List<dynamic>.from(documentSnapshot['DSHinhAnh']),
                                     GiaTien: documentSnapshot['GiaTien'],
                                     KhuyenMai: documentSnapshot['KhuyenMai'],
                                     MaDanhMuc: documentSnapshot['MaDanhMuc'],
                                     MoTa: documentSnapshot['MoTa'],
-                                    SoLuong: documentSnapshot['SoLuong'],
                                     Ten: documentSnapshot['Ten'],
                                     TrangThai: documentSnapshot['TrangThai'],
                                     id: documentSnapshot['id'],
@@ -250,30 +249,30 @@ class _HomeScreenState extends State<HomeScreen> {
                                               top: 0,
                                               left: 90,
                                               child: Container(
-                                                decoration:    BoxDecoration(shape: BoxShape.rectangle, color: Colors.red),
+                                                decoration: const BoxDecoration(shape: BoxShape.rectangle, color: Colors.red),
                                                 width: 100,
                                                 height: 50,
                                                 child: Padding(
-                                                  padding:    EdgeInsets.fromLTRB(5, 0, 0, 0),
+                                                  padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
                                                   child: Row(
                                                     children: [
                                                       Text(
                                                         "${documentSnapshot['KhuyenMai']}%",
-                                                        style:    TextStyle(color: Colors.white),
+                                                        style: const TextStyle(color: Colors.white),
                                                       )
                                                     ],
                                                   ),
                                                 ),
                                               ));
                                         }
-                                        return    Text("");
+                                        return const Text("");
                                       },
                                     )
                                   ],
                                 ),
                                 Text(
                                   documentSnapshot['Ten'],
-                                  style:    TextStyle(fontWeight: FontWeight.bold),
+                                  style: const TextStyle(fontWeight: FontWeight.bold),
                                   textAlign: TextAlign.center,
                                 ),
                                 Builder(
@@ -283,17 +282,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                         children: [
                                           Text(
                                             priceFormat(documentSnapshot['GiaTien']),
-                                            style:    TextStyle(color: Colors.grey, decoration: TextDecoration.lineThrough),
+                                            style: const TextStyle(color: Colors.grey, decoration: TextDecoration.lineThrough),
                                           ),
                                           Text(
                                               priceFormat(((documentSnapshot['GiaTien'] -
                                                       (documentSnapshot['GiaTien'] * documentSnapshot['KhuyenMai'] / 100)))
                                                   .round()),
-                                              style:    TextStyle(color: Colors.red))
+                                              style: const TextStyle(color: Colors.red))
                                         ],
                                       );
                                     }
-                                    return Text(priceFormat(documentSnapshot['GiaTien']), style:    TextStyle(color: Colors.red));
+                                    return Text(priceFormat(documentSnapshot['GiaTien']), style: const TextStyle(color: Colors.red));
                                   },
                                 )
                               ],
@@ -303,9 +302,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       }),
                 );
               } else if (snapshot.hasError) {
-                return    Text('Something went wrong!');
+                return const Text('Something went wrong!');
               } else {
-                return    Text('Something went wrong!');
+                return const Text('Something went wrong!');
               }
             },
           ),

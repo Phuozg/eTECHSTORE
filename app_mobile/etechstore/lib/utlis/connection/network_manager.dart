@@ -21,10 +21,10 @@ class NetworkManager extends GetxController {
   }
 
   Future<void> _updateConnectionStatus(List<ConnectivityResult> result) async {
-    _connectionStatus.value = result as ConnectivityResult;
+   /*  _connectionStatus.value = result as ConnectivityResult;
     if (_connectionStatus.value == ConnectivityResult.none) {
       TLoaders.warningSnackBar(title: 'Không có kết nối Internet');
-    }
+    } */
   }
 
   Future<bool> isConneted() async {
