@@ -21,23 +21,24 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(AdaptiveTheme(
-    light: ThemeData(
-      useMaterial3: true,
-      brightness: Brightness.light,
-      colorSchemeSeed: Colors.blue,
-    ),
-    dark: ThemeData(
-      useMaterial3: true,
-      brightness: Brightness.dark,
-      colorSchemeSeed: Colors.blue,
-    ),
-    initial: savedThemeMode ?? AdaptiveThemeMode.light,
-    builder: (light, dark) => GetMaterialApp(
-      theme: light,
-      darkTheme: dark,
-      debugShowCheckedModeBanner: false,
-      home: const SplashScreen(),
-    ),
-  ));
+  runApp(
+    AdaptiveTheme(
+        light: ThemeData(
+          useMaterial3: true,
+          brightness: Brightness.light,
+          colorSchemeSeed: Colors.blue,
+        ),
+        dark: ThemeData(
+          useMaterial3: true,
+          brightness: Brightness.dark,
+          colorSchemeSeed: Colors.blue,
+        ),
+        initial: savedThemeMode ?? AdaptiveThemeMode.light,
+        builder: (light, dark) => GetMaterialApp(
+              theme: light,
+              darkTheme: dark,
+              debugShowCheckedModeBanner: false,
+              home: const SplashScreen(),
+            )),
+  );
 }

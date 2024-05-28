@@ -10,16 +10,27 @@ import 'package:get/get.dart';
 class ProductController extends GetxController {
   final firestore = FirebaseFirestore.instance;
   ProductController get instance => Get.find();
+  final CartController cartController = Get.put(CartController());
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   var productSamples = <ProductSampleModel>[].obs;
   var products = <ProductModel>[].obs;
-  final CartController cartController = Get.put(CartController());
+   var currentIndex = 1.obs;
+
 
   @override
   void onInit() {
     super.onInit();
     fetchProductSamples();
+  }
+
+
+  void setCurrentIndex(int index) {
+    currentIndex.value = index;
+  }
+
+  void resetIndex() {
+    currentIndex.value = 0;
   }
 
   void fetchProductSamples() async {

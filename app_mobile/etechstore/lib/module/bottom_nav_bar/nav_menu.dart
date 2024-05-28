@@ -15,7 +15,7 @@ class NavMenu extends StatelessWidget {
     controller = PersistentTabController(initialIndex: 0);
 
     List<Widget> buildScreens() {
-      return [HomeScreen(), const FavoriteProductScreen(), ProfileScreen()];
+      return [const HomeScreen(), const FavoriteProductScreen(), ProfileScreen()];
     }
 
     List<PersistentBottomNavBarItem> navBarsItems() {
@@ -34,7 +34,7 @@ class NavMenu extends StatelessWidget {
         ),
         PersistentBottomNavBarItem(
           icon: const Icon(Icons.person),
-          title: ("Tôi"),
+          title: ("Cá nhân"),
           activeColorPrimary: CupertinoColors.activeBlue,
           inactiveColorPrimary: CupertinoColors.systemGrey,
         ),
