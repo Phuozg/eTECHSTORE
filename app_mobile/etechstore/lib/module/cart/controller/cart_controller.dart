@@ -109,7 +109,7 @@ class CartController extends GetxController {
 
     if (index != -1) {
       CartModel existingItem = cartItems[index];
-      existingItem.soLuong += newItem.soLuong;
+      existingItem.soLuong = newItem.soLuong;
       existingItem.maSanPham['mauSac'] = newItem.maSanPham['mauSac'];
       existingItem.maSanPham['cauHinh'] = newItem.maSanPham['cauHinh'];
       updateCartItem(existingItem);

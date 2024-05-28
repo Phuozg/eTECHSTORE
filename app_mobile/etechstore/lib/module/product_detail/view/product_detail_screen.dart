@@ -69,240 +69,253 @@ class DetailScreen extends GetView {
       );
     }).toList();
 
-    Widget ImageIndex(BuildContext context) {
-      return CarouselSlider.builder(
-          itemCount: imageWidgets.length,
-          itemBuilder: (context, index, realIndex) {
-            return SizedBox(
-              width: 30,
-              height: 15,
-              child: Text("${imageWidgets[index]} ${imageWidgets.length}"),
-            );
-          },
-          options: CarouselOptions());
-    }
+    productController.resetIndex();
 
     return Scaffold(
       body: ScreenUtilInit(
         builder: (context, child) => SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Stack(
-                children: [
-                  SizedBox(
-                      width: double.infinity,
-                      height: 365.h,
-                      child: CarouselSlider(
-                        items: imageWidgets,
-                        options: CarouselOptions(
-                          height: double.infinity,
-                          viewportFraction: 1.2,
-                          initialPage: 0,
-                          enableInfiniteScroll: true,
-                          // autoPlay: true,
-                          autoPlayInterval: const Duration(seconds: 5),
-                          autoPlayCurve: Curves.fastOutSlowIn,
+          child: Obx(
+            () => Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Stack(
+                  children: [
+                    Stack(children: [
+                      SizedBox(
+                          width: double.infinity,
+                          height: 365.h,
+                          child: CarouselSlider(
+                            items: imageWidgets,
+                            options: CarouselOptions(
+                              height: double.infinity,
+                              viewportFraction: 1.2,
+                              initialPage: 0,
+                              enableInfiniteScroll: true,
+                              onPageChanged: (index, reason) {
+                                productController.setCurrentIndex(index);
+                              },
+                              autoPlayInterval: const Duration(seconds: 5),
+                              autoPlayCurve: Curves.fastOutSlowIn,
+                            ),
+                          )),
+                      Positioned(
+                        bottom: 70,
+                        right: 10,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(
+                            '${productController.currentIndex.value + 1} / ${HinhAnh.length}',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12.sp,
+                            ),
+                          ),
                         ),
-                      )),
-                  Positioned(
-                    width: 350.w,
-                    top: 40.h,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IconButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            icon: const Icon(Icons.arrow_back_ios_new)),
-                        IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const CartScreen(),
-                                  ));
-                            },
-                            icon: const Image(
-                              image: AssetImage(ImageKey.iconCart),
-                              color: Colors.black,
-                            )),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 361),
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(30),
-                        topRight: Radius.circular(30),
+                      ),
+                    ]),
+                    Positioned(
+                      width: 350.w,
+                      top: 40.h,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              icon: const Icon(Icons.arrow_back_ios_new)),
+                          IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const CartScreen(),
+                                    ));
+                              },
+                              icon: const Image(
+                                image: AssetImage(ImageKey.iconCart),
+                                color: Colors.black,
+                              )),
+                        ],
                       ),
                     ),
-                    width: double.infinity,
-                    child: Container(
-                      margin: EdgeInsets.only(top: 25.h, left: 21.w),
-                      child: Column(
-                        children: [
-                          Builder(builder: (context) {
-                            if (KhuyenMai != 0) {
+                    Container(
+                      margin: const EdgeInsets.only(top: 361),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(30),
+                          topRight: Radius.circular(30),
+                        ),
+                      ),
+                      width: double.infinity,
+                      child: Container(
+                        margin: EdgeInsets.only(top: 25.h, left: 21.w),
+                        child: Column(
+                          children: [
+                            Builder(builder: (context) {
+                              if (KhuyenMai != 0) {
+                                return Row(
+                                  children: [
+                                    Text(
+                                      priceFormat((GiaTien - (GiaTien * KhuyenMai / 100)).round()),
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    SizedBox(width: 10.w),
+                                    Text(
+                                      priceFormat(GiaTien),
+                                      style: TextStyle(
+                                        fontSize: 15.sp,
+                                        color: const Color(0xFFC4C4C4),
+                                        decoration: TextDecoration.lineThrough,
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              }
                               return Row(
                                 children: [
                                   Text(
-                                    priceFormat((GiaTien - (GiaTien * KhuyenMai / 100)).round()),
+                                    priceFormat(GiaTien.round()),
                                     style: const TextStyle(
                                       fontSize: 20,
                                       color: Colors.red,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
-                                  SizedBox(width: 10.w),
-                                  Text(
-                                    priceFormat(GiaTien),
-                                    style: TextStyle(
-                                      fontSize: 15.sp,
-                                      color: const Color(0xFFC4C4C4),
-                                      decoration: TextDecoration.lineThrough,
-                                    ),
-                                  ),
                                 ],
                               );
-                            }
-                            return Row(
+                            }),
+                            Row(
                               children: [
-                                Text(
-                                  priceFormat(GiaTien.round()),
-                                  style: const TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.red,
-                                    fontWeight: FontWeight.w500,
+                                SizedBox(
+                                  width: 285.w,
+                                  child: Text(
+                                    '''$Ten''',
+                                    textAlign: TextAlign.start,
+                                    style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                                   ),
                                 ),
-                              ],
-                            );
-                          }),
-                          Row(
-                            children: [
-                              SizedBox(
-                                width: 285.w,
-                                child: Text(
-                                  '''$Ten''',
-                                  textAlign: TextAlign.start,
-                                  style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              Container(
-                                alignment: Alignment.center,
-                                width: 30,
-                                height: 30,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30),
-                                  color: const Color.fromARGB(255, 217, 217, 217),
-                                ),
-                                child: const Image(image: AssetImage(ImageKey.iconHeart)),
-                              )
-                            ],
-                          ),
-                          Container(
-                            padding: const EdgeInsets.only(bottom: 8),
-                            child: const Row(
-                              children: [
-                                Icon(
-                                  Icons.star,
-                                  color: Colors.yellow,
-                                  size: 18,
-                                ),
-                                Text(
-                                  "4.8/5",
-                                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  "(320)",
-                                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w300),
-                                ),
-                                Text(" | đã bán ", style: TextStyle(fontWeight: FontWeight.w300)),
-                                Text("210", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                                Container(
+                                  alignment: Alignment.center,
+                                  width: 30,
+                                  height: 30,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(30),
+                                    color: const Color.fromARGB(255, 217, 217, 217),
+                                  ),
+                                  child: const Image(image: AssetImage(ImageKey.iconHeart)),
+                                )
                               ],
                             ),
-                          ),
-                        ],
+                            Container(
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: const Row(
+                                children: [
+                                  Icon(
+                                    Icons.star,
+                                    color: Colors.yellow,
+                                    size: 18,
+                                  ),
+                                  Text(
+                                    "4.8/5",
+                                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(
+                                    "(320)",
+                                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w300),
+                                  ),
+                                  Text(" | đã bán ", style: TextStyle(fontWeight: FontWeight.w300)),
+                                  Text("210", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  )
-                ],
-              ),
-              Container(
-                height: 7.h,
-                width: double.infinity,
-                color: const Color(0xFFF3F3F4),
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 21.w),
-                padding: const EdgeInsets.only(top: 8, bottom: 8),
-                child: Text(TTexts.chiTietSanPham, style: TColros.black_13_w500),
-              ),
-              Container(
-                height: 1.h,
-                width: double.infinity,
-                color: const Color(0xFFF3F3F4),
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 21.w),
-                padding: const EdgeInsets.only(top: 8, bottom: 8, right: 20),
-                child: ExpandableText(
-                  style: TextStyle(fontSize: 14.sp, color: const Color(0xFF848484)),
-                  "$MoTa",
-                  trimType: TrimType.lines,
-                  trim: 5,
-                  readLessText: TTexts.thuGon,
-                  readMoreText: TTexts.xemThem,
-                ),
-              ),
-              Container(
-                height: 7.h,
-                width: double.infinity,
-                color: const Color(0xFFF3F3F4),
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 21.w),
-                padding: EdgeInsets.only(top: 8.h),
-                child: Text(TTexts.danhGiaSanPham, style: TColros.black_13_w500),
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 19.w),
-                padding: EdgeInsets.only(bottom: 8.w, right: 20.w),
-                child: Row(
-                  children: [
-                    Container(
-                      child: Row(
-                        children: [
-                          Icon(Icons.star, color: Colors.yellow, size: 18.sp),
-                          Icon(Icons.star, color: Colors.yellow, size: 18.sp),
-                          Icon(Icons.star, color: Colors.yellow, size: 18.sp),
-                          Icon(Icons.star, color: Colors.yellow, size: 18.sp),
-                          Icon(Icons.star, color: Colors.yellow, size: 18.sp),
-                          Text(
-                            "4.8/5",
-                            style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w400, color: Colors.red),
-                          ),
-                          const Text(" (14 đánh giá)", style: TextStyle(fontWeight: FontWeight.w300)),
-                        ],
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {},
-                      child: Container(
-                          margin: EdgeInsets.only(left: 25.w),
-                          child: Text(
-                            TTexts.xemTatCa,
-                            style: const TextStyle(color: Colors.red),
-                          )),
                     )
                   ],
                 ),
-              ),
-            ],
+                Container(
+                  height: 7.h,
+                  width: double.infinity,
+                  color: const Color(0xFFF3F3F4),
+                ),
+                Container(
+                  margin: EdgeInsets.only(left: 21.w),
+                  padding: const EdgeInsets.only(top: 8, bottom: 8),
+                  child: Text(TTexts.chiTietSanPham, style: TColros.black_13_w500),
+                ),
+                Container(
+                  height: 1.h,
+                  width: double.infinity,
+                  color: const Color(0xFFF3F3F4),
+                ),
+                Container(
+                  margin: EdgeInsets.only(left: 21.w),
+                  padding: const EdgeInsets.only(top: 8, bottom: 8, right: 20),
+                  child: ExpandableText(
+                    style: TextStyle(fontSize: 14.sp, color: const Color(0xFF848484)),
+                    "$MoTa",
+                    trimType: TrimType.lines,
+                    trim: 5,
+                    readLessText: TTexts.thuGon,
+                    readMoreText: TTexts.xemThem,
+                  ),
+                ),
+                Container(
+                  height: 7.h,
+                  width: double.infinity,
+                  color: const Color(0xFFF3F3F4),
+                ),
+                Container(
+                  margin: EdgeInsets.only(left: 21.w),
+                  padding: EdgeInsets.only(top: 8.h),
+                  child: Text(TTexts.danhGiaSanPham, style: TColros.black_13_w500),
+                ),
+                Container(
+                  margin: EdgeInsets.only(left: 19.w),
+                  padding: EdgeInsets.only(bottom: 8.w, right: 20.w),
+                  child: Row(
+                    children: [
+                      Container(
+                        child: Row(
+                          children: [
+                            Icon(Icons.star, color: Colors.yellow, size: 18.sp),
+                            Icon(Icons.star, color: Colors.yellow, size: 18.sp),
+                            Icon(Icons.star, color: Colors.yellow, size: 18.sp),
+                            Icon(Icons.star, color: Colors.yellow, size: 18.sp),
+                            Icon(Icons.star, color: Colors.yellow, size: 18.sp),
+                            Text(
+                              "4.8/5",
+                              style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w400, color: Colors.red),
+                            ),
+                            const Text(" (14 đánh giá)", style: TextStyle(fontWeight: FontWeight.w300)),
+                          ],
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {},
+                        child: Container(
+                            margin: EdgeInsets.only(left: 25.w),
+                            child: Text(
+                              TTexts.xemTatCa,
+                              style: const TextStyle(color: Colors.red),
+                            )),
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

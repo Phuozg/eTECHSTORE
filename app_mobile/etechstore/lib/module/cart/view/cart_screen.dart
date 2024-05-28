@@ -28,24 +28,25 @@ class CartScreen extends StatelessWidget {
     final CartController controller = Get.put(CartController());
     final AuthController auth = Get.put(AuthController());
     final ProductController productController = Get.put(ProductController());
-
     return ScreenUtilInit(
       builder: (context, child) => Scaffold(
         backgroundColor: const Color(0xFFF3F3F4),
         appBar: AppBar(
           backgroundColor: const Color(0xFFF3F3F4),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 30.w,
-              ),
-              const Text("Giỏ hàng", style: TColros.black_18),
-              Text(
-                " (${controller.selectedItems.length})",
-                style: const TextStyle(fontSize: 14),
-              ),
-            ],
+          title: Obx(
+            () => Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 30.w,
+                ),
+                const Text("Giỏ hàng", style: TColros.black_18),
+                Text(
+                  " (${controller.selectedItems.length})",
+                  style: const TextStyle(fontSize: 14),
+                ),
+              ],
+            ),
           ),
           actions: [
             TextButton(
@@ -198,289 +199,304 @@ class CartScreen extends StatelessWidget {
                                                 ),
                                                 GestureDetector(
                                                   onTap: () async {
-                                                    showModalBottomSheet(
-                                                      context: context,
-                                                      builder: (BuildContext context) {
-                                                        ProductSampleModel sample = productController.productSamples[index];
+                                                    for (final sample
+                                                        in productController.productSamples.where((p0) => product?.id == p0.MaSanPham)) {
+                                                      showModalBottomSheet(
+                                                        context: context,
+                                                        builder: (BuildContext context) {
+                                                          String selectedColor = sample.mauSac.first;
+                                                          String selectedConfig = sample.cauHinh.first;
+                                                          int quantity = 1;
 
-                                                        String selectedColor = sample.mauSac.first;
-                                                        String selectedConfig = sample.cauHinh.first;
-                                                        int quantity = 1;
-
-                                                        return StatefulBuilder(
-                                                          builder: (BuildContext context, StateSetter setState) {
-                                                            return Column(
-                                                              children: [
-                                                                Container(
-                                                                  color: Colors.white,
-                                                                  width: double.infinity,
-                                                                  child: Container(
-                                                                    padding: EdgeInsets.only(top: 20.h, left: 30.w),
-                                                                    width: double.infinity,
-                                                                    height: 375,
+                                                          return StatefulBuilder(
+                                                            builder: (BuildContext context, StateSetter setState) {
+                                                              return Column(
+                                                                crossAxisAlignment: CrossAxisAlignment.end,
+                                                                children: [
+                                                                  Container(
                                                                     color: Colors.white,
-                                                                    alignment: Alignment.center,
-                                                                    child: SingleChildScrollView(
-                                                                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                                                        Column(
-                                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                                          children: [
-                                                                            Row(
-                                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                                              children: [
-                                                                                SizedBox(
-                                                                                    width: 90.w,
-                                                                                    height: 80.h,
-                                                                                    child: product?.thumbnail != null
-                                                                                        ? Image.network(
-                                                                                            product!.thumbnail,
-                                                                                            fit: BoxFit.fill,
-                                                                                          )
-                                                                                        : null),
-                                                                                const SizedBox(width: 13),
-                                                                                Column(
-                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                  children: [
-                                                                                    Row(
-                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                      children: [
-                                                                                        Container(
-                                                                                          padding: EdgeInsets.only(top: 5.h),
-                                                                                          child: SizedBox(
-                                                                                            width: 15.w,
-                                                                                            height: 12.w,
-                                                                                            child: (const Image(
-                                                                                              image: AssetImage(ImageKey.iconVoucher),
+                                                                    width: double.infinity,
+                                                                    child: Container(
+                                                                      padding: EdgeInsets.only(top: 20.h, left: 30.w),
+                                                                      width: double.infinity,
+                                                                      height: 375,
+                                                                      color: Colors.white,
+                                                                      alignment: Alignment.center,
+                                                                      child: SingleChildScrollView(
+                                                                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                                                          Column(
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            children: [
+                                                                              Row(
+                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                children: [
+                                                                                  SizedBox(
+                                                                                      width: 90.w,
+                                                                                      height: 80.h,
+                                                                                      child: product?.thumbnail != null
+                                                                                          ? Image.network(
+                                                                                              product!.thumbnail,
                                                                                               fit: BoxFit.fill,
+                                                                                            )
+                                                                                          : null),
+                                                                                  const SizedBox(width: 13),
+                                                                                  Column(
+                                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                    children: [
+                                                                                      Row(
+                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                        children: [
+                                                                                          Container(
+                                                                                            padding: EdgeInsets.only(top: 5.h),
+                                                                                            child: SizedBox(
+                                                                                              width: 15.w,
+                                                                                              height: 12.w,
+                                                                                              child: (const Image(
+                                                                                                image: AssetImage(ImageKey.iconVoucher),
+                                                                                                fit: BoxFit.fill,
+                                                                                              )),
+                                                                                            ),
+                                                                                          ),
+                                                                                          SizedBox(width: 5.w),
+                                                                                          Column(
+                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                            children: [
+                                                                                              product?.giaTien != null && product?.KhuyenMai != null
+                                                                                                  ? Text(
+                                                                                                      "${priceFormat((product!.giaTien - (product.giaTien * product.KhuyenMai / 100)).round())} ",
+                                                                                                      style: TColros.red_18_w500,
+                                                                                                    )
+                                                                                                  : const Text('Loading...'),
+                                                                                              product?.giaTien != null
+                                                                                                  ? Text(
+                                                                                                      "${priceFormat(product!.giaTien)} ",
+                                                                                                      style: TextStyle(
+                                                                                                        decoration: TextDecoration.lineThrough,
+                                                                                                        fontSize: 14.sp,
+                                                                                                        color: const Color(0xFFC4C4C4),
+                                                                                                      ),
+                                                                                                    )
+                                                                                                  : const Text("Loading...")
+                                                                                            ],
+                                                                                          ),
+                                                                                          GestureDetector(
+                                                                                            onTap: () {
+                                                                                              Navigator.pop(context);
+                                                                                            },
+                                                                                            child: Container(
+                                                                                                margin: const EdgeInsets.only(left: 90, bottom: 40),
+                                                                                                padding: const EdgeInsets.only(bottom: 20),
+                                                                                                alignment: Alignment.topRight,
+                                                                                                child: const Text(
+                                                                                                  "x",
+                                                                                                  style: TextStyle(
+                                                                                                      fontSize: 20, fontWeight: FontWeight.w600),
+                                                                                                )),
+                                                                                          ),
+                                                                                        ],
+                                                                                      ),
+                                                                                    ],
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                              Padding(
+                                                                                padding: EdgeInsets.only(top: 25.h, bottom: 9.h),
+                                                                                child: const Text("Màu sắc", style: TColros.black_13_w500),
+                                                                              ),
+                                                                              Container(
+                                                                                color: Colors.white,
+                                                                                width: double.infinity,
+                                                                                height: 70.h,
+                                                                                child: GridView.builder(
+                                                                                  shrinkWrap: true,
+                                                                                  physics: const NeverScrollableScrollPhysics(),
+                                                                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                                                                    crossAxisCount: 3,
+                                                                                    mainAxisExtent: 25,
+                                                                                    mainAxisSpacing: 15,
+                                                                                    crossAxisSpacing: CupertinoCheckbox.width,
+                                                                                  ),
+                                                                                  itemCount: sample.mauSac.length,
+                                                                                  itemBuilder: (context, index) {
+                                                                                    String color = sample.mauSac[index];
+                                                                                    return GestureDetector(
+                                                                                      onTap: () {
+                                                                                        setState(() {
+                                                                                          selectedColor = color;
+                                                                                        });
+                                                                                      },
+                                                                                      child: Container(
+                                                                                        alignment: Alignment.center,
+                                                                                        margin: EdgeInsets.only(right: 15.w),
+                                                                                        decoration: BoxDecoration(
+                                                                                          border: Border.all(
+                                                                                            width: 1,
+                                                                                            color: selectedColor == color
+                                                                                                ? Colors.redAccent
+                                                                                                : Colors.white,
+                                                                                          ),
+                                                                                          color: const Color.fromARGB(35, 158, 158, 158),
+                                                                                        ),
+                                                                                        child: Center(child: Text(color.toString())),
+                                                                                      ),
+                                                                                    );
+                                                                                  },
+                                                                                ),
+                                                                              ),
+                                                                              Padding(
+                                                                                padding: EdgeInsets.only(top: 10.h, bottom: 9.h),
+                                                                                child: const Text("Loại", style: TColros.black_14_w500),
+                                                                              ),
+                                                                              Container(
+                                                                                color: Colors.white,
+                                                                                width: double.infinity,
+                                                                                height: 70.h,
+                                                                                child: GridView.builder(
+                                                                                  shrinkWrap: true,
+                                                                                  physics: const NeverScrollableScrollPhysics(),
+                                                                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                                                                    crossAxisCount: 3,
+                                                                                    mainAxisExtent: 25,
+                                                                                    mainAxisSpacing: 15,
+                                                                                    crossAxisSpacing: CupertinoCheckbox.width,
+                                                                                  ),
+                                                                                  itemCount: sample.cauHinh.length,
+                                                                                  itemBuilder: (context, index) {
+                                                                                    String config = sample.cauHinh[index];
+                                                                                    return GestureDetector(
+                                                                                      onTap: () {
+                                                                                        setState(() {
+                                                                                          selectedConfig = config;
+                                                                                        });
+                                                                                      },
+                                                                                      child: Container(
+                                                                                        alignment: Alignment.center,
+                                                                                        margin: EdgeInsets.only(right: 15.w),
+                                                                                        decoration: BoxDecoration(
+                                                                                          border: Border.all(
+                                                                                            width: 1,
+                                                                                            color: selectedConfig == config
+                                                                                                ? Colors.redAccent
+                                                                                                : Colors.white,
+                                                                                          ),
+                                                                                          color: const Color.fromARGB(35, 158, 158, 158),
+                                                                                        ),
+                                                                                        child: Center(child: Text(config.toString())),
+                                                                                      ),
+                                                                                    );
+                                                                                  },
+                                                                                ),
+                                                                              ),
+                                                                              SizedBox(height: 16.0.h),
+                                                                              Row(
+                                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                children: [
+                                                                                  const Text("Số lượng", style: TColros.black_14_w500),
+                                                                                  Container(
+                                                                                    margin: EdgeInsets.only(right: 20.w),
+                                                                                    width: 85.w,
+                                                                                    height: 23.h,
+                                                                                    decoration: BoxDecoration(
+                                                                                        border: Border.all(width: .5),
+                                                                                        borderRadius: BorderRadius.circular(30),
+                                                                                        color: const Color(0xFFF3F3F4)),
+                                                                                    child: Row(
+                                                                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                                                      children: [
+                                                                                        GestureDetector(
+                                                                                            onTap: () {
+                                                                                              if (quantity > 1) {
+                                                                                                setState(() {
+                                                                                                  quantity--;
+                                                                                                });
+                                                                                              }
+                                                                                            },
+                                                                                            child: Container(
+                                                                                              width: 8.w,
+                                                                                              height: 2.h,
+                                                                                              color: Colors.black,
+                                                                                              alignment: Alignment.center,
+                                                                                              margin: EdgeInsets.only(left: 5.w),
                                                                                             )),
+                                                                                        Container(
+                                                                                          height: double.infinity,
+                                                                                          color: Colors.black,
+                                                                                          width: .5,
+                                                                                        ),
+                                                                                        Container(
+                                                                                          padding: EdgeInsets.only(bottom: 1.h),
+                                                                                          child: Text(
+                                                                                            quantity.toString(),
+                                                                                            style: TextStyle(fontSize: 17.sp),
+                                                                                            textAlign: TextAlign.center,
                                                                                           ),
                                                                                         ),
-                                                                                        SizedBox(width: 5.w),
-                                                                                        Column(
-                                                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                          children: [
-                                                                                            product?.giaTien != null && product?.KhuyenMai != null
-                                                                                                ? Text(
-                                                                                                    "${priceFormat((product!.giaTien - (product.giaTien * product.KhuyenMai / 100)).round())} ",
-                                                                                                    style: TColros.red_18_w500,
-                                                                                                  )
-                                                                                                : const Text('Loading...'),
-                                                                                            product?.giaTien != null
-                                                                                                ? Text(
-                                                                                                    "${priceFormat(product!.giaTien)} ",
-                                                                                                    style: TextStyle(
-                                                                                                      decoration: TextDecoration.lineThrough,
-                                                                                                      fontSize: 14.sp,
-                                                                                                      color: const Color(0xFFC4C4C4),
-                                                                                                    ),
-                                                                                                  )
-                                                                                                : const Text("Loading...")
-                                                                                          ],
+                                                                                        Container(
+                                                                                          height: double.infinity,
+                                                                                          color: Colors.black,
+                                                                                          width: .5,
                                                                                         ),
-                                                                                        //   IconButton(onPressed: () {}, icon: const Icon(Icons.close))
-                                                                                      ],
-                                                                                    ),
-                                                                                  ],
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                            Padding(
-                                                                              padding: EdgeInsets.only(top: 25.h, bottom: 9.h),
-                                                                              child: const Text("Màu sắc", style: TColros.black_13_w500),
-                                                                            ),
-                                                                            Container(
-                                                                              color: Colors.white,
-                                                                              width: double.infinity,
-                                                                              height: 70.h,
-                                                                              child: GridView.builder(
-                                                                                shrinkWrap: true,
-                                                                                physics: const NeverScrollableScrollPhysics(),
-                                                                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                                                                  crossAxisCount: 3,
-                                                                                  mainAxisExtent: 25,
-                                                                                  mainAxisSpacing: 15,
-                                                                                  crossAxisSpacing: CupertinoCheckbox.width,
-                                                                                ),
-                                                                                itemCount: sample.mauSac.length,
-                                                                                itemBuilder: (context, index) {
-                                                                                  String color = sample.mauSac[index];
-                                                                                  return GestureDetector(
-                                                                                    onTap: () {
-                                                                                      setState(() {
-                                                                                        selectedColor = color;
-                                                                                      });
-                                                                                    },
-                                                                                    child: Container(
-                                                                                      alignment: Alignment.center,
-                                                                                      margin: EdgeInsets.only(right: 15.w),
-                                                                                      decoration: BoxDecoration(
-                                                                                        border: Border.all(
-                                                                                          width: 1,
-                                                                                          color: selectedColor == color
-                                                                                              ? Colors.redAccent
-                                                                                              : Colors.white,
-                                                                                        ),
-                                                                                        color: const Color.fromARGB(35, 158, 158, 158),
-                                                                                      ),
-                                                                                      child: Center(child: Text(color.toString())),
-                                                                                    ),
-                                                                                  );
-                                                                                },
-                                                                              ),
-                                                                            ),
-                                                                            Padding(
-                                                                              padding: EdgeInsets.only(top: 10.h, bottom: 9.h),
-                                                                              child: const Text("Loại", style: TColros.black_14_w500),
-                                                                            ),
-                                                                            Container(
-                                                                              color: Colors.white,
-                                                                              width: double.infinity,
-                                                                              height: 70.h,
-                                                                              child: GridView.builder(
-                                                                                shrinkWrap: true,
-                                                                                physics: const NeverScrollableScrollPhysics(),
-                                                                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                                                                  crossAxisCount: 3,
-                                                                                  mainAxisExtent: 25,
-                                                                                  mainAxisSpacing: 15,
-                                                                                  crossAxisSpacing: CupertinoCheckbox.width,
-                                                                                ),
-                                                                                itemCount: sample.cauHinh.length,
-                                                                                itemBuilder: (context, index) {
-                                                                                  String config = sample.cauHinh[index];
-                                                                                  return GestureDetector(
-                                                                                    onTap: () {
-                                                                                      setState(() {
-                                                                                        selectedConfig = config;
-                                                                                      });
-                                                                                    },
-                                                                                    child: Container(
-                                                                                      alignment: Alignment.center,
-                                                                                      margin: EdgeInsets.only(right: 15.w),
-                                                                                      decoration: BoxDecoration(
-                                                                                        border: Border.all(
-                                                                                          width: 1,
-                                                                                          color: selectedConfig == config
-                                                                                              ? Colors.redAccent
-                                                                                              : Colors.white,
-                                                                                        ),
-                                                                                        color: const Color.fromARGB(35, 158, 158, 158),
-                                                                                      ),
-                                                                                      child: Center(child: Text(config.toString())),
-                                                                                    ),
-                                                                                  );
-                                                                                },
-                                                                              ),
-                                                                            ),
-                                                                            SizedBox(height: 16.0.h),
-                                                                            Row(
-                                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                                              children: [
-                                                                                const Text("Số lượng", style: TColros.black_14_w500),
-                                                                                Container(
-                                                                                  margin: EdgeInsets.only(right: 20.w),
-                                                                                  width: 85.w,
-                                                                                  height: 23.h,
-                                                                                  decoration: BoxDecoration(
-                                                                                      border: Border.all(width: .5),
-                                                                                      borderRadius: BorderRadius.circular(30),
-                                                                                      color: const Color(0xFFF3F3F4)),
-                                                                                  child: Row(
-                                                                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                                                    children: [
-                                                                                      GestureDetector(
+                                                                                        GestureDetector(
                                                                                           onTap: () {
-                                                                                            if (quantity > 1) {
-                                                                                              setState(() {
-                                                                                                quantity--;
-                                                                                              });
-                                                                                            }
+                                                                                            setState(() {
+                                                                                              quantity++;
+                                                                                            });
                                                                                           },
                                                                                           child: Container(
-                                                                                            width: 8.w,
-                                                                                            height: 2.h,
-                                                                                            color: Colors.black,
-                                                                                            alignment: Alignment.center,
-                                                                                            margin: EdgeInsets.only(left: 5.w),
-                                                                                          )),
-                                                                                      Container(
-                                                                                        height: double.infinity,
-                                                                                        color: Colors.black,
-                                                                                        width: .5,
-                                                                                      ),
-                                                                                      Container(
-                                                                                        padding: EdgeInsets.only(bottom: 1.h),
-                                                                                        child: Text(
-                                                                                          quantity.toString(),
-                                                                                          style: TextStyle(fontSize: 17.sp),
-                                                                                          textAlign: TextAlign.center,
+                                                                                              margin: EdgeInsets.only(right: 5.w),
+                                                                                              child: const Text("+", style: TColros.black_14_w600)),
                                                                                         ),
-                                                                                      ),
-                                                                                      Container(
-                                                                                        height: double.infinity,
-                                                                                        color: Colors.black,
-                                                                                        width: .5,
-                                                                                      ),
-                                                                                      GestureDetector(
-                                                                                        onTap: () {
-                                                                                          setState(() {
-                                                                                            quantity++;
-                                                                                          });
-                                                                                        },
-                                                                                        child: Container(
-                                                                                            margin: EdgeInsets.only(right: 5.w),
-                                                                                            child: const Text("+", style: TColros.black_14_w600)),
+                                                                                      ],
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                              SizedBox(height: 16.0.h),
+                                                                              GestureDetector(
+                                                                                onTap: () {
+                                                                                  selectedColor = selectedColor;
+                                                                                  selectedConfig = selectedConfig;
+                                                                                  item.maSanPham['mauSac'] = selectedColor;
+                                                                                  item.maSanPham['cauHinh'] = selectedConfig;
+                                                                                  item.soLuong = quantity;
+                                                                                  controller.updateCartItem(item);
+                                                                                  Navigator.pop(context);
+                                                                                },
+                                                                                child: Container(
+                                                                                  margin: EdgeInsets.only(left: 25.w, bottom: 20.h),
+                                                                                  alignment: Alignment.center,
+                                                                                  width: 287.w,
+                                                                                  height: 40.h,
+                                                                                  decoration: BoxDecoration(
+                                                                                    color: TColros.purple_line,
+                                                                                    border: Border.all(width: .5),
+                                                                                    borderRadius: BorderRadius.circular(30.r),
+                                                                                  ),
+                                                                                  child: const Column(
+                                                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                                                    children: [
+                                                                                      Text(
+                                                                                        'Xác nhận',
+                                                                                        style: TColros.white_14_w600,
                                                                                       ),
                                                                                     ],
                                                                                   ),
                                                                                 ),
-                                                                              ],
-                                                                            ),
-                                                                            SizedBox(height: 16.0.h),
-                                                                            GestureDetector(
-                                                                              onTap: () {
-                                                                                selectedColor = selectedColor;
-                                                                                selectedConfig = selectedConfig;
-                                                                                item.maSanPham['mauSac'] = selectedColor;
-                                                                                item.maSanPham['cauHinh'] = selectedConfig;
-                                                                                item.soLuong = quantity;
-                                                                                controller.updateCartItem(item);
-                                                                                Navigator.pop(context);
-                                                                              },
-                                                                              child: Container(
-                                                                                margin: EdgeInsets.only(left: 25.w, bottom: 20.h),
-                                                                                alignment: Alignment.center,
-                                                                                width: 287.w,
-                                                                                height: 40.h,
-                                                                                decoration: BoxDecoration(
-                                                                                  color: TColros.purple_line,
-                                                                                  border: Border.all(width: .5),
-                                                                                  borderRadius: BorderRadius.circular(30.r),
-                                                                                ),
-                                                                                child: const Column(
-                                                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                                                  children: [
-                                                                                    Text(
-                                                                                      'Xác nhận',
-                                                                                      style: TColros.white_14_w600,
-                                                                                    ),
-                                                                                  ],
-                                                                                ),
                                                                               ),
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                      ]),
+                                                                            ],
+                                                                          ),
+                                                                        ]),
+                                                                      ),
                                                                     ),
                                                                   ),
-                                                                ),
-                                                              ],
-                                                            );
-                                                          },
-                                                        );
-                                                      },
-                                                    );
+                                                                ],
+                                                              );
+                                                            },
+                                                          );
+                                                        },
+                                                      );
+                                                    }
                                                   },
                                                   child: Container(
                                                     constraints: BoxConstraints(
@@ -525,10 +541,12 @@ class CartScreen extends StatelessWidget {
                                                       children: [
                                                         Row(
                                                           children: [
-                                                           product?.giaTien  != null  ||product?.KhuyenMai != null  ? Text(
-                                                              "${priceFormat((product!.giaTien - (product.giaTien * product.KhuyenMai / 100)).round())} ",
-                                                              style: TextStyle(color: const Color(0xFFEB4335), fontSize: 16.sp),
-                                                            ):Text("Loading..."),
+                                                            product?.giaTien != null || product?.KhuyenMai != null
+                                                                ? Text(
+                                                                    "${priceFormat((product!.giaTien - (product.giaTien * product.KhuyenMai / 100)).round())} ",
+                                                                    style: TextStyle(color: const Color(0xFFEB4335), fontSize: 16.sp),
+                                                                  )
+                                                                : const Text("Loading..."),
                                                             SizedBox(
                                                               width: 5.w,
                                                             ),
@@ -678,7 +696,20 @@ class CartScreen extends StatelessWidget {
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  /*   */
+                                  List<CartModel> itemsToRemove = [];
+                                  controller.selectedItems.forEach((id, isSelected) {
+                                    if (isSelected) {
+                                      CartModel? item = controller.cartItems.firstWhereOrNull((item) => item.id == id);
+                                      if (item != null) {
+                                        itemsToRemove.add(item);
+                                      }
+                                    }
+                                  });
+
+                                  // Xóa các mục đã chọn khỏi giỏ hàng
+                                  for (var item in itemsToRemove) {
+                                    controller.removeItemFromCart(item);
+                                  }
                                 },
                                 child: Container(
                                   margin: EdgeInsets.symmetric(horizontal: 7.h, vertical: 12.w),
