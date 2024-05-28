@@ -4,11 +4,11 @@ import 'package:etechstore/module/cart/controller/cart_controller.dart';
 import 'package:etechstore/module/cart/model/cart_model.dart';
 import 'package:etechstore/module/cart/view/cart_screen.dart';
 import 'package:etechstore/module/cart/view/prodct_view.dart';
+import 'package:etechstore/module/fake/views/auth_controller.dart';
 import 'package:etechstore/module/home/home_screen.dart';
 import 'package:etechstore/module/product_detail/controller/product_sample_controller.dart';
 import 'package:etechstore/module/product_detail/model/product_model.dart';
 import 'package:etechstore/module/product_detail/view/detail_image_screen.dart';
-
 import 'package:etechstore/utlis/constants/colors.dart';
 import 'package:etechstore/utlis/constants/image_key.dart';
 import 'package:etechstore/utlis/constants/text_strings.dart';
@@ -609,7 +609,9 @@ class DetailScreen extends GetView {
                 ),
               ),
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                AuthController.instance.logout();
+              },
               child: Container(
                 alignment: Alignment.bottomCenter,
                 width: 150.w,

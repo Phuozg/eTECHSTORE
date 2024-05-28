@@ -32,7 +32,7 @@ Widget product(){
                   itemCount: snapshot.data!.docs.length ,
                   itemBuilder: (context, index) {
                     final DocumentSnapshot documentSnapshot = snapshot.data!.docs[index];
-                     List<dynamic> HinhAnh = List<dynamic>.from(documentSnapshot['HinhAnh']);
+                     List<dynamic> HinhAnh = List<dynamic>.from(documentSnapshot['DSHinhAnh']);
                     return GestureDetector(
                       onTap: (){
                         Navigator.push(
@@ -44,8 +44,7 @@ Widget product(){
                                     KhuyenMai: documentSnapshot['KhuyenMai'],
                                     MaDanhMuc: documentSnapshot['MaDanhMuc'],
                                     MoTa: documentSnapshot['MoTa'],
-                                    SoLuong: documentSnapshot['SoLuong'],
-                                    Ten: documentSnapshot['Ten'],
+                                     Ten: documentSnapshot['Ten'],
                                     TrangThai: documentSnapshot['TrangThai'],
                                     id: documentSnapshot['id'],
                                     thumbnail: documentSnapshot['thumbnail'],
@@ -153,7 +152,7 @@ Widget product(){
                   itemCount: snapshot.data!.docs.length ,
                   itemBuilder: (context, index) {
                     final DocumentSnapshot documentSnapshot = snapshot.data!.docs[index];
-                     List<dynamic> HinhAnh = List<dynamic>.from(documentSnapshot['HinhAnh']);
+                     List<dynamic> HinhAnh = List<dynamic>.from(documentSnapshot['DSHinhAnh']);
                     return GestureDetector(
                       onTap: (){
                         Navigator.push(
@@ -165,8 +164,7 @@ Widget product(){
                                     KhuyenMai: documentSnapshot['KhuyenMai'],
                                     MaDanhMuc: documentSnapshot['MaDanhMuc'],
                                     MoTa: documentSnapshot['MoTa'],
-                                    SoLuong: documentSnapshot['SoLuong'],
-                                    Ten: documentSnapshot['Ten'],
+                                     Ten: documentSnapshot['Ten'],
                                     TrangThai: documentSnapshot['TrangThai'],
                                     id: documentSnapshot['id'],
                                     thumbnail: documentSnapshot['thumbnail'],

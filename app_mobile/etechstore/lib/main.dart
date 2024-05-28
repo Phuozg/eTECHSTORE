@@ -20,6 +20,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   runApp(AdaptiveTheme(
     light: ThemeData(
       useMaterial3: true,

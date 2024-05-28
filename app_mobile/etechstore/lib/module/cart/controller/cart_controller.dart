@@ -19,7 +19,7 @@ class CartController extends GetxController {
   var products = <String, ProductModel>{}.obs;
   var totalPrice = 0.0.obs;
   var isSelectAll = false.obs;
-  var   selectedItems = <String, bool>{}.obs;
+  var selectedItems = <String, bool>{}.obs;
   var isEditMode = false.obs;
 
   @override
@@ -28,13 +28,11 @@ class CartController extends GetxController {
     fetchCartItems();
   }
 
-
-
   void toggleEditMode() {
     isEditMode.value = !isEditMode.value;
   }
 
-  void fetchCartItems() async {
+  Future<void> fetchCartItems() async {
     String? userId = _auth.currentUser?.uid;
     if (userId != null) {
       _firestore.collection('GioHang').where('maKhachHang', isEqualTo: userId).where('trangThai', isEqualTo: 1).snapshots().listen((snapshot) async {
@@ -108,6 +106,7 @@ class CartController extends GetxController {
 
   void addItemToCart(CartModel newItem) async {
     int index = cartItems.indexWhere((item) => item.maSanPham['maSanPham'] == newItem.maSanPham['maSanPham']);
+
     if (index != -1) {
       CartModel existingItem = cartItems[index];
       existingItem.soLuong += newItem.soLuong;
@@ -126,12 +125,12 @@ class CartController extends GetxController {
   void removeItemFromCart(CartModel item) async {
     cartItems.remove(item);
     selectedItems.remove(item.id);
-    await removeCartItemFromFirestore(item.id);
+    await removeCartItemFromFirestore(item.id, item.maKhachHang);
     calculateTotalPrice();
   }
 
   void updateCartItem(CartModel item) async {
-    int index = cartItems.indexWhere((element) => element.id == item.id);
+    int index = cartItems.indexWhere((element) => element.id == item.id && element.maKhachHang == item.maKhachHang);
     if (index != -1) {
       cartItems[index] = item;
       await updateCartItemInFirestore(item);
@@ -149,15 +148,15 @@ class CartController extends GetxController {
     await _firestore.collection('GioHang').add(item.toMap());
   }
 
-  Future<void> removeCartItemFromFirestore(String itemId) async {
-    var doc = await _firestore.collection('GioHang').where('id', isEqualTo: itemId).get();
+  Future<void> removeCartItemFromFirestore(String itemId, String uid) async {
+    var doc = await _firestore.collection('GioHang').where('id', isEqualTo: itemId).where('maKhachHang', isEqualTo: uid).get();
     if (doc.docs.isNotEmpty) {
       await _firestore.collection('GioHang').doc(doc.docs.first.id).delete();
     }
   }
 
   Future<void> updateCartItemInFirestore(CartModel item) async {
-    var doc = await _firestore.collection('GioHang').where('id', isEqualTo: item.id).get();
+    var doc = await _firestore.collection('GioHang').where('id', isEqualTo: item.id).where('maKhachHang', isEqualTo: item.maKhachHang).get();
     if (doc.docs.isNotEmpty) {
       await _firestore.collection('GioHang').doc(doc.docs.first.id).update(item.toMap());
     }

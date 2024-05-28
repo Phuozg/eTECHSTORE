@@ -1,8 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:etechstore/module/cart/controller/cart_controller.dart';
 import 'package:etechstore/module/cart/view/cart_screen.dart';
 import 'package:etechstore/module/chat_with_admin/view/chat_home_screen.dart';
 import 'package:etechstore/module/fake/views/auth_controller.dart';
+import 'package:etechstore/module/product_detail/controller/product_controller.dart';
+import 'package:etechstore/module/product_detail/controller/product_sample_controller.dart';
 import 'package:etechstore/module/product_detail/view/product_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -19,6 +22,18 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final db = FirebaseFirestore.instance;
+  final CartController cartController = Get.put(CartController());
+  final ProductController productController = Get.put(ProductController());
+  final ProductSampleController productSampleController = Get.put(ProductSampleController());
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    productController.fetchProductSamples();
+    cartController.fetchCartItems();
+    productController.fetchProducts();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,12 +45,20 @@ class _HomeScreenState extends State<HomeScreen> {
         title: searchBar(),
         actions: [
           ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const CartScreen(),
-                  ));
+            onPressed: () async {
+ 
+              await cartController.fetchCartItems().then((value) {
+                Future.delayed(
+                  const Duration(seconds: 2),
+                  () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const CartScreen(),
+                        ));
+                  },
+                );
+              });
             },
             style: ElevatedButton.styleFrom(shape: const CircleBorder(), backgroundColor: Colors.blue),
             child: const Icon(
@@ -44,15 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ChatHomePageScreen(),
-                    ));
-
-                AuthController.instance.logout();
-              },
+              onPressed: AuthController.instance.logout,
               style: ElevatedButton.styleFrom(shape: const CircleBorder(), backgroundColor: Colors.blue),
               child: const Icon(
                 Icons.message,
@@ -214,21 +229,23 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         return GestureDetector(
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => DetailScreen(
-                                    HinhAnh: List<dynamic>.from(documentSnapshot['DSHinhAnh']),
-                                    GiaTien: documentSnapshot['GiaTien'],
-                                    KhuyenMai: documentSnapshot['KhuyenMai'],
-                                    MaDanhMuc: documentSnapshot['MaDanhMuc'],
-                                    MoTa: documentSnapshot['MoTa'],
-                                    Ten: documentSnapshot['Ten'],
-                                    TrangThai: documentSnapshot['TrangThai'],
-                                    id: documentSnapshot['id'],
-                                    thumbnail: documentSnapshot['thumbnail'],
-                                  ),
-                                ));
+                            for (final sample in productSampleController.productSamples.where((p0) => documentSnapshot['id'] == p0.MaSanPham)) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DetailScreen(
+                                      HinhAnh: List<dynamic>.from(documentSnapshot['DSHinhAnh']),
+                                      GiaTien: documentSnapshot['GiaTien'],
+                                      KhuyenMai: documentSnapshot['KhuyenMai'],
+                                      MaDanhMuc: documentSnapshot['MaDanhMuc'],
+                                      MoTa: documentSnapshot['MoTa'],
+                                      Ten: documentSnapshot['Ten'],
+                                      TrangThai: documentSnapshot['TrangThai'],
+                                      id: sample.id,
+                                      thumbnail: documentSnapshot['thumbnail'],
+                                    ),
+                                  ));
+                            }
                           },
                           child: Card(
                             surfaceTintColor: Colors.white,
@@ -288,7 +305,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                               priceFormat(((documentSnapshot['GiaTien'] -
                                                       (documentSnapshot['GiaTien'] * documentSnapshot['KhuyenMai'] / 100)))
                                                   .round()),
-                                              style: const TextStyle(color: Colors.red))
+                                              style: const TextStyle(color: Colors.red)),
                                         ],
                                       );
                                     }

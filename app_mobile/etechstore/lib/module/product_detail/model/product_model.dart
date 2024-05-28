@@ -58,7 +58,7 @@ class ProductModel {
     final data = document.data();
     return ProductModel(
       thumbnail: document['thumbnail'],
-      hinhAnh: document['HinhAnh'],
+      hinhAnh: document['DSHinhAnh'],
       maDanhMuc: document['MaDanhMuc'],
       id: document['id'],
       //   mauSac: document['MauSac'],

@@ -11,43 +11,6 @@ class ProductController extends GetxController {
   final firestore = FirebaseFirestore.instance;
   ProductController get instance => Get.find();
 
-/*   final CartController cartController = Get.put(CartController());
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  var products = <ProductModel>[].obs;
-
-  @override
-  void onInit() {
-    super.onInit();
-    fetchProducts();
-  }
-
-  void fetchProducts() async {
-    var snapshot = await _firestore.collection('SanPham').get();
-    var productsList = snapshot.docs.map((doc) => ProductModel.fromJson(doc.data() ));
-    products.assignAll(productsList);
-  }
- var selectedMauSac = ''.obs;
-  var selectedDungLuong = ''.obs;
-  var soLuong = 1.obs;
-
-  void setMauSac(String mauSac) {
-    selectedMauSac.value = mauSac;
-  }
-
-  void setDungLuong(String dungLuong) {
-    selectedDungLuong.value = dungLuong;
-  }
-
-  void incrementSoLuong() {
-    soLuong.value++;
-  }
-
-  void decrementSoLuong() {
-    if (soLuong.value > 1) {
-      soLuong.value--;
-    }
-  } */
-
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   var productSamples = <ProductSampleModel>[].obs;
   var products = <ProductModel>[].obs;
