@@ -48,7 +48,7 @@ class ResetPasswordScreen extends StatelessWidget {
               const SizedBox(height: 15),
               const Text("Đã gửi email đặt lại mật khẩu", style: TColros.black_21_bold),
               const SizedBox(height: 15),
-              Text("chi tieádasdasdsssssssasfjdjbdfjgbdk", style: Theme.of(context).textTheme.labelMedium, textAlign: TextAlign.center),
+              Text("Hãy kiểm tra email và đặt lại mật khẩu ", style: Theme.of(context).textTheme.labelMedium, textAlign: TextAlign.center),
               const SizedBox(height: 15),
               SizedBox(
                 width: double.infinity,

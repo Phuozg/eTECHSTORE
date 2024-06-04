@@ -4,6 +4,7 @@ import 'package:etechstore/module/cart/controller/cart_controller.dart';
 import 'package:etechstore/module/cart/view/cart_screen.dart';
 import 'package:etechstore/module/chat_with_admin/view/chat_home_screen.dart';
 import 'package:etechstore/module/fake/views/auth_controller.dart';
+import 'package:etechstore/module/orders/controller/orders_controller.dart';
 import 'package:etechstore/module/product_detail/controller/product_controller.dart';
 import 'package:etechstore/module/product_detail/controller/product_sample_controller.dart';
 import 'package:etechstore/module/product_detail/view/product_detail_screen.dart';
@@ -21,9 +22,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+ 
+
   final db = FirebaseFirestore.instance;
   final CartController cartController = Get.put(CartController());
   final ProductController productController = Get.put(ProductController());
+  final OrdersController ordersController = Get.put(OrdersController());
   final ProductSampleController productSampleController = Get.put(ProductSampleController());
   @override
   void initState() {
@@ -32,6 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
     productController.fetchProductSamples();
     cartController.fetchCartItems();
     productController.fetchProducts();
+   
   }
 
   @override
@@ -46,19 +51,11 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           ElevatedButton(
             onPressed: () async {
- 
-              await cartController.fetchCartItems().then((value) {
-                Future.delayed(
-                  const Duration(seconds: 2),
-                  () {
-                    Navigator.push(
+               Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => const CartScreen(),
                         ));
-                  },
-                );
-              });
             },
             style: ElevatedButton.styleFrom(shape: const CircleBorder(), backgroundColor: Colors.blue),
             child: const Icon(

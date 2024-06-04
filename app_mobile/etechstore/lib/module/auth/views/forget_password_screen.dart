@@ -23,7 +23,7 @@ class ForgetPasswordScreen extends StatelessWidget {
         actions: [
           IconButton(
               onPressed: () {
-                Get.offAll(const SignInScreen());
+                Navigator.pop(context);
               },
               icon: const Icon(Icons.clear))
         ],

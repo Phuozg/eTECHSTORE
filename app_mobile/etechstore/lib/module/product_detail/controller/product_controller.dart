@@ -15,15 +15,13 @@ class ProductController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   var productSamples = <ProductSampleModel>[].obs;
   var products = <ProductModel>[].obs;
-   var currentIndex = 1.obs;
-
+  var currentIndex = 1.obs;
 
   @override
   void onInit() {
     super.onInit();
     fetchProductSamples();
   }
-
 
   void setCurrentIndex(int index) {
     currentIndex.value = index;

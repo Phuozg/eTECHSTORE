@@ -5,8 +5,9 @@ import 'package:etechstore/module/chat_with_admin/view/chat_home_screen.dart';
 import 'package:etechstore/module/fake/views/auth_controller.dart';
 import 'package:etechstore/module/home/views/category.dart';
 import 'package:etechstore/module/home/views/product.dart';
-import 'package:etechstore/module/home/views/search_bar.dart';
+ import 'package:etechstore/module/home/views/search_bar.dart';
 import 'package:etechstore/module/home/views/slider_show.dart';
+import 'package:etechstore/module/orders/controller/orders_controller.dart';
 import 'package:etechstore/module/product_detail/controller/product_controller.dart';
 import 'package:etechstore/module/product_detail/controller/product_sample_controller.dart';
 import 'package:flutter/material.dart';
@@ -25,11 +26,13 @@ class _HomeScreenState extends State<HomeScreen> {
   final ProductController productController = Get.put(ProductController());
   final ProductSampleController productSampleController = Get.put(ProductSampleController());
   final db = FirebaseFirestore.instance;
+  final OrdersController ordersController = Get.put(OrdersController());
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    ordersController.fetchIsPaid();
     productController.fetchProductSamples();
     cartController.fetchCartItems();
     productController.fetchProducts();
@@ -47,18 +50,11 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           ElevatedButton(
             onPressed: () async {
-              await cartController.fetchCartItems().then((value) {
-                Future.delayed(
-                  const Duration(milliseconds: 1),
-                  () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const CartScreen(),
-                        ));
-                  },
-                );
-              });
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const CartScreen(),
+                  ));
             },
             style: ElevatedButton.styleFrom(
               shape: const CircleBorder(),

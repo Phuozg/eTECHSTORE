@@ -10,12 +10,36 @@ class ProductSampleController extends GetxController {
   var productSamples = <ProductSampleModel>[].obs;
   var products = <ProductModel>[].obs;
 
+   var selectedColor = ''.obs;
+  var selectedConfig = ''.obs;
+  var quantity = 1.obs;
+
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   void onInit() {
     super.onInit();
     fetchProductSamples();
+  }
+
+ 
+
+  void setSelectedColor(String color) {
+    selectedColor.value = color;
+  }
+
+  void setSelectedConfig(String config) {
+    selectedConfig.value = config;
+  }
+
+  void incrementQuantity() {
+    quantity.value++;
+  }
+
+  void decrementQuantity() {
+    if (quantity.value > 1) {
+      quantity.value--;
+    }
   }
 
   void fetchProductSamples() async {
