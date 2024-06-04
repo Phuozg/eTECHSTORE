@@ -102,141 +102,141 @@ class ProductView extends StatelessWidget {
                           ),
                           ElevatedButton(
                               onPressed: () {
-                                   showModalBottomSheet(
-                  context: context,
-                  builder: (BuildContext context) {
-                    String selectedColor = sample.mauSac.first;
-                    String selectedConfig = sample. cauHinh.first;
-                    int quantity = 1;
+                                showModalBottomSheet(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    String selectedColor = sample.mauSac.first;
+                                    String selectedConfig = sample.cauHinh.first;
+                                    int quantity = 1;
 
-                    return StatefulBuilder(
-                      builder: (BuildContext context, StateSetter setState) {
-                        return Container(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Text('Chọn màu sắc'),
-                              SizedBox(
-                                height: 100,
-                                child: GridView.builder(
-                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 3,
-                                    mainAxisSpacing: 10,
-                                    crossAxisSpacing: 10,
-                                  ),
-                                  itemCount: sample. mauSac.length,
-                                  itemBuilder: (context, index) {
-                                    String color = sample.mauSac[index];
-                                    return GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          selectedColor = color;
-                                        });
+                                    return StatefulBuilder(
+                                      builder: (BuildContext context, StateSetter setState) {
+                                        return Container(
+                                          padding: const EdgeInsets.all(16.0),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              const Text('Chọn màu sắc'),
+                                              SizedBox(
+                                                height: 100,
+                                                child: GridView.builder(
+                                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                                    crossAxisCount: 3,
+                                                    mainAxisSpacing: 10,
+                                                    crossAxisSpacing: 10,
+                                                  ),
+                                                  itemCount: sample.mauSac.length,
+                                                  itemBuilder: (context, index) {
+                                                    String color = sample.mauSac[index];
+                                                    return GestureDetector(
+                                                      onTap: () {
+                                                        setState(() {
+                                                          selectedColor = color;
+                                                        });
+                                                      },
+                                                      child: Container(
+                                                        decoration: BoxDecoration(
+                                                          color: selectedColor == color ? Colors.blue : Colors.grey,
+                                                          borderRadius: BorderRadius.circular(8),
+                                                        ),
+                                                        child: Center(
+                                                          child: Text(color, style: const TextStyle(color: Colors.white)),
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                              const SizedBox(height: 16.0),
+                                              const Text('Chọn cấu hình'),
+                                              SizedBox(
+                                                height: 100,
+                                                child: GridView.builder(
+                                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                                    crossAxisCount: 3,
+                                                    mainAxisSpacing: 10,
+                                                    crossAxisSpacing: 10,
+                                                  ),
+                                                  itemCount: sample.cauHinh.length,
+                                                  itemBuilder: (context, index) {
+                                                    String config = sample.cauHinh[index];
+                                                    return GestureDetector(
+                                                      onTap: () {
+                                                        setState(() {
+                                                          selectedConfig = config;
+                                                        });
+                                                      },
+                                                      child: Container(
+                                                        decoration: BoxDecoration(
+                                                          color: selectedConfig == config ? Colors.blue : Colors.grey,
+                                                          borderRadius: BorderRadius.circular(8),
+                                                        ),
+                                                        child: Center(
+                                                          child: Text(config, style: const TextStyle(color: Colors.white)),
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                              ),
+                                              const SizedBox(height: 16.0),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  const Text('Số lượng'),
+                                                  Row(
+                                                    children: [
+                                                      IconButton(
+                                                        icon: const Icon(Icons.remove),
+                                                        onPressed: () {
+                                                          if (quantity > 1) {
+                                                            setState(() {
+                                                              quantity--;
+                                                            });
+                                                          }
+                                                        },
+                                                      ),
+                                                      Text('$quantity'),
+                                                      IconButton(
+                                                        icon: const Icon(Icons.add),
+                                                        onPressed: () {
+                                                          setState(() {
+                                                            quantity++;
+                                                          });
+                                                        },
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 16.0),
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  final FirebaseAuth auth = FirebaseAuth.instance;
+
+                                                  User? user = auth.currentUser;
+                                                  var cartItem = CartModel(
+                                                    id: sample.id,
+                                                    maKhachHang: user!.uid, // Thay bằng mã khách hàng thực tế
+                                                    soLuong: quantity,
+                                                    trangThai: 1, // Trạng thái mặc định, có thể thay đổi tuỳ vào logic của bạn
+                                                    maSanPham: {
+                                                      'maSanPham': sample.MaSanPham,
+                                                      'mauSac': selectedColor,
+                                                      'cauHinh': selectedConfig,
+                                                    },
+                                                  );
+                                                  cartController.addItemToCart(cartItem);
+                                                },
+                                                child: const Text('Thêm vào giỏ hàng'),
+                                              ),
+                                            ],
+                                          ),
+                                        );
                                       },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: selectedColor == color ? Colors.blue : Colors.grey,
-                                          borderRadius: BorderRadius.circular(8),
-                                        ),
-                                        child: Center(
-                                          child: Text(color, style: const TextStyle(color: Colors.white)),
-                                        ),
-                                      ),
                                     );
                                   },
-                                ),
-                              ),
-                              const SizedBox(height: 16.0),
-                              const Text('Chọn cấu hình'),
-                              SizedBox(
-                                height: 100,
-                                child: GridView.builder(
-                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 3,
-                                    mainAxisSpacing: 10,
-                                    crossAxisSpacing: 10,
-                                  ),
-                                  itemCount: sample.cauHinh.length,
-                                  itemBuilder: (context, index) {
-                                    String config = sample.cauHinh[index];
-                                    return GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          selectedConfig = config;
-                                        });
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: selectedConfig == config ? Colors.blue : Colors.grey,
-                                          borderRadius: BorderRadius.circular(8),
-                                        ),
-                                        child: Center(
-                                          child: Text(config, style: const TextStyle(color: Colors.white)),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                              const SizedBox(height: 16.0),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text('Số lượng'),
-                                  Row(
-                                    children: [
-                                      IconButton(
-                                        icon: const Icon(Icons.remove),
-                                        onPressed: () {
-                                          if (quantity > 1) {
-                                            setState(() {
-                                              quantity--;
-                                            });
-                                          }
-                                        },
-                                      ),
-                                      Text('$quantity'),
-                                      IconButton(
-                                        icon: const Icon(Icons.add),
-                                        onPressed: () {
-                                          setState(() {
-                                            quantity++;
-                                          });
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 16.0),
-                              ElevatedButton(
-                                onPressed: () {
-                                final FirebaseAuth auth = FirebaseAuth.instance;
-
-                              User? user = auth.currentUser;
-                              var cartItem = CartModel(
-                                id: sample.id,
-                                maKhachHang: user!.uid, // Thay bằng mã khách hàng thực tế
-                                soLuong: quantity,
-                                trangThai: 1, // Trạng thái mặc định, có thể thay đổi tuỳ vào logic của bạn
-                                maSanPham: {
-                                  'maSanPham': sample.MaSanPham,
-                                  'mauSac': selectedColor,
-                                  'cauHinh': selectedConfig,
-                                },
-                              );
-                              cartController.addItemToCart(cartItem);
-                                },
-                                child: const Text('Thêm vào giỏ hàng'),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    );
-                  },
-                );
+                                );
                               },
                               child: const Text("Đăng xuất")),
                           ElevatedButton(

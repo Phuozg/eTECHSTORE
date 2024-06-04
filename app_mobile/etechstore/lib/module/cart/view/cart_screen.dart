@@ -85,7 +85,7 @@ class CartScreen extends StatelessWidget {
                             backgroundColor: const Color(0xFFFE4A49),
                             foregroundColor: Colors.white,
                             icon: Icons.delete,
-                            label: 'Delete',
+                            label: 'Xóa',
                           ),
                         ]),
                         child: SingleChildScrollView(
@@ -464,7 +464,7 @@ class CartScreen extends StatelessWidget {
                                                                                   Navigator.pop(context);
                                                                                 },
                                                                                 child: Container(
-                                                                                  margin: EdgeInsets.only(left: 25.w, bottom: 20.h),
+                                                                                  margin: EdgeInsets.only(left: 10.w, bottom: 20.h),
                                                                                   alignment: Alignment.center,
                                                                                   width: 287.w,
                                                                                   height: 40.h,
@@ -612,6 +612,7 @@ class CartScreen extends StatelessWidget {
                                                         child: Container(
                                                             height: 15.h, alignment: Alignment.topCenter, child: Icon(Icons.add, size: 17.sp)),
                                                         onTap: () {
+                                                          controller.toggleItemSelection(item.id);
                                                           quantity++;
                                                           item.soLuong = quantity;
                                                           controller.updateCartItem(item);

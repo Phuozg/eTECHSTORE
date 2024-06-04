@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:etechstore/module/cart/model/cart_model.dart';
 import 'package:etechstore/module/product_detail/model/product_model.dart';
+import 'package:etechstore/utlis/constants/image_key.dart';
+import 'package:etechstore/utlis/helpers/popups/full_screen_loader.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -10,10 +12,10 @@ import 'package:uuid/uuid.dart';
 import '../../product_detail/controller/product_controller.dart';
 
 class CartController extends GetxController {
-  static CartController get instance => Get.find();
+  CartController get instance => Get.find();
   GlobalKey<FormState> DetailProductFormKey = GlobalKey<FormState>();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance; // Firebase Auth instance
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   var cartItems = <CartModel>[].obs;
   var products = <String, ProductModel>{}.obs;
@@ -39,12 +41,10 @@ class CartController extends GetxController {
         var items = snapshot.docs.map((doc) => CartModel.fromMap(doc.data())).toList();
         cartItems.value = items;
 
-        // Initialize selectedItems map
         for (var item in cartItems) {
           selectedItems[item.id] = false;
         }
 
-        // Fetch product details for each cart item
         for (var item in items) {
           var productDoc = await _firestore.collection('SanPham').doc(item.maSanPham['maSanPham']).get();
           if (productDoc.exists) {
@@ -52,22 +52,30 @@ class CartController extends GetxController {
           }
         }
 
-        // Calculate total price
         calculateTotalPrice();
       });
     }
   }
 
-  Stream<int> calculateProductPrice(CartModel item) async* {
-    var productDocStream = _firestore.collection('SanPham').doc(item.maSanPham['maSanPham']).snapshots();
-    await for (var productDoc in productDocStream) {
+  Stream<int> calculateProductPrice(CartModel item) {
+    return _firestore.collection('SanPham').doc(item.maSanPham['maSanPham']).snapshots().asyncMap((productDoc) {
       if (productDoc.exists) {
         int giaTien = productDoc.get('GiaTien');
         int khuyenMai = productDoc.get('KhuyenMai');
-        yield ((giaTien * (1 - khuyenMai / 100)) * item.soLuong).toInt();
+        return ((giaTien * (1 - khuyenMai / 100)) * item.soLuong).toInt();
       } else {
-        yield 0;
+        return 0;
       }
+    });
+  }
+
+  Future<void> calculateTotalPrice() async {
+    double total = 0.0;
+    for (var item in cartItems) {
+      getProductPriceStream(item).listen((itemPrice) {
+        total += itemPrice;
+        totalPrice.value = total;
+      });
     }
   }
 
@@ -78,16 +86,6 @@ class CartController extends GetxController {
       } else {
         yield 0;
       }
-    }
-  }
-
-  void calculateTotalPrice() {
-    double total = 0.0;
-    for (var item in cartItems) {
-      getProductPriceStream(item).listen((itemPrice) {
-        total += itemPrice;
-        totalPrice.value = total;
-      });
     }
   }
 
@@ -109,10 +107,15 @@ class CartController extends GetxController {
 
     if (index != -1) {
       CartModel existingItem = cartItems[index];
-      existingItem.soLuong = newItem.soLuong;
-      existingItem.maSanPham['mauSac'] = newItem.maSanPham['mauSac'];
-      existingItem.maSanPham['cauHinh'] = newItem.maSanPham['cauHinh'];
-      updateCartItem(existingItem);
+
+      if (existingItem.maSanPham['cauHinh'] != newItem.maSanPham['cauHinh'] || existingItem.maSanPham['mauSac'] != newItem.maSanPham['mauSac']) {
+        cartItems.add(newItem);
+        selectedItems[newItem.id] = false;
+        await saveCartItemToFirestore(newItem);
+      } else {
+        existingItem.soLuong = newItem.soLuong;
+        updateCartItem(existingItem);
+      }
     } else {
       cartItems.add(newItem);
       selectedItems[newItem.id] = false;
@@ -149,6 +152,8 @@ class CartController extends GetxController {
   }
 
   Future<void> removeCartItemFromFirestore(String itemId, String uid) async {
+    FullScreenLoader.openWaitforchange('', ImageKey.waitforchangeAnimation);
+
     var doc = await _firestore.collection('GioHang').where('id', isEqualTo: itemId).where('maKhachHang', isEqualTo: uid).get();
     if (doc.docs.isNotEmpty) {
       await _firestore.collection('GioHang').doc(doc.docs.first.id).delete();

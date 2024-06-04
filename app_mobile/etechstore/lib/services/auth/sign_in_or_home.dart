@@ -1,4 +1,4 @@
-import 'package:etechstore/module/auth/views/sign_in_screen.dart';
+/* import 'package:etechstore/module/auth/views/sign_in_screen.dart';
 import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -28,3 +28,4 @@ class _LoginOrRegisterState extends State<LoginOrRegister> {
     }
   }
 }
+ */

@@ -1,9 +1,10 @@
 import 'package:etechstore/module/cart/model/cart_model.dart';
 import 'package:etechstore/module/home/home_screen.dart';
- import 'package:etechstore/utlis/constants/colors.dart';
+import 'package:etechstore/utlis/constants/colors.dart';
 import 'package:etechstore/utlis/constants/image_key.dart';
 import 'package:etechstore/utlis/constants/text_strings.dart';
 import 'package:etechstore/utlis/helpers/popups/animation_loader.dart';
+import 'package:etechstore/utlis/helpers/popups/animation_wait.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -30,12 +31,34 @@ class FullScreenLoader {
     );
   }
 
+  static void openWaitforchange(String text, String animation) {
+    showDialog(
+      barrierDismissible: false,
+      context: Get.overlayContext!,
+      builder: (_) => PopScope(
+        canPop: false,
+        child: SizedBox(
+          width: double.infinity,
+          height: double.infinity,
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 250,
+              ),
+              AnimationWaitWidget(text: text, animation: animation)
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   static stopLoading() {
     Navigator.of(Get.overlayContext!).pop();
   }
 
   static void show(BuildContext ctx, String hinhAnh, int soLuong, String mauSac, int giaTien, String ten, String giamGia) {
-     showModalBottomSheet(
+    showModalBottomSheet(
       isDismissible: true,
       enableDrag: true,
       elevation: 10,
@@ -136,7 +159,7 @@ class FullScreenLoader {
                         child: Container(child: const Text("-", style: TColros.black_20_w600)),
                         onTap: () {
                           print("4444444444444444444444444444444");
-                       
+
                           // controller.addToCart();
                         },
                       ),
@@ -145,9 +168,7 @@ class FullScreenLoader {
                       ),
                       GestureDetector(
                         child: Container(child: const Text("+", style: TColros.black_14_w600)),
-                        onTap: () {
-                          
-                        },
+                        onTap: () {},
                       ),
                     ],
                   ),

@@ -1,5 +1,6 @@
 import 'package:etechstore/module/favorite_product_screen/view/favorite_product_screen.dart';
 import 'package:etechstore/module/home/views/home_screen.dart';
+import 'package:etechstore/module/orders/views/orders_manage_screen.dart';
 import 'package:etechstore/module/profile/views/profile_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,12 @@ class NavMenu extends StatelessWidget {
     controller = PersistentTabController(initialIndex: 0);
 
     List<Widget> buildScreens() {
-      return [const HomeScreen(), const FavoriteProductScreen(), ProfileScreen()];
+      return [
+        const HomeScreen(),
+        const OrderManageScreen(),
+        const FavoriteProductScreen(),
+        ProfileScreen(),
+      ];
     }
 
     List<PersistentBottomNavBarItem> navBarsItems() {
@@ -23,6 +29,12 @@ class NavMenu extends StatelessWidget {
         PersistentBottomNavBarItem(
           icon: const Icon(Icons.home),
           title: ("Trang chủ"),
+          activeColorPrimary: CupertinoColors.activeBlue,
+          inactiveColorPrimary: CupertinoColors.systemGrey,
+        ),
+        PersistentBottomNavBarItem(
+          icon: const Icon(Icons.local_shipping_outlined),
+          title: ("Đơn hàng"),
           activeColorPrimary: CupertinoColors.activeBlue,
           inactiveColorPrimary: CupertinoColors.systemGrey,
         ),

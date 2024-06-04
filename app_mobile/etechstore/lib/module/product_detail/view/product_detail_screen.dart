@@ -99,13 +99,13 @@ class DetailScreen extends GetView {
                             ),
                           )),
                       Positioned(
-                        bottom: 70,
-                        right: 10,
+                        bottom: 70.h,
+                        right: 10.r,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
+                          padding: EdgeInsets.symmetric(vertical: 2.w, horizontal: 8.h),
                           decoration: BoxDecoration(
                             color: Colors.black.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(10.r),
                           ),
                           child: Text(
                             '${productController.currentIndex.value + 1} / ${HinhAnh.length}',
@@ -251,7 +251,7 @@ class DetailScreen extends GetView {
                 ),
                 Container(
                   margin: EdgeInsets.only(left: 21.w),
-                  padding: const EdgeInsets.only(top: 8, bottom: 8),
+                  padding: EdgeInsets.only(top: 8.h, bottom: 8.h),
                   child: Text(TTexts.chiTietSanPham, style: TColros.black_13_w500),
                 ),
                 Container(
@@ -261,7 +261,7 @@ class DetailScreen extends GetView {
                 ),
                 Container(
                   margin: EdgeInsets.only(left: 21.w),
-                  padding: const EdgeInsets.only(top: 8, bottom: 8, right: 20),
+                  padding: EdgeInsets.only(top: 8.h, bottom: 8.h, right: 20.w),
                   child: ExpandableText(
                     style: TextStyle(fontSize: 14.sp, color: const Color(0xFF848484)),
                     "$MoTa",
@@ -325,9 +325,9 @@ class DetailScreen extends GetView {
           color: Colors.transparent,
           elevation: 0,
           child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceAround, children: <Widget>[
-            for (final sample in productSampleController.productSamples.where((p0) => id == p0.MaSanPham))
-              GestureDetector(
-                onTap: () {
+            GestureDetector(
+              onTap: () {
+                for (final sample in productSampleController.productSamples.where((p0) => id == p0.MaSanPham)) {
                   showModalBottomSheet(
                       isDismissible: true,
                       enableDrag: true,
@@ -341,9 +341,9 @@ class DetailScreen extends GetView {
                         return StatefulBuilder(
                           builder: (context, setState) {
                             return Container(
-                              padding: const EdgeInsets.only(top: 20, left: 30),
+                              padding: EdgeInsets.only(top: 20.h, left: 30.w),
                               width: double.infinity,
-                              height: 375,
+                              height: 375.h,
                               color: Colors.white,
                               alignment: Alignment.center,
                               child: SingleChildScrollView(
@@ -354,13 +354,13 @@ class DetailScreen extends GetView {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         SizedBox(
-                                            width: 90,
-                                            height: 80,
+                                            width: 90.w,
+                                            height: 80.h,
                                             child: Image.network(
                                               thumbnail,
                                               fit: BoxFit.fill,
                                             )),
-                                        const SizedBox(width: 13),
+                                        SizedBox(width: 13.w),
                                         Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
@@ -368,17 +368,17 @@ class DetailScreen extends GetView {
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
                                                 Container(
-                                                  padding: const EdgeInsets.only(top: 5),
-                                                  child: const SizedBox(
-                                                    width: 15,
-                                                    height: 12,
-                                                    child: (Image(
+                                                  padding: EdgeInsets.only(top: 5.h),
+                                                  child: SizedBox(
+                                                    width: 15.w,
+                                                    height: 12.h,
+                                                    child: (const Image(
                                                       image: AssetImage(ImageKey.iconVoucher),
                                                       fit: BoxFit.fill,
                                                     )),
                                                   ),
                                                 ),
-                                                const SizedBox(width: 5),
+                                                SizedBox(width: 5.w),
                                                 Column(
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
@@ -403,23 +403,23 @@ class DetailScreen extends GetView {
                                         ),
                                       ],
                                     ),
-                                    const Padding(
-                                      padding: EdgeInsets.only(top: 25, bottom: 9),
-                                      child: Text("Màu sắc", style: TColros.black_13_w500),
+                                    Padding(
+                                      padding: EdgeInsets.only(top: 25.h, bottom: 9.h),
+                                      child: const Text("Màu sắc", style: TColros.black_13_w500),
                                     ),
                                     Column(
                                       children: [
                                         Container(
                                           color: Colors.white,
                                           width: double.infinity,
-                                          height: 70,
+                                          height: 70.h,
                                           child: GridView.builder(
                                             shrinkWrap: true,
                                             physics: const NeverScrollableScrollPhysics(),
-                                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                               crossAxisCount: 3,
-                                              mainAxisExtent: 25,
-                                              mainAxisSpacing: 15,
+                                              mainAxisExtent: 25.h,
+                                              mainAxisSpacing: 15.w,
                                               crossAxisSpacing: CupertinoCheckbox.width,
                                             ),
                                             itemCount: sample.mauSac.length,
@@ -434,7 +434,7 @@ class DetailScreen extends GetView {
                                                 },
                                                 child: Container(
                                                   alignment: Alignment.center,
-                                                  margin: const EdgeInsets.only(right: 15),
+                                                  margin: EdgeInsets.only(right: 15.w),
                                                   decoration: BoxDecoration(
                                                     border: Border.all(
                                                       width: 1,
@@ -450,23 +450,23 @@ class DetailScreen extends GetView {
                                         ),
                                       ],
                                     ),
-                                    const Padding(
-                                      padding: EdgeInsets.only(top: 25, bottom: 9),
-                                      child: Text("Loại", style: TColros.black_14_w500),
+                                    Padding(
+                                      padding: EdgeInsets.only(top: 25.h, bottom: 9.h),
+                                      child: const Text("Loại", style: TColros.black_14_w500),
                                     ),
                                     Column(
                                       children: [
                                         Container(
                                           color: Colors.white,
                                           width: double.infinity,
-                                          height: 70,
+                                          height: 70.h,
                                           child: GridView.builder(
                                             shrinkWrap: true,
                                             physics: const NeverScrollableScrollPhysics(),
-                                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                               crossAxisCount: 3,
-                                              mainAxisExtent: 25,
-                                              mainAxisSpacing: 15,
+                                              mainAxisExtent: 25.h,
+                                              mainAxisSpacing: 15.w,
                                               crossAxisSpacing: CupertinoCheckbox.width,
                                             ),
                                             itemCount: sample.cauHinh.length,
@@ -480,7 +480,7 @@ class DetailScreen extends GetView {
                                                 },
                                                 child: Container(
                                                   alignment: Alignment.center,
-                                                  margin: const EdgeInsets.only(right: 15),
+                                                  margin: EdgeInsets.only(right: 15.w),
                                                   decoration: BoxDecoration(
                                                     border: Border.all(
                                                       width: 1,
@@ -502,11 +502,13 @@ class DetailScreen extends GetView {
                                       children: [
                                         const Text("Số lượng", style: TColros.black_14_w500),
                                         Container(
-                                          margin: const EdgeInsets.only(right: 20),
-                                          width: 85,
-                                          height: 23,
+                                          margin: EdgeInsets.only(right: 20.w),
+                                          width: 85.w,
+                                          height: 23.h,
                                           decoration: BoxDecoration(
-                                              border: Border.all(width: .5), borderRadius: BorderRadius.circular(30), color: const Color(0xFFF3F3F4)),
+                                              border: Border.all(width: .5),
+                                              borderRadius: BorderRadius.circular(30.r),
+                                              color: const Color(0xFFF3F3F4)),
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                                             children: [
@@ -519,22 +521,22 @@ class DetailScreen extends GetView {
                                                     }
                                                   },
                                                   child: Container(
-                                                    width: 8,
-                                                    height: 2,
+                                                    width: 8.w,
+                                                    height: 2.h,
                                                     color: Colors.black,
                                                     alignment: Alignment.center,
-                                                    margin: const EdgeInsets.only(left: 5),
+                                                    margin: EdgeInsets.only(left: 5.w),
                                                   )),
                                               Container(
                                                 height: double.infinity,
                                                 color: Colors.black,
-                                                width: .5,
+                                                width: .5.w,
                                               ),
                                               Container(
-                                                padding: const EdgeInsets.only(bottom: 1),
+                                                padding: EdgeInsets.only(bottom: 1.h),
                                                 child: Text(
                                                   quantity.toString(),
-                                                  style: const TextStyle(fontSize: 17),
+                                                  style: TextStyle(fontSize: 17.sp),
                                                   textAlign: TextAlign.center,
                                                 ),
                                               ),
@@ -550,14 +552,14 @@ class DetailScreen extends GetView {
                                                   });
                                                 },
                                                 child: Container(
-                                                    margin: const EdgeInsets.only(right: 5), child: const Text("+", style: TColros.black_14_w600)),
+                                                    margin: EdgeInsets.only(right: 5.w), child: const Text("+", style: TColros.black_14_w600)),
                                               ),
                                             ],
                                           ),
                                         ),
                                       ],
                                     ),
-                                    const SizedBox(height: 35),
+                                    SizedBox(height: 35.h),
                                     GestureDetector(
                                       onTap: () {
                                         final FirebaseAuth auth = FirebaseAuth.instance;
@@ -579,14 +581,14 @@ class DetailScreen extends GetView {
                                         Navigator.pop(context);
                                       },
                                       child: Container(
-                                        margin: const EdgeInsets.only(left: 5, bottom: 20),
+                                        margin: EdgeInsets.only(left: 8.w, bottom: 20.h),
                                         alignment: Alignment.center,
-                                        width: 287,
-                                        height: 40,
+                                        width: 287.w,
+                                        height: 40.h,
                                         decoration: BoxDecoration(
                                           color: TColros.purple_line,
                                           border: Border.all(width: .5),
-                                          borderRadius: BorderRadius.circular(30),
+                                          borderRadius: BorderRadius.circular(30.r),
                                         ),
                                         child: Column(
                                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -606,24 +608,25 @@ class DetailScreen extends GetView {
                           },
                         );
                       });
-                },
-                child: Container(
-                  alignment: Alignment.center,
-                  width: 150.w,
-                  height: 70.h,
-                  decoration: BoxDecoration(
-                    border: Border.all(width: .5.w, color: TColros.purple_line),
-                    borderRadius: BorderRadius.circular(30.r),
-                  ),
-                  child: Text(
-                    TTexts.themVaoGioHang,
-                    style: const TextStyle(color: TColros.purple_line),
-                  ),
+                }
+              },
+              child: Container(
+                alignment: Alignment.center,
+                width: 150.w,
+                height: 70.h,
+                decoration: BoxDecoration(
+                  border: Border.all(width: .5.w, color: TColros.purple_line),
+                  borderRadius: BorderRadius.circular(30.r),
+                ),
+                child: Text(
+                  TTexts.themVaoGioHang,
+                  style: const TextStyle(color: TColros.purple_line),
                 ),
               ),
+            ),
             GestureDetector(
               onTap: () {
-                AuthController.instance.logout();
+                print("Mua Hang");
               },
               child: Container(
                 alignment: Alignment.bottomCenter,

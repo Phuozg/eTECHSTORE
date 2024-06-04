@@ -2,12 +2,15 @@ class ImageKey {
   //Image
   static const String logoEtechStore = 'assets/images/logo.png';
   static const String loading = 'assets/images/loading.png';
-
-  //Icons
-  static const String iconGoogle = 'assets/icons/icon_google.png';
+  static const String headphone = 'assets/images/head_phone.png';
+    static const String cartEmpty = 'assets/images/cart_empty.png';
+ //Animation
   static const String successAnimation = 'assets/icons/success_animation.json';
   static const String loadingAnimation = 'assets/icons/loading_animation.json';
   static const String smsPhoneAnimation = 'assets/icons/sms_phone_animation.json';
+  static const String waitforchangeAnimation = 'assets/icons/wait_for_change.json';
+ //Icons
+  static const String iconGoogle = 'assets/icons/icon_google.png';
   static const String iconMessage = 'assets/icons/icon_message.png';
   static const String iconCart = 'assets/icons/icon_cart.png';
   static const String iconAddCart = 'assets/icons/icon_add_cart.png';

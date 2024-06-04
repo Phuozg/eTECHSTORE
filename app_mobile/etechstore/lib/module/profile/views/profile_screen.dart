@@ -1,6 +1,10 @@
+import 'package:etechstore/module/favorite_product_screen/view/favorite_product_screen.dart';
+import 'package:etechstore/module/orders/views/orders_manage_screen.dart';
 import 'package:etechstore/module/profile/controller/profile_controller.dart';
 import 'package:etechstore/module/profile/model/profile_model.dart';
 import 'package:etechstore/module/profile/views/edit_views/profile_edit_screen.dart';
+import 'package:etechstore/module/profile/views/setting_views/setting_screen.dart';
+import 'package:etechstore/module/profile/views/suport_views/suport_screen.dart';
 import 'package:etechstore/module/profile/views/widget/list_help_profile.dart';
 import 'package:etechstore/services/auth/auth_services.dart';
 import 'package:etechstore/utlis/constants/colors.dart';
@@ -70,11 +74,11 @@ class ProfileScreen extends StatelessWidget {
                             children: [
                               SizedBox(height: 19.h),
                               SizedBox(
-                                width: 179.w,
+                                width: 176.w,
                                 child: Text(
                                   profile.HoTen,
                                   style: TColros.black_19_w600,
-                                  overflow: TextOverflow.clip,
+                                  overflow: TextOverflow.ellipsis,
                                   softWrap: true,
                                 ),
                               ),
@@ -97,10 +101,26 @@ class ProfileScreen extends StatelessWidget {
                         text: "Sửa hồ sơ",
                       ),
                     ),
-                    ListHelpProfile(icon: const Image(image: AssetImage(ImageKey.iconHeart)), text: "Yêu thích"),
-                    ListHelpProfile(icon: const Image(image: AssetImage(ImageKey.iconBoxCart)), text: "Đơn hàng"),
-                    ListHelpProfile(icon: const Image(image: AssetImage(ImageKey.iconSetting)), text: "Cài đặt"),
-                    ListHelpProfile(icon: const Image(image: AssetImage(ImageKey.iconHelp)), text: "Hỗ trợ"),
+                    GestureDetector(
+                        onTap: () {
+                          Get.to(const FavoriteProductScreen());
+                        },
+                        child: ListHelpProfile(icon: const Image(image: AssetImage(ImageKey.iconHeart)), text: "Yêu thích")),
+                    GestureDetector(
+                        onTap: () {
+                          Get.to(const OrderManageScreen());
+                        },
+                        child: ListHelpProfile(icon: const Image(image: AssetImage(ImageKey.iconBoxCart)), text: "Đơn hàng")),
+                    GestureDetector(
+                        onTap: () {
+                          Get.to(const SettingScreen());
+                        },
+                        child: ListHelpProfile(icon: const Image(image: AssetImage(ImageKey.iconSetting)), text: "Cài đặt")),
+                    GestureDetector(
+                        onTap: () {
+                          Get.to(const SuportScreen());
+                        },
+                        child: ListHelpProfile(icon: const Image(image: AssetImage(ImageKey.iconHelp)), text: "Hỗ trợ")),
                     GestureDetector(
                         onTap: () {
                           authServices.signOut();

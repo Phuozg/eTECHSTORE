@@ -31,6 +31,7 @@ class SignInController extends GetxController {
 
   //SignIn
   void signIn() async {
+    FullScreenLoader.openLoadingDialog('', ImageKey.loadingAnimation);
     try {
       await authServices.signInWithEmailPassword(email.text.trim(), password.text.trim());
     } catch (e) {
@@ -71,13 +72,11 @@ class SignInController extends GetxController {
       //check Internet connected
       final isconnected = await network.isConneted();
       if (!isconnected) {
-        FullScreenLoader.stopLoading();
         return;
       }
 
       //validation
       if (!signInFormKey.currentState!.validate()) {
-        FullScreenLoader.stopLoading();
         return;
       }
 
@@ -88,7 +87,6 @@ class SignInController extends GetxController {
         '${Get.off(VerifyPhoneNumberScreen(phoneNumber: phoneNumber.text.trim(), verifyId: verify.toString()))}',
       );
     } catch (e) {
-      FullScreenLoader.stopLoading();
       if (phoneNumber.text.isEmpty) {
         TLoaders.errorSnackBar(title: TTexts.thongBao, message: Text(TTexts.chuaNhapSoDienThoai));
       } else {
@@ -106,22 +104,19 @@ class SignInController extends GetxController {
       //Check Internet Connected
       final isconnected = await network.isConneted();
       if (isconnected) {
-        FullScreenLoader.stopLoading();
         return;
       }
 
       //Form Validation
       if (!signInFormKey.currentState!.validate()) {
-        FullScreenLoader.stopLoading();
         return;
       }
 
       //Send Email to reset password
-      await authServices.verifyPhoneNumber(verify.value, code.value)!.then((value) => Get.off( HomeScreen()));
+      await authServices.verifyPhoneNumber(verify.value, code.value)!.then((value) => Get.off(const HomeScreen()));
 
       //Redirect
     } catch (e) {
-      FullScreenLoader.stopLoading();
       if (verify.value.isEmpty || code.value.isEmpty) {
         TLoaders.errorSnackBar(title: TTexts.thongBao, message: Text(TTexts.maOTPThieu));
       } else {

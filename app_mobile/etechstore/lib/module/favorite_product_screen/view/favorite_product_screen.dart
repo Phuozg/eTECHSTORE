@@ -10,6 +10,14 @@ class FavoriteProductScreen extends StatefulWidget {
 class _FavoriteProductScreenState extends State<FavoriteProductScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Sản phẩm yêu thích"),
+        centerTitle: true,
+      ),
+      body: const Center(
+        child: Text('Welcome to eTECHSTORE'),
+      ),
+    );
   }
 }
