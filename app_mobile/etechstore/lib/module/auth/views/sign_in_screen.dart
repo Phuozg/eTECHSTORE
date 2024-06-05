@@ -85,7 +85,6 @@ class SignInScreen extends GetView<SignInController> {
                         SizedBox(height: 5.h),
                         Obx(
                           () => TextFormField(
-                            //    validator: (value) => TValidator.validateEmptyText('fieldName', value),
                             controller: controller.password,
                             obscureText: controller.hidePassword.value,
                             decoration: InputDecoration(
@@ -159,6 +158,7 @@ class SignInScreen extends GetView<SignInController> {
                       child: GestureDetector(
                     onTap: () {
                       controller.signIn();
+                      controller.upDatePassword();
                     },
                     child: Container(
                       width: 330.w,

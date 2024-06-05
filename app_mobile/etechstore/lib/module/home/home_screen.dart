@@ -26,16 +26,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final db = FirebaseFirestore.instance;
   final CartController cartController = Get.put(CartController());
-  final ProductController productController = Get.put(ProductController());
-  final OrdersController ordersController = Get.put(OrdersController());
+   final OrdersController ordersController = Get.put(OrdersController());
   final ProductSampleController productSampleController = Get.put(ProductSampleController());
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    productController.fetchProductSamples();
+ 
     cartController.fetchCartItems();
-    productController.fetchProducts();
+ 
    
   }
 

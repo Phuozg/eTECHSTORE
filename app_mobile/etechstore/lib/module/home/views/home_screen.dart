@@ -5,7 +5,7 @@ import 'package:etechstore/module/chat_with_admin/view/chat_home_screen.dart';
 import 'package:etechstore/module/fake/views/auth_controller.dart';
 import 'package:etechstore/module/home/views/category.dart';
 import 'package:etechstore/module/home/views/product.dart';
- import 'package:etechstore/module/home/views/search_bar.dart';
+import 'package:etechstore/module/home/views/search_bar.dart';
 import 'package:etechstore/module/home/views/slider_show.dart';
 import 'package:etechstore/module/orders/controller/orders_controller.dart';
 import 'package:etechstore/module/product_detail/controller/product_controller.dart';
@@ -13,6 +13,7 @@ import 'package:etechstore/module/product_detail/controller/product_sample_contr
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -27,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final ProductSampleController productSampleController = Get.put(ProductSampleController());
   final db = FirebaseFirestore.instance;
   final OrdersController ordersController = Get.put(OrdersController());
+  final AuthController auth = Get.put(AuthController());
 
   @override
   void initState() {
@@ -40,6 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final Uri facbook = Uri.parse('https://www.facebook.com/messages/t/323929774140624');
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -66,8 +69,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           ElevatedButton(
-              onPressed: () {
-                AuthController.instance.logout();
+              onPressed: () async {
+                //  auth.logout();
+                await launchUrl(facbook);
               },
               style: ElevatedButton.styleFrom(shape: const CircleBorder(), backgroundColor: Colors.blue),
               child: const Icon(

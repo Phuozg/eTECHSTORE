@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:bcrypt/bcrypt.dart';
 
 class AuthServices extends GetxController {
   static AuthServices get instance => Get.find();
@@ -55,6 +56,11 @@ class AuthServices extends GetxController {
       'email': email,
       'password': password,
       'uid': userCredential.user!.uid,
+      'HinhDaiDien': 'https://th.bing.com/th/id/R.3268de3daaeef4cdc5cd0bbc5d0e8d20?rik=RgusFJOHX7X%2fCg&pid=ImgRaw&r=0',
+      'TrangThai': 1,
+      'Quyen': true,
+      'SoDienThoai': 0,
+      'DiaChi': ''
     });
     return userCredential;
   }
@@ -120,5 +126,78 @@ class AuthServices extends GetxController {
     final QuerySnapshot result = await firestore.collection('Users').where('email', isEqualTo: email).limit(1).get();
     final List<DocumentSnapshot> documents = result.docs;
     return documents.isNotEmpty;
+  }
+
+  Future<bool> changePassword(String currentPassword, String newPassword) async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      return false;
+    }
+
+    try {
+      // Kiểm tra mật khẩu hiện tại
+      bool isCurrentPasswordCorrect = await _isCurrentPasswordCorrect(currentPassword, user);
+      if (!isCurrentPasswordCorrect) {
+        return false;
+      }
+
+      // Cập nhật mật khẩu trong Firestore
+      await _updatePasswordInFirestore(user, newPassword);
+
+      // Cập nhật mật khẩu trong Authentication
+      await user.updatePassword(newPassword);
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> _isCurrentPasswordCorrect(String currentPassword, User user) async {
+    try {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('Users')
+          .where('uid', isEqualTo: user.uid)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        final storedPassword = querySnapshot.docs.first.data()['password'];
+        return currentPassword == storedPassword;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<void> _updatePasswordInFirestore(User user, String newPassword) async {
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('Users')
+        .where('uid', isEqualTo: user.uid)
+        .get();
+
+    for (final doc in querySnapshot.docs) {
+      await doc.reference.update({'password': newPassword});
+    }
+  }
+
+
+  Future<UserCredential> updatePasswordInFirestore(String email, String newPassword) async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+      email: email,
+      password: newPassword,
+    );
+
+    final querySnapshot = await FirebaseFirestore.instance.collection('Users').get();
+    for (final doc in querySnapshot.docs) {
+      if (doc.data()['uid'] == user!.uid) {
+        await doc.reference.update({'password': newPassword});
+      }
+    }
+    return userCredential;
   }
 }

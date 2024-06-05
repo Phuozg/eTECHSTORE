@@ -1,4 +1,4 @@
-import 'package:etechstore/module/cart/controller/cart_controller.dart';
+/* import 'package:etechstore/module/cart/controller/cart_controller.dart';
 import 'package:etechstore/module/cart/model/cart_model.dart';
 import 'package:etechstore/module/fake/views/auth_controller.dart';
 import 'package:etechstore/module/product_detail/model/product_model.dart';
@@ -30,7 +30,7 @@ class ProductView extends StatelessWidget {
             },
           )
         ],
-      ),
+      ),/*  */
       body: Obx(() {
         if (controller.productSamples.isEmpty) {
           return const Center(child: CircularProgressIndicator());
@@ -272,3 +272,4 @@ class ProductView extends StatelessWidget {
     );
   }
 }
+ */

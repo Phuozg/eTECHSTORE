@@ -34,7 +34,22 @@ class OrderIsShipped extends StatelessWidget {
             List<OrdersModel> fillterOrder = donHangs.where((order) => order.maKhachHang == userId).toList();
             if (fillterOrder.isEmpty) {
               return Container(
-                child: const Text('No orders found for current user.'),
+                child: Column(
+                  children: [
+                    SizedBox(height: 50.h),
+                    Image.asset(
+                      ImageKey.cartEmpty,
+                      width: 100.w,
+                      height: 100.h,
+                    ),
+                    SizedBox(height: 20.h),
+                    Center(
+                        child: Text(
+                      "Chưa có đơn hàng nào",
+                      style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w300),
+                    )),
+                  ],
+                ),
               );
             }
             print('11111111111111111111$userId');
@@ -93,13 +108,22 @@ class OrderIsShipped extends StatelessWidget {
                                                     onTap: () {
                                                       Get.to(DetailOrderSreen());
                                                     },
-                                                    child: Image.network(
-                                                      productt!.thumbnail.toString(),
+                                                    child: FadeInImage.assetNetwork(
+                                                      image: productt!.thumbnail.toString(),
+                                                      placeholder: ImageKey.whiteBackGround,
                                                       width: 60.w,
                                                       height: 60.h,
                                                       fit: BoxFit.cover,
-                                                    ),
-                                                  )
+                                                      imageErrorBuilder: (context, error, stackTrace) {
+                                                        return Center(
+                                                            child: Image.asset(
+                                                          ImageKey.whiteBackGround,
+                                                          width: 60.w,
+                                                          height: 60.h,
+                                                          fit: BoxFit.cover,
+                                                        ));
+                                                      },
+                                                    ))
                                                 : Container(),
                                             const SizedBox(
                                               width: 20,
@@ -164,23 +188,35 @@ class OrderIsShipped extends StatelessWidget {
                                     ],
                                   ),
                                   SizedBox(height: 10.h),
-                                  Padding(
-                                    padding: EdgeInsets.only(left: 155.0.w),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          homeScreen.priceFormat(productt!.giaTien),
-                                          style: const TextStyle(
-                                            color: Colors.blueGrey,
-                                            decoration: TextDecoration.lineThrough,
+                                  Flexible(
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 130.0.w),
+                                      child: Row(
+                                        children: [
+                                          Flexible(
+                                            child: Align(
+                                              alignment: Alignment.bottomRight,
+                                              child: Text(
+                                                homeScreen.priceFormat(productt!.giaTien),
+                                                style: const TextStyle(
+                                                  color: Colors.blueGrey,
+                                                  decoration: TextDecoration.lineThrough,
+                                                ),
+                                              ),
+                                            ),
                                           ),
-                                        ),
-                                        SizedBox(width: 10.w),
-                                        Text(
-                                          homeScreen.priceFormat(order.tongTien),
-                                          style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.redAccent),
-                                        ),
-                                      ],
+                                          SizedBox(width: 10.w),
+                                          Flexible(
+                                            child: Align(
+                                              alignment: Alignment.bottomRight,
+                                              child: Text(
+                                             priceFormat(productt!.giaTien),
+                                                style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.redAccent),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                   SizedBox(height: 10.h),

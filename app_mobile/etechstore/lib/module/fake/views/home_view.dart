@@ -1,4 +1,4 @@
-import 'package:etechstore/module/cart/view/prodct_view.dart';
+/* import 'package:etechstore/module/cart/view/prodct_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'home_controller.dart';
@@ -35,3 +35,4 @@ class HomeView extends StatelessWidget {
     );
   }
 }
+ */
