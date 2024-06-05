@@ -26,7 +26,6 @@ class DetailOrderSreen extends StatelessWidget {
   final OrdersController controller = Get.put(OrdersController());
   final FirebaseAuth auth = FirebaseAuth.instance;
   final ProfileController profileController = Get.put(ProfileController());
-  final ProductController productController = Get.put(ProductController());
   final CartController cartController = Get.put(CartController());
 
   DetailOrderSreen({super.key});
@@ -194,8 +193,6 @@ class DetailOrderSreen extends StatelessWidget {
                                               SizedBox(height: 5.w),
                                               GestureDetector(
                                                 onTap: () {
-                                                  productController.fetchProductSamples();
-                                                  productController.fetchProducts();
                                                   cartController.fetchCartItems();
                                                   Navigator.push(
                                                       context,
@@ -232,13 +229,22 @@ class DetailOrderSreen extends StatelessWidget {
                                                                         onTap: () {
                                                                           Get.to(DetailOrderSreen());
                                                                         },
-                                                                        child: Image.network(
-                                                                          product.thumbnail.toString(),
+                                                                        child: FadeInImage.assetNetwork(
+                                                                          image: product.thumbnail.toString(),
+                                                                          placeholder: ImageKey.whiteBackGround,
                                                                           width: 60.w,
                                                                           height: 60.h,
                                                                           fit: BoxFit.cover,
-                                                                        ),
-                                                                      )
+                                                                          imageErrorBuilder: (context, error, stackTrace) {
+                                                                            return Center(
+                                                                                child: Image.asset(
+                                                                              ImageKey.whiteBackGround,
+                                                                              width: 60.w,
+                                                                              height: 60.h,
+                                                                              fit: BoxFit.cover,
+                                                                            ));
+                                                                          },
+                                                                        ))
                                                                     : Container(),
                                                                 SizedBox(width: 20.w),
                                                                 Column(

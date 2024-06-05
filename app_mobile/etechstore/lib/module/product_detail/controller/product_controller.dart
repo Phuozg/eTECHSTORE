@@ -44,18 +44,5 @@ class ProductController extends GetxController {
     }
   }
 
-  void addProductToCart(ProductSampleModel sample, String selectedColor, String selectedConfig, int quantity) {
-    var cartItem = CartModel(
-      id: sample.id,
-      maKhachHang: "5sNAoX3ON2PJXWOkY3d4k60DHeu2", // Thay bằng mã khách hàng thực tế
-      soLuong: quantity,
-      trangThai: 0, // Trạng thái mặc định, có thể thay đổi tuỳ vào logic của bạn
-      maSanPham: {
-        'maSanPham': sample.MaSanPham,
-        'mauSac': selectedColor,
-        'cauHinh': selectedConfig,
-      },
-    );
-    cartController.addItemToCart(cartItem);
-  }
+ 
 }

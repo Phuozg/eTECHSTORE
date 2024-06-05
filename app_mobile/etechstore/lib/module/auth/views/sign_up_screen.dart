@@ -19,7 +19,7 @@ class SignUpScreen extends GetView<SignUpController> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(SignUpController());
+      final controller = Get.put(SignUpController());
 
     return Form(
       key: controller.signUpFormKey,

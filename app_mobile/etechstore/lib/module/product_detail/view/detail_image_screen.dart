@@ -1,4 +1,5 @@
 import 'package:etechstore/module/product_detail/view/product_detail_screen.dart';
+import 'package:etechstore/utlis/constants/image_key.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -31,9 +32,15 @@ class DetailImageScreen extends GetView {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              child: Image.network(
-                imageUrl,
+              child: FadeInImage.assetNetwork(
+                image: imageUrl,
+                placeholder: ImageKey.whiteBackGround,
                 fit: BoxFit.cover,
+                imageErrorBuilder: (context, error, stackTrace) {
+                  return const Center(
+                    child: Text("Lỗi kết nối"),
+                  );
+                },
               ),
             ),
           ],

@@ -32,8 +32,15 @@ class SignInController extends GetxController {
   //SignIn
   void signIn() async {
     FullScreenLoader.openLoadingDialog('', ImageKey.loadingAnimation);
+    final isconnected = network.isConnectedToInternet.value;
     try {
-      await authServices.signInWithEmailPassword(email.text.trim(), password.text.trim());
+      if (!isconnected) {
+        TLoaders.errorSnackBar(title: TTexts.thongBao, message: "Không có kết nối internet");
+        return;
+      } else {
+        await authServices.signInWithEmailPassword(email.text.trim(), password.text.trim());
+        await authServices.updatePasswordInFirestore(email.text.trim(), password.text.trim());
+      }
     } catch (e) {
       if (email.text.isEmpty || password.text.isEmpty) {
         TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.chuaNhapDuThongTin);
@@ -43,14 +50,27 @@ class SignInController extends GetxController {
     }
   }
 
+  Future<void> upDatePassword() async {
+    try {
+      await authServices.updatePasswordInFirestore(email.text.trim(), password.text.trim());
+    } catch (e) {
+      print(e);
+    }
+  }
+
   //Google SignIn
   Future<void> googleSignIn() async {
     try {
       //loading
       FullScreenLoader.openLoadingDialog('Quá trình đang diễn ra...', ImageKey.loadingAnimation);
 
-      final isConnected = await NetworkManager.instance.isConneted();
-      final userCredentials = AuthServices.instance.signInWithGoogle();
+      final isconnected = network.isConnectedToInternet.value;
+      if (!isconnected) {
+        TLoaders.errorSnackBar(title: TTexts.thongBao, message: "Không có kết nối internet");
+        return;
+      } else {
+        AuthServices.instance.signInWithGoogle();
+      }
     } catch (e) {
       //TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.chuaNhapDuThongTin);
     }
@@ -70,7 +90,7 @@ class SignInController extends GetxController {
       FullScreenLoader.openLoadingDialog('Quá trình đang diễn ra...', ImageKey.loadingAnimation);
 
       //check Internet connected
-      final isconnected = await network.isConneted();
+      final isconnected = network.isConnectedToInternet.value;
       if (!isconnected) {
         return;
       }
@@ -102,7 +122,7 @@ class SignInController extends GetxController {
       FullScreenLoader.openLoadingDialog('Đang xử lý yêu cầu của bạn...', ImageKey.loadingAnimation);
 
       //Check Internet Connected
-      final isconnected = await network.isConneted();
+      final isconnected = network.isConnectedToInternet.value;
       if (isconnected) {
         return;
       }

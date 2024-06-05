@@ -52,7 +52,6 @@ class DetailScreen extends GetView {
   @override
   Widget build(BuildContext context) {
     final CartController cartController = Get.put(CartController());
-    final ProductController productController = Get.put(ProductController());
     final ProductSampleController productSampleController = Get.put(ProductSampleController());
 
     List<Widget> imageWidgets = HinhAnh.map((url) {
@@ -65,11 +64,19 @@ class DetailScreen extends GetView {
             ),
           );
         },
-        child: Image.network(url),
+        child: FadeInImage.assetNetwork(
+          image: url,
+          placeholder: ImageKey.whiteBackGround,
+          imageErrorBuilder: (context, error, stackTrace) {
+            return Center(
+              child: Text("Lỗi kết nối"),
+            );
+          },
+        ),
       );
     }).toList();
 
-    productController.resetIndex();
+    productSampleController.resetIndex();
 
     return Scaffold(
       body: ScreenUtilInit(
@@ -92,7 +99,7 @@ class DetailScreen extends GetView {
                               initialPage: 0,
                               enableInfiniteScroll: true,
                               onPageChanged: (index, reason) {
-                                productController.setCurrentIndex(index);
+                                productSampleController.setCurrentIndex(index);
                               },
                               autoPlayInterval: const Duration(seconds: 5),
                               autoPlayCurve: Curves.fastOutSlowIn,
@@ -108,7 +115,7 @@ class DetailScreen extends GetView {
                             borderRadius: BorderRadius.circular(10.r),
                           ),
                           child: Text(
-                            '${productController.currentIndex.value + 1} / ${HinhAnh.length}',
+                            '${productSampleController.currentIndex.value + 1} / ${HinhAnh.length}',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 12.sp,
@@ -576,7 +583,7 @@ class DetailScreen extends GetView {
                                             'cauHinh': selectedConfig,
                                           },
                                         );
-                                        TLoaders.successSnackBar(title: "Thông báo", message: "Thêm thành công!");
+
                                         cartController.addItemToCart(cartItem);
                                         Navigator.pop(context);
                                       },

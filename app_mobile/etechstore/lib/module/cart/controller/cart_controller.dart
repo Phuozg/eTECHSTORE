@@ -1,8 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:etechstore/module/cart/model/cart_model.dart';
 import 'package:etechstore/module/product_detail/model/product_model.dart';
+import 'package:etechstore/module/profile/model/local_storage_service.dart';
+import 'package:etechstore/utlis/connection/network_manager.dart';
 import 'package:etechstore/utlis/constants/image_key.dart';
+import 'package:etechstore/utlis/constants/text_strings.dart';
 import 'package:etechstore/utlis/helpers/popups/full_screen_loader.dart';
+import 'package:etechstore/utlis/helpers/popups/loader.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -12,10 +16,13 @@ import 'package:uuid/uuid.dart';
 import '../../product_detail/controller/product_controller.dart';
 
 class CartController extends GetxController {
+  final NetworkManager network = Get.put(NetworkManager());
+
   CartController get instance => Get.find();
   GlobalKey<FormState> DetailProductFormKey = GlobalKey<FormState>();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final LocalStorageService localStorageService = LocalStorageService();
 
   var cartItems = <CartModel>[].obs;
   var products = <String, ProductModel>{}.obs;
@@ -23,20 +30,28 @@ class CartController extends GetxController {
   var isSelectAll = false.obs;
   var selectedItems = <String, bool>{}.obs;
   var isEditMode = false.obs;
+  var productList = <ProductModel>[].obs;
 
   @override
   void onInit() {
     super.onInit();
     fetchCartItems();
+    getCartData();
   }
 
   void toggleEditMode() {
     isEditMode.value = !isEditMode.value;
   }
 
+  void changeIsconnected() {
+    network.isConnectedToInternet.value;
+    !network.isConnectedToInternet.value;
+  }
+
   Future<void> fetchCartItems() async {
     String? userId = _auth.currentUser?.uid;
     if (userId != null) {
+      fetchCartItemsLocally();
       _firestore.collection('GioHang').where('maKhachHang', isEqualTo: userId).where('trangThai', isEqualTo: 1).snapshots().listen((snapshot) async {
         var items = snapshot.docs.map((doc) => CartModel.fromMap(doc.data())).toList();
         cartItems.value = items;
@@ -52,9 +67,35 @@ class CartController extends GetxController {
           }
         }
 
+        localStorageService.saveCartItems(cartItems);
+        localStorageService.saveProducts(productList);
+
         calculateTotalPrice();
       });
     }
+  }
+
+  void fetchCartItemsLocally() async {
+    List<CartModel> localCartItems = await localStorageService.getCartItems();
+    List<ProductModel> localProducts = await localStorageService.getProducts();
+
+    cartItems.assignAll(localCartItems);
+    productList.assignAll(localProducts);
+
+    for (var item in cartItems) {
+      selectedItems[item.id] = false;
+    }
+
+    calculateTotalPrice();
+  }
+
+  void fetchCartsLocally() async {
+    List<CartModel> localCarts = await localStorageService.getCartItems();
+    cartItems.assignAll(localCarts);
+  }
+
+  Stream<List<CartModel>> getCartData() {
+    return _firestore.collection("GioHang").snapshots().map((snapshot) => snapshot.docs.map((doc) => CartModel.fromMap(doc.data())).toList());
   }
 
   Stream<int> calculateProductPrice(CartModel item) {
@@ -103,48 +144,73 @@ class CartController extends GetxController {
   }
 
   void addItemToCart(CartModel newItem) async {
-    int index = cartItems.indexWhere((item) => item.maSanPham['maSanPham'] == newItem.maSanPham['maSanPham']);
+    final isconnected = network.isConnectedToInternet.value;
+    if (!isconnected) {
+      TLoaders.errorSnackBar(title: TTexts.thongBao, message: "Không có kết nối internet");
+      return;
+    } else {
+      int index = cartItems.indexWhere((item) => item.maSanPham['maSanPham'] == newItem.maSanPham['maSanPham']);
 
-    if (index != -1) {
-      CartModel existingItem = cartItems[index];
+      if (index != -1) {
+        CartModel existingItem = cartItems[index];
 
-      if (existingItem.maSanPham['cauHinh'] != newItem.maSanPham['cauHinh'] || existingItem.maSanPham['mauSac'] != newItem.maSanPham['mauSac']) {
+        if (existingItem.maSanPham['cauHinh'] != newItem.maSanPham['cauHinh'] || existingItem.maSanPham['mauSac'] != newItem.maSanPham['mauSac']) {
+          cartItems.add(newItem);
+          selectedItems[newItem.id] = false;
+          await saveCartItemToFirestore(newItem);
+        } else {
+          existingItem.soLuong = newItem.soLuong;
+          updateCartItem(existingItem);
+        }
+      } else {
         cartItems.add(newItem);
         selectedItems[newItem.id] = false;
         await saveCartItemToFirestore(newItem);
-      } else {
-        existingItem.soLuong = newItem.soLuong;
-        updateCartItem(existingItem);
+        TLoaders.successSnackBar(title: "Thông báo", message: "Thêm thành công!");
       }
-    } else {
-      cartItems.add(newItem);
-      selectedItems[newItem.id] = false;
-      await saveCartItemToFirestore(newItem);
-    }
 
-    calculateTotalPrice();
-  }
-
-  void removeItemFromCart(CartModel item) async {
-    cartItems.remove(item);
-    selectedItems.remove(item.id);
-    await removeCartItemFromFirestore(item.id, item.maKhachHang);
-    calculateTotalPrice();
-  }
-
-  void updateCartItem(CartModel item) async {
-    int index = cartItems.indexWhere((element) => element.id == item.id && element.maKhachHang == item.maKhachHang);
-    if (index != -1) {
-      cartItems[index] = item;
-      await updateCartItemInFirestore(item);
       calculateTotalPrice();
     }
   }
 
+  void removeItemFromCart(CartModel item) async {
+    final isconnected = network.isConnectedToInternet.value;
+    if (!isconnected) {
+      TLoaders.errorSnackBar(title: TTexts.thongBao, message: "Không có kết nối internet");
+      return;
+    } else {
+      cartItems.remove(item);
+      selectedItems.remove(item.id);
+      await removeCartItemFromFirestore(item.id, item.maKhachHang);
+      calculateTotalPrice();
+    }
+  }
+
+  void updateCartItem(CartModel item) async {
+    final isconnected = network.isConnectedToInternet.value;
+    if (!isconnected) {
+      TLoaders.errorSnackBar(title: TTexts.thongBao, message: "Không có kết nối internet");
+      return;
+    } else {
+      int index = cartItems.indexWhere((element) => element.id == item.id && element.maKhachHang == item.maKhachHang);
+      if (index != -1) {
+        cartItems[index] = item;
+        await updateCartItemInFirestore(item);
+        calculateTotalPrice();
+      }
+    }
+  }
+
   void clearCart() async {
-    cartItems.clear();
-    selectedItems.clear();
-    totalPrice.value = 0.0;
+    final isconnected = network.isConnectedToInternet.value;
+    if (!isconnected) {
+      TLoaders.errorSnackBar(title: TTexts.thongBao, message: "Không có kết nối internet");
+      return;
+    } else {
+      cartItems.clear();
+      selectedItems.clear();
+      totalPrice.value = 0.0;
+    }
   }
 
   Future<void> saveCartItemToFirestore(CartModel item) async {

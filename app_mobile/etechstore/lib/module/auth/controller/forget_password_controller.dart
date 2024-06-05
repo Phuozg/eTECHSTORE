@@ -21,38 +21,36 @@ class ForgetPasswordController extends GetxController {
   //Send Reset Password Email
   Future<void> sendPasswordResetEmail() async {
     try {
-      /*     //Loading
-      FullScreenLoader.openLoadingDialog('Đang xử lý yêu cầu của bạn...', ImageKey.loadingAnimation);
-
-      //Check Internet Connected
-      final isconnected = await network.isConneted();
-      if (isconnected) {
-        FullScreenLoader.stopLoading();
+      final isconnected = network.isConnectedToInternet.value;
+      if (!isconnected) {
+        TLoaders.errorSnackBar(title: TTexts.thongBao, message: "Không có kết nối internet");
         return;
-      }
+      } else {
+//Loading
+        FullScreenLoader.openLoadingDialog('Đang xử lý yêu cầu của bạn...', ImageKey.loadingAnimation);
 
-      //Form Validation
-      if (!forgetPasswordFormKey.currentState!.validate()) {
-        FullScreenLoader.stopLoading();
-        return;
-      } */
+        //Check Internet Connected
 
-      //Send Email to reset password
-      await authServices.sendPasswordResetEmail(email.text.trim()).then(
-            (value) => Get.offAll(
-              () => ResetPasswordScreen(
-                email: email.text.trim(),
+        //Form Validation
+        if (!forgetPasswordFormKey.currentState!.validate()) {
+          //   FullScreenLoader.stopLoading();
+          return;
+        }
+
+        //Send Email to reset password
+        await authServices.sendPasswordResetEmail(email.text.trim()).then(
+              (value) => Get.offAll(
+                () => ResetPasswordScreen(
+                  email: email.text.trim(),
+                ),
               ),
-            ),
-          );
+            );
 
-      //Remove Loader
-      FullScreenLoader.stopLoading();
+        //Show Success Screen
+        TLoaders.successSnackBar(title: 'Gửi Email', message: 'Đã gửi đường dẫn đến Email để đặt lại mặt khẩu'.tr);
 
-      //Show Success Screen
-      TLoaders.successSnackBar(title: 'Gửi Email', message: 'Đã gửi đường dẫn đến Email để đặt lại mặt khẩu'.tr);
-
-      //Redirect
+        //Redirect
+      }
     } catch (e) {
       FullScreenLoader.stopLoading();
       TLoaders.errorSnackBar(title: TTexts.thongBao, message: e.toString());
@@ -62,27 +60,28 @@ class ForgetPasswordController extends GetxController {
   //reSendPassword
   Future<void> resendPasswordResetEmail(String email) async {
     try {
-      //Loading
-      FullScreenLoader.openLoadingDialog('Đang xử lý yêu cầu của bạn...', ImageKey.loadingAnimation);
 
-      //Check Internet Connected
-      final isconnected = await network.isConneted();
+          final isconnected = network.isConnectedToInternet.value;
       if (!isconnected) {
-        FullScreenLoader.stopLoading();
+        TLoaders.errorSnackBar(title: TTexts.thongBao, message: "Không có kết nối internet");
         return;
+      } else {    //Loading
+        FullScreenLoader.openLoadingDialog('Đang xử lý yêu cầu của bạn...', ImageKey.loadingAnimation);
+
+        //Check Internet Connected
+
+        //send Email to reset Password
+        await authServices.sendPasswordResetEmail(email);
+
+        //Remove Loader
+        FullScreenLoader.stopLoading();
+
+        //Show Success Screen
+        TLoaders.successSnackBar(
+          title: 'Gửi Email',
+          message: 'Đã gửi đường dẫn đến Email để đặt lại mặt khẩu',
+        );
       }
-
-      //send Email to reset Password
-      await authServices.sendPasswordResetEmail(email);
-
-      //Remove Loader
-      FullScreenLoader.stopLoading();
-
-      //Show Success Screen
-      TLoaders.successSnackBar(
-        title: 'Gửi Email',
-        message: 'Đã gửi đường dẫn đến Email để đặt lại mặt khẩu',
-      );
     } catch (e) {
       FullScreenLoader.stopLoading();
       TLoaders.errorSnackBar(title: TTexts.thongBao, message: e.toString());

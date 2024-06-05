@@ -1,6 +1,10 @@
 import 'package:etechstore/utlis/helpers/line/line_helper.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class SuportScreen extends StatelessWidget {
   const SuportScreen({super.key});
@@ -15,6 +19,11 @@ class SuportScreen extends StatelessWidget {
       '[Đơn hàng] Tại sao đơn hàng của tôi không cập nhật trạng thái/chưa nhập được hàng?',
       '[Đánh giá sản phẩm] Tôi có thể xóa/chỉnh sửa đánh giá sản phẩm của mình trên eTECHSTORE không?'
     ];
+
+    final Uri call = Uri.parse('tel:+1-555-010-999');
+    final Uri whatApp = Uri.parse('https://www.facebook.com/hoanghuy.vu.543');
+    final Uri url = Uri.parse('https://flutter.dev');
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Trung tâm hỗ trợ"),
@@ -69,26 +78,31 @@ class SuportScreen extends StatelessWidget {
             ),
           ),
           Linehelper(color: const Color.fromARGB(94, 217, 217, 217), height: 1),
-          Padding(
-            padding: const EdgeInsets.only(left: 10, bottom: 13, top: 13),
-            child: Row(
-              children: [
-                const Icon(Icons.headset_mic_outlined, color: Colors.redAccent),
-                const SizedBox(width: 10),
-                const Text("Gọi tổng đài eTECHSTORE"),
-                const SizedBox(width: 8),
-                Container(
-                  padding: const EdgeInsets.all(2),
-                  decoration: BoxDecoration(
-                    border: Border.all(width: .5, color: Colors.redAccent),
-                    borderRadius: BorderRadius.circular(5),
+          GestureDetector(
+            onTap: () async {
+              await launchUrl(call);
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10, bottom: 13, top: 13),
+              child: Row(
+                children: [
+                  const Icon(Icons.headset_mic_outlined, color: Colors.redAccent),
+                  const SizedBox(width: 10),
+                  const Text("Gọi tổng đài eTECHSTORE"),
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      border: Border.all(width: .5, color: Colors.redAccent),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: const Text(
+                      "Miễn phí",
+                      style: TextStyle(color: Colors.redAccent, fontSize: 8),
+                    ),
                   ),
-                  child: const Text(
-                    "Miễn phí",
-                    style: TextStyle(color: Colors.redAccent, fontSize: 8),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           Linehelper(color: const Color.fromARGB(94, 217, 217, 217), height: 226),

@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+/* import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:etechstore/module/cart/model/cart_model.dart';
 import 'package:etechstore/module/product_detail/model/product_model.dart';
 import 'package:flutter/cupertino.dart';
@@ -48,3 +48,4 @@ class GetProductController implements GetProductAbstractController {
     throw UnimplementedError();
   }
 }
+ */

@@ -10,6 +10,7 @@ import 'package:etechstore/utlis/constants/colors.dart';
 import 'package:etechstore/utlis/constants/image_key.dart';
 import 'package:etechstore/utlis/helpers/line/line_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -22,7 +23,6 @@ class OrderIsPaid extends StatelessWidget {
   Widget build(BuildContext context) {
     final OrdersController controller = Get.put(OrdersController());
     final FirebaseAuth auth = FirebaseAuth.instance;
-    final ProductController productController = Get.put(ProductController());
     final CartController cartController = Get.put(CartController());
 
     return ScreenUtilInit(
@@ -38,7 +38,22 @@ class OrderIsPaid extends StatelessWidget {
             List<OrdersModel> fillterOrder = donHangs.where((order) => order.maKhachHang == userId).toList();
             if (fillterOrder.isEmpty) {
               return Container(
-                child: const Text('No orders found for current user.'),
+                child: Column(
+                  children: [
+                    SizedBox(height: 50.h),
+                    Image.asset(
+                      ImageKey.cartEmpty,
+                      width: 100.w,
+                      height: 100.h,
+                    ),
+                    SizedBox(height: 20.h),
+                    Center(
+                        child: Text(
+                      "Chưa có đơn hàng nào",
+                      style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w300),
+                    )),
+                  ],
+                ),
               );
             }
             print('11111111111111111111$userId');
@@ -99,13 +114,22 @@ class OrderIsPaid extends StatelessWidget {
                                                     onTap: () {
                                                       Get.to(DetailOrderSreen());
                                                     },
-                                                    child: Image.network(
-                                                      product!.thumbnail.toString(),
+                                                    child: FadeInImage.assetNetwork(
+                                                      image: product!.thumbnail.toString(),
+                                                      placeholder: ImageKey.whiteBackGround,
                                                       width: 60.w,
                                                       height: 60.h,
                                                       fit: BoxFit.cover,
-                                                    ),
-                                                  )
+                                                      imageErrorBuilder: (context, error, stackTrace) {
+                                                        return Center(
+                                                            child: Image.asset(
+                                                          ImageKey.whiteBackGround,
+                                                          width: 60.w,
+                                                          height: 60.h,
+                                                          fit: BoxFit.cover,
+                                                        ));
+                                                      },
+                                                    ))
                                                 : Container(),
                                             SizedBox(
                                               width: 20.w,
@@ -117,8 +141,6 @@ class OrderIsPaid extends StatelessWidget {
                                                 product?.ten != null
                                                     ? GestureDetector(
                                                         onTap: () {
-                                                          //       productController.fetchProductSamples();
-                                                          productController.fetchProducts();
                                                           cartController.fetchCartItems();
                                                           Get.to(DetailOrderSreen());
                                                         },
@@ -174,23 +196,35 @@ class OrderIsPaid extends StatelessWidget {
                                     ],
                                   ),
                                   SizedBox(height: 10.h),
-                                  Padding(
-                                    padding: EdgeInsets.only(left: 155.0.w),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          priceFormat(product!.giaTien),
-                                          style: const TextStyle(
-                                            color: Colors.blueGrey,
-                                            decoration: TextDecoration.lineThrough,
+                                     Flexible(
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 130.0.w),
+                                      child: Row(
+                                        children: [
+                                          Flexible(
+                                            child: Align(
+                                              alignment: Alignment.bottomRight,
+                                              child: Text(
+                                                 priceFormat(product!.giaTien),
+                                                style: const TextStyle(
+                                                  color: Colors.blueGrey,
+                                                  decoration: TextDecoration.lineThrough,
+                                                ),
+                                              ),
+                                            ),
                                           ),
-                                        ),
-                                        SizedBox(width: 10.w),
-                                        Text(
-                                          priceFormat(order.tongTien),
-                                          style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.redAccent),
-                                        ),
-                                      ],
+                                          SizedBox(width: 10.w),
+                                          Flexible(
+                                            child: Align(
+                                              alignment: Alignment.bottomRight,
+                                              child: Text(
+                                               priceFormat(product!.giaTien),
+                                                style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.redAccent),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                   SizedBox(height: 10.h),

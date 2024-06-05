@@ -10,6 +10,7 @@ class TTexts {
   static String matKhau = "Mật khẩu";
   static String nhapMatKhau = "Nhập mật khẩu";
   static String nhapLaiMatKhau = "Nhập lại mật khẩu";
+    static String nhapMatKhauMoi = "Nhập mật khẩu mới";
   static String quenMatKhau = "Quên mật khẩu?";
   static String hoacSuDungMotTrongCacLuaChonNay = "Hoặc";
   static String dangNhapThanhCong = "Đăng nhập thành công";

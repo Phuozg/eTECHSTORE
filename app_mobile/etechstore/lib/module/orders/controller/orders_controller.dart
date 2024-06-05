@@ -9,8 +9,7 @@ import 'package:get/get.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:rxdart/rxdart.dart';
-
+ 
 class OrdersController extends GetxController {
   OrdersController get instance => Get.find();
 
@@ -22,9 +21,7 @@ class OrdersController extends GetxController {
 
   var detailOrder = <DetailOrders>[].obs;
 
-  final BehaviorSubject<List<DetailOrders>> cartItemsSubject = BehaviorSubject<List<DetailOrders>>();
-  Stream<List<DetailOrders>> get cartItemsStream => cartItemsSubject.stream;
-
+ 
   var itemsToShow = 1.obs;
 
   void loadMore() {
@@ -39,11 +36,7 @@ class OrdersController extends GetxController {
     fetchData();
   }
 
-  @override
-  void onClose() {
-    cartItemsSubject.close();
-    super.onClose();
-  }
+ 
 
   Stream<List<OrdersModel>> fetchIsPaid() {
     String? userId = _auth.currentUser?.uid;
@@ -127,8 +120,7 @@ class OrdersController extends GetxController {
           }
 
           detailOrder.assignAll(validItems);
-          cartItemsSubject.add(validItems);
-        }
+         }
       });
     }
   }
