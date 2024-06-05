@@ -19,7 +19,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ProfileScreen extends StatelessWidget {
   final ProfileController profileController = Get.put(ProfileController());
-  final AuthServices authServices = Get.put(AuthServices());
   ProfileScreen({super.key});
 
   @override
@@ -58,15 +57,31 @@ class ProfileScreen extends StatelessWidget {
                       height: 115.h,
                       child: Row(
                         children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(70),
-                            child: Image.network(
-                              width: 100.w,
-                              height: 100.h,
-                              profile.HinhDaiDien,
-                              fit: BoxFit.fill,
-                            ),
-                          ),
+                          profile.HinhDaiDien.isNotEmpty
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(70),
+                                  child: FadeInImage.assetNetwork(
+                                    imageErrorBuilder: (context, error, stackTrace) {
+                                      return Image.asset(
+                                        ImageKey.iconUser,
+                                        width: 100.w,
+                                        height: 100.h,
+                                      );
+                                    },
+                                    placeholder: ImageKey.iconProfile,
+                                    width: 100.w,
+                                    height: 100.h,
+                                    image: profile.HinhDaiDien,
+                                    fit: BoxFit.fill,
+                                  ),
+                                )
+                              : const SizedBox(
+                                  width: 100,
+                                  height: 100,
+                                  child: Center(
+                                    child: Text('No profile picture'),
+                                  ),
+                                ),
                           SizedBox(width: 22.w),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -75,18 +90,22 @@ class ProfileScreen extends StatelessWidget {
                               SizedBox(height: 19.h),
                               SizedBox(
                                 width: 176.w,
-                                child: Text(
-                                  profile.HoTen,
-                                  style: TColros.black_19_w600,
-                                  overflow: TextOverflow.ellipsis,
-                                  softWrap: true,
-                                ),
+                                child: profile.HoTen != null || profile.HoTen != ''
+                                    ? Text(
+                                        profile.HoTen,
+                                        style: TColros.black_19_w600,
+                                        overflow: TextOverflow.ellipsis,
+                                        softWrap: true,
+                                      )
+                                    : const Text("Khách hàng"),
                               ),
                               SizedBox(height: 10.h),
-                              Text(
-                                "0${profile.SoDienThoai.toString()}",
-                                style: TColros.black_15_w400,
-                              ),
+                              profile.SoDienThoai.toString() != null || profile.SoDienThoai.toString() != ''
+                                  ? Text(
+                                      "0${profile.SoDienThoai.toString()}",
+                                      style: TColros.black_15_w400,
+                                    )
+                                  : const Text("Số điện thoại"),
                             ],
                           ),
                         ],
@@ -123,7 +142,7 @@ class ProfileScreen extends StatelessWidget {
                         child: ListHelpProfile(icon: const Image(image: AssetImage(ImageKey.iconHelp)), text: "Hỗ trợ")),
                     GestureDetector(
                         onTap: () {
-                          authServices.signOut();
+                          profileController.signOut();
                         },
                         child: ListHelpProfile(icon: const Image(image: AssetImage(ImageKey.iconLogOut)), text: "Đăng xuất"))
                   ]);

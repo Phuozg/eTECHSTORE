@@ -61,15 +61,31 @@ class EditProfileScreen extends StatelessWidget {
                             child: SizedBox(
                               width: 90.w,
                               child: Stack(children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(70),
-                                  child: Image.network(
-                                    width: 100.w,
-                                    height: 100.h,
-                                    profile.HinhDaiDien,
-                                    fit: BoxFit.fill,
-                                  ),
-                                ),
+                                profile.HinhDaiDien.isNotEmpty
+                                    ? ClipRRect(
+                                        borderRadius: BorderRadius.circular(70),
+                                        child: FadeInImage.assetNetwork(
+                                          imageErrorBuilder: (context, error, stackTrace) {
+                                            return Image.asset(
+                                              ImageKey.iconUser,
+                                              width: 100.w,
+                                              height: 100.h,
+                                            );
+                                          },
+                                          placeholder: ImageKey.iconProfile,
+                                          width: 100.w,
+                                          height: 100.h,
+                                          image: profile.HinhDaiDien,
+                                          fit: BoxFit.fill,
+                                        ),
+                                      )
+                                    : const SizedBox(
+                                        width: 100,
+                                        height: 100,
+                                        child: Center(
+                                          child: Text('No profile picture'),
+                                        ),
+                                      ),
                                 GestureDetector(
                                   onTap: () async {
                                     await showDialog<ImageSource>(
@@ -161,7 +177,7 @@ class EditProfileScreen extends StatelessWidget {
                                   title: "Sửa địa chỉ",
                                   text: profile.DiaChi,
                                   func: () {
-                                    profileController.editProfile(3);
+                                    profileController.editProfile(2);
                                   },
                                 ));
                               },
