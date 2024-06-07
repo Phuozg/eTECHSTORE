@@ -1,4 +1,4 @@
-import 'package:etechstore/module/home/home_screen.dart';
+import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

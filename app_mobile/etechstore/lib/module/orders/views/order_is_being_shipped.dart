@@ -1,4 +1,4 @@
-import 'package:etechstore/module/home/home_screen.dart';
+import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/module/orders/controller/orders_controller.dart';
 import 'package:etechstore/module/orders/model/detail_orders.dart';
 import 'package:etechstore/module/orders/model/orders_model.dart';

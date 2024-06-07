@@ -1,4 +1,4 @@
-import 'package:etechstore/module/home/home_screen.dart' as homeScreen;
+import 'package:etechstore/module/home/views/home_screen.dart' as homeScreen;
 import 'package:etechstore/module/home/views/product.dart';
 import 'package:etechstore/module/orders/controller/orders_controller.dart';
 import 'package:etechstore/module/orders/model/detail_orders.dart';
@@ -268,7 +268,7 @@ class OrderIsShipped extends StatelessWidget {
                                 ListView(
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
-                                  children: [product()],
+                                  children: [const Product()],
                                 )
                               ],
                             );

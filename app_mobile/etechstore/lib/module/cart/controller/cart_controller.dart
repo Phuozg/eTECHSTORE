@@ -52,7 +52,7 @@ class CartController extends GetxController {
     String? userId = _auth.currentUser?.uid;
     if (userId != null) {
       fetchCartItemsLocally();
-      _firestore.collection('GioHang').where('maKhachHang', isEqualTo: userId).where('trangThai', isEqualTo: 1).snapshots().listen((snapshot) async {
+      _firestore.collection('GioHang').where('maKhachHang', isEqualTo: userId).snapshots().listen((snapshot) async {
         var items = snapshot.docs.map((doc) => CartModel.fromMap(doc.data())).toList();
         cartItems.value = items;
 
