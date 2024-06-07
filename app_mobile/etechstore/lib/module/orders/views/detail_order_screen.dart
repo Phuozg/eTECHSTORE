@@ -20,7 +20,7 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../home/home_screen.dart';
+import '../../home/views/home_screen.dart';
 
 class DetailOrderSreen extends StatelessWidget {
   final OrdersController controller = Get.put(OrdersController());

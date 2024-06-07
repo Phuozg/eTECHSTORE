@@ -3,7 +3,8 @@ import 'package:etechstore/module/cart/controller/enum.dart';
 import 'package:etechstore/module/cart/model/cart_model.dart';
 import 'package:etechstore/module/fake/simmer.dart';
 import 'package:etechstore/module/fake/views/auth_controller.dart';
-import 'package:etechstore/module/home/home_screen.dart';
+import 'package:etechstore/module/home/views/home_screen.dart';
+import 'package:etechstore/module/payment/views/order_screen.dart';
 import 'package:etechstore/module/product_detail/controller/product_controller.dart';
 import 'package:etechstore/module/product_detail/controller/product_sample_controller.dart';
 import 'package:etechstore/module/product_detail/model/product_model.dart';
@@ -96,7 +97,6 @@ class CartScreen extends StatelessWidget {
                                 String selectedConfig = item.maSanPham['cauHinh'];
                                 int quantity = item.soLuong;
                                 var product = controller.products[item.maSanPham['maSanPham']];
-                                print('===========================connection status: ${network.isConnectedToInternet.value}');
                                 return Slidable(
                                   endActionPane: ActionPane(motion: const ScrollMotion(), children: [
                                     SlidableAction(
@@ -810,7 +810,7 @@ class CartScreen extends StatelessWidget {
                               SizedBox(width: 10.w),
                               GestureDetector(
                                 onTap: () {
-                                  print(controller.selectedItems.length);
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> const OrderScreen()));
                                 },
                                 child: Container(
                                   alignment: Alignment.center,

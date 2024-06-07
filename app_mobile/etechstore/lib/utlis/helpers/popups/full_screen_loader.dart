@@ -1,5 +1,5 @@
 import 'package:etechstore/module/cart/model/cart_model.dart';
-import 'package:etechstore/module/home/home_screen.dart';
+import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/utlis/constants/colors.dart';
 import 'package:etechstore/utlis/constants/image_key.dart';
 import 'package:etechstore/utlis/constants/text_strings.dart';
@@ -158,7 +158,6 @@ class FullScreenLoader {
                       GestureDetector(
                         child: Container(child: const Text("-", style: TColros.black_20_w600)),
                         onTap: () {
-                          print("4444444444444444444444444444444");
 
                           // controller.addToCart();
                         },

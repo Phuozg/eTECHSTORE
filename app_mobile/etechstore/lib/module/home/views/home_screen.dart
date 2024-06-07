@@ -6,7 +6,7 @@ import 'package:etechstore/module/fake/views/auth_controller.dart';
 import 'package:etechstore/module/home/views/category.dart';
 import 'package:etechstore/module/home/views/product.dart';
 import 'package:etechstore/module/home/views/search_bar.dart';
-import 'package:etechstore/module/home/views/slider_show.dart';
+import 'package:etechstore/module/home/views/slideshow_banner.dart';
 import 'package:etechstore/module/orders/controller/orders_controller.dart';
 import 'package:etechstore/module/product_detail/controller/product_controller.dart';
 import 'package:etechstore/module/product_detail/controller/product_sample_controller.dart';
@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         flexibleSpace: Container(
-          decoration: const BoxDecoration(color: Colors.blue),
+          decoration: const BoxDecoration(color: Color(0xFF383CA0)),
         ),
         title: searchBar(),
         actions: [
@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
             },
             style: ElevatedButton.styleFrom(
               shape: const CircleBorder(),
-              backgroundColor: Colors.blue,
+              backgroundColor: const Color(0xFF383CA0),
             ),
             child: const Icon(
               Icons.shopping_cart,
@@ -73,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 //  auth.logout();
                 await launchUrl(facbook);
               },
-              style: ElevatedButton.styleFrom(shape: const CircleBorder(), backgroundColor: Colors.blue),
+              style: ElevatedButton.styleFrom(shape: const CircleBorder(), backgroundColor: const Color(0xFF383CA0)),
               child: const Icon(
                 Icons.message,
                 color: Colors.white,
@@ -85,16 +85,23 @@ class _HomeScreenState extends State<HomeScreen> {
         child: ListView(
           shrinkWrap: true,
           children: [
-            //Danh mục sản phẩm
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
-              child: SizedBox(height: MediaQuery.of(context).size.height / 15, child: category()),
-            ),
-            //Banner khuyến mãi
-            SizedBox(width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height / 6, child: sliderShow()),
 
+            //Banner khuyến mãi
+            SizedBox(width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height / 6, child: const SlideShowBanner()),
+            const Divider(),
+
+            //Danh mục sản phẩm
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text("Danh mục",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
+                SizedBox(height: MediaQuery.of(context).size.height / 15, child: const Categories()),
+              ],
+            ),
+            const Divider(),
+            
             //Danh sách sản phẩm
-            product()
+            const Product()
           ],
         ),
       ),

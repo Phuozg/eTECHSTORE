@@ -4,7 +4,6 @@ import 'package:etechstore/module/orders/views/orders_manage_screen.dart';
 import 'package:etechstore/module/profile/views/profile_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
 class NavMenu extends StatelessWidget {
@@ -29,25 +28,25 @@ class NavMenu extends StatelessWidget {
         PersistentBottomNavBarItem(
           icon: const Icon(Icons.home),
           title: ("Trang chủ"),
-          activeColorPrimary: CupertinoColors.activeBlue,
+          activeColorPrimary: const Color(0xFF383CA0),
           inactiveColorPrimary: CupertinoColors.systemGrey,
         ),
         PersistentBottomNavBarItem(
           icon: const Icon(Icons.local_shipping_outlined),
           title: ("Đơn hàng"),
-          activeColorPrimary: CupertinoColors.activeBlue,
+          activeColorPrimary: const Color(0xFF383CA0),
           inactiveColorPrimary: CupertinoColors.systemGrey,
         ),
         PersistentBottomNavBarItem(
           icon: const Icon(Icons.favorite),
           title: ("Yêu thích"),
-          activeColorPrimary: CupertinoColors.activeBlue,
+          activeColorPrimary: const Color(0xFF383CA0),
           inactiveColorPrimary: CupertinoColors.systemGrey,
         ),
         PersistentBottomNavBarItem(
           icon: const Icon(Icons.person),
           title: ("Cá nhân"),
-          activeColorPrimary: CupertinoColors.activeBlue,
+          activeColorPrimary: const Color(0xFF383CA0),
           inactiveColorPrimary: CupertinoColors.systemGrey,
         ),
       ];
