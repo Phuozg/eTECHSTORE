@@ -1,7 +1,10 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:etechstore/module/bottom_nav_bar/nav_menu.dart';
+import 'package:etechstore/module/profile/model/profile_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:bcrypt/bcrypt.dart';
@@ -19,12 +22,39 @@ class AuthServices extends GetxController {
 
   //SignInWithFireStore
   Future<UserCredential?> signInWithEmailPassword(String email, String password) async {
-    UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    await firestore.collection('Users').where('email', isEqualTo: email).limit(1).get();
-    return userCredential;
+    try {
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      if (await _isUserAllowedToSignIn(email)) {
+        return userCredential;
+      } else {
+        await _auth.signOut();
+        Get.snackbar('Đăng nhập thất bại', 'Email hoặc trạng thái không hợp lệ');
+        return null;
+      }
+    } catch (e) {
+      Get.snackbar('Đăng nhập thất bại', e.toString());
+      return null;
+    }
+  }
+
+  // Check if the user is allowed to sign in
+  Future<bool> _isUserAllowedToSignIn(String email) async {
+    try {
+      QuerySnapshot snapshot = await firestore.collection('Users').where('email', isEqualTo: email).where('TrangThai', isEqualTo: 1).get();
+
+      if (snapshot.docs.isNotEmpty) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print('Error checking user status: $e');
+      return false;
+    }
   }
 
   //Forget Password
@@ -156,10 +186,7 @@ class AuthServices extends GetxController {
 
   Future<bool> _isCurrentPasswordCorrect(String currentPassword, User user) async {
     try {
-      final querySnapshot = await FirebaseFirestore.instance
-          .collection('Users')
-          .where('uid', isEqualTo: user.uid)
-          .get();
+      final querySnapshot = await FirebaseFirestore.instance.collection('Users').where('uid', isEqualTo: user.uid).get();
 
       if (querySnapshot.docs.isNotEmpty) {
         final storedPassword = querySnapshot.docs.first.data()['password'];
@@ -173,16 +200,12 @@ class AuthServices extends GetxController {
   }
 
   Future<void> _updatePasswordInFirestore(User user, String newPassword) async {
-    final querySnapshot = await FirebaseFirestore.instance
-        .collection('Users')
-        .where('uid', isEqualTo: user.uid)
-        .get();
+    final querySnapshot = await FirebaseFirestore.instance.collection('Users').where('uid', isEqualTo: user.uid).get();
 
     for (final doc in querySnapshot.docs) {
       await doc.reference.update({'password': newPassword});
     }
   }
-
 
   Future<UserCredential> updatePasswordInFirestore(String email, String newPassword) async {
     User? user = FirebaseAuth.instance.currentUser;

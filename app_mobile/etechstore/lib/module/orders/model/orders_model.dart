@@ -26,14 +26,14 @@ class OrdersModel {
   });
 
   factory OrdersModel.fromJson(Map<String, dynamic> json) {
-    return OrdersModel( 
+    return OrdersModel(
       id: json['id'],
       ngayTaoDon: (json['NgayTaoDon']),
       maKhachHang: json['MaKhachHang'],
       tongTien: json['TongTien'],
       tongDuocGiam: json['TongDuocGiam'],
       isPaid: json['isPaid'] ?? false,
-      isBeingShipped: json['isBeingShopped'] ?? false,
+      isBeingShipped: json['isBeingShipped'] ?? false,
       isShipped: json['isShipped'] ?? false,
       isCompleted: json['isCompleted'] ?? false,
       isCancelled: json['isCancelled'] ?? false,
@@ -48,7 +48,7 @@ class OrdersModel {
       'TongTien': tongTien,
       'TongDuocGiam': tongDuocGiam,
       'isPaid': isPaid,
-      'isBeingShopped': isBeingShipped,
+      'isBeingShipped': isBeingShipped,
       'isShipped': isShipped,
       'isCompleted': isCompleted,
       'isCancelled': isCancelled,

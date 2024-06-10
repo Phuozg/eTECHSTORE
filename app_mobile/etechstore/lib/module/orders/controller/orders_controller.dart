@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
- 
+
 class OrdersController extends GetxController {
   OrdersController get instance => Get.find();
 
@@ -21,7 +21,6 @@ class OrdersController extends GetxController {
 
   var detailOrder = <DetailOrders>[].obs;
 
- 
   var itemsToShow = 1.obs;
 
   void loadMore() {
@@ -36,9 +35,8 @@ class OrdersController extends GetxController {
     fetchData();
   }
 
- 
-
   Stream<List<OrdersModel>> fetchIsPaid() {
+    print("hello 2");
     String? userId = _auth.currentUser?.uid;
 
     return FirebaseFirestore.instance.collection('DonHang').where('MaKhachHang', isEqualTo: userId).snapshots().map((querySnapshot) {
@@ -52,7 +50,7 @@ class OrdersController extends GetxController {
   }
 
   Stream<List<DetailOrders>> fetchData() {
-    print("hello");
+    print("hello 1");
     String? userId = _auth.currentUser?.uid;
 
     return _firestore.collection('CTDonHang').where('TrangThai', isEqualTo: 1).snapshots().asyncMap((snapshot) async {
@@ -78,18 +76,22 @@ class OrdersController extends GetxController {
   }
 
   Stream<List<OrdersModel>> getOrder() {
+    print("hello 3");
     return _firestore.collection('DonHang').snapshots().map((snapshot) => snapshot.docs.map((doc) => OrdersModel.fromJson(doc.data())).toList());
   }
 
   Stream<List<DetailOrders>> getCTDonHangs() {
+    print("hello 4");
     return _firestore.collection('CTDonHang').snapshots().map((snapshot) => snapshot.docs.map((doc) => DetailOrders.fromJson(doc.data())).toList());
   }
 
   Stream<List<ProductModel>> getProduct() {
+    print("hello 5");
     return _firestore.collection('SanPham').snapshots().map((snapshot) => snapshot.docs.map((doc) => ProductModel.fromJson(doc.data())).toList());
   }
 
   void fetchOrdersAndCartItems() async {
+    print("hello 6");
     String? userId = _auth.currentUser?.uid;
     if (userId != null) {
       FirebaseFirestore.instance.collection('DonHang').where('MaKhachHang', isEqualTo: userId).snapshots().listen((ordersSnapshot) async {
@@ -120,7 +122,7 @@ class OrdersController extends GetxController {
           }
 
           detailOrder.assignAll(validItems);
-         }
+        }
       });
     }
   }

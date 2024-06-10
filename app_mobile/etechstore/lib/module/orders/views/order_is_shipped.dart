@@ -52,8 +52,7 @@ class OrderIsShipped extends StatelessWidget {
                 ),
               );
             }
-            print('11111111111111111111$userId');
-            return StreamBuilder<List<DetailOrders>>(
+             return StreamBuilder<List<DetailOrders>>(
               stream: controller.fetchData(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {

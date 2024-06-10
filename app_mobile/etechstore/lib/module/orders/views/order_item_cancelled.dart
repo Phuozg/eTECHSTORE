@@ -82,8 +82,7 @@ class OrderCancelled extends StatelessWidget {
                           child: Text('Order not found for detail order ${item.maDonHang}.'),
                         );
                       }
-                      print(order.isBeingShipped);
-
+ 
                       return order.isCancelled == true
                           ? Container(
                               height: 180.h,

@@ -11,6 +11,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:path/path.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../product_detail/controller/product_controller.dart';
@@ -31,12 +33,39 @@ class CartController extends GetxController {
   var selectedItems = <String, bool>{}.obs;
   var isEditMode = false.obs;
   var productList = <ProductModel>[].obs;
+  RxInt quantity = 0.obs;
 
   @override
   void onInit() {
     super.onInit();
     fetchCartItems();
     getCartData();
+    loadquantity();
+  }
+
+  final BehaviorSubject<List<CartModel>> _cartItemsSubject = BehaviorSubject<List<CartModel>>.seeded([]);
+  final BehaviorSubject<Map<String, ProductModel>> _productsSubject = BehaviorSubject<Map<String, ProductModel>>.seeded({});
+
+  Stream<List<CartModel>> get cartItemsStream => _cartItemsSubject.stream;
+  Stream<Map<String, ProductModel>> get productsStream => _productsSubject.stream;
+
+  void increament() async {
+    final quantityData = await SharedPreferences.getInstance();
+
+    quantity.value = (quantityData.getInt('quantity') ?? 0) + 1;
+    quantityData.setInt('quantity', quantity.value);
+  }
+
+  void decreament() async {
+    final quantityData = await SharedPreferences.getInstance();
+
+    quantity.value = (quantityData.getInt('quantity') ?? 0) - 1;
+    quantityData.setInt('quantity', quantity.value);
+  }
+
+  void loadquantity() async {
+    final quantityData = await SharedPreferences.getInstance();
+    quantity.value = (quantityData.getInt('quantity') ?? 0);
   }
 
   void toggleEditMode() {
@@ -179,10 +208,19 @@ class CartController extends GetxController {
       TLoaders.errorSnackBar(title: TTexts.thongBao, message: "Không có kết nối internet");
       return;
     } else {
-      cartItems.remove(item);
+      cartItems.removeWhere((cartItem) => cartItem.id == item.id && cartItem.maSanPham['maSanPham'] == item.maSanPham['maSanPham']);
       selectedItems.remove(item.id);
       await removeCartItemFromFirestore(item.id, item.maKhachHang);
       calculateTotalPrice();
+    }
+  }
+
+  Future<void> removeCartItemFromFirestore(String itemId, String uid) async {
+    FullScreenLoader.openWaitforchange('', ImageKey.waitforchangeAnimation);
+
+    var doc = await _firestore.collection('GioHang').where('id', isEqualTo: itemId).where('maKhachHang', isEqualTo: uid).get();
+    if (doc.docs.isNotEmpty) {
+      await _firestore.collection('GioHang').doc(doc.docs.first.id).delete();
     }
   }
 
@@ -201,6 +239,13 @@ class CartController extends GetxController {
     }
   }
 
+  Future<void> updateCartItemInFirestore(CartModel item) async {
+    var doc = await _firestore.collection('GioHang').where('id', isEqualTo: item.id).where('maKhachHang', isEqualTo: item.maKhachHang).get();
+    if (doc.docs.isNotEmpty) {
+      await _firestore.collection('GioHang').doc(doc.docs.first.id).update(item.toMap());
+    }
+  }
+
   void clearCart() async {
     final isconnected = network.isConnectedToInternet.value;
     if (!isconnected) {
@@ -215,22 +260,6 @@ class CartController extends GetxController {
 
   Future<void> saveCartItemToFirestore(CartModel item) async {
     await _firestore.collection('GioHang').add(item.toMap());
-  }
-
-  Future<void> removeCartItemFromFirestore(String itemId, String uid) async {
-    FullScreenLoader.openWaitforchange('', ImageKey.waitforchangeAnimation);
-
-    var doc = await _firestore.collection('GioHang').where('id', isEqualTo: itemId).where('maKhachHang', isEqualTo: uid).get();
-    if (doc.docs.isNotEmpty) {
-      await _firestore.collection('GioHang').doc(doc.docs.first.id).delete();
-    }
-  }
-
-  Future<void> updateCartItemInFirestore(CartModel item) async {
-    var doc = await _firestore.collection('GioHang').where('id', isEqualTo: item.id).where('maKhachHang', isEqualTo: item.maKhachHang).get();
-    if (doc.docs.isNotEmpty) {
-      await _firestore.collection('GioHang').doc(doc.docs.first.id).update(item.toMap());
-    }
   }
 
   Future<List<String>> getAvailableColors(String maSanPham) async {

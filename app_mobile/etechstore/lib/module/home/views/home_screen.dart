@@ -35,9 +35,10 @@ class _HomeScreenState extends State<HomeScreen> {
     // TODO: implement initState
     super.initState();
     ordersController.fetchIsPaid();
-    productController.fetchProductSamples();
+ productController.fetchProductSamples();
     cartController.fetchCartItems();
     productController.fetchProducts();
+   productSampleController.fetchProductSamples();
   }
 
   @override
@@ -53,11 +54,18 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           ElevatedButton(
             onPressed: () async {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const CartScreen(),
-                  ));
+              await cartController.fetchCartItems().then((value) {
+                Future.delayed(
+                  const Duration(milliseconds: 1),
+                  () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const CartScreen(),
+                        ));
+                  },
+                );
+              });
             },
             style: ElevatedButton.styleFrom(
               shape: const CircleBorder(),
