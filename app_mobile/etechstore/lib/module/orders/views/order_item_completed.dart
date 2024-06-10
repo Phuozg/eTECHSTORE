@@ -76,8 +76,7 @@ class OrderCompleted extends StatelessWidget {
                           child: Text('Order not found for detail order ${item.maDonHang}.'),
                         );
                       }
-                      print(order.isBeingShipped);
-                      return order.isCompleted == true
+                       return order.isCompleted == true
                           ? Container(
                               height: 183.h,
                               margin: EdgeInsets.symmetric(horizontal: 5.w, vertical: 3.h),

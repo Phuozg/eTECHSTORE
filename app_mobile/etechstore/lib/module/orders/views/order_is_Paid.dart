@@ -56,11 +56,12 @@ class OrderIsPaid extends StatelessWidget {
                 ),
               );
             }
-            print('11111111111111111111$userId');
+
             return StreamBuilder<List<DetailOrders>>(
               stream: controller.fetchData(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
+                  print("không có dữ liệu!");
                   return const Center(
                     child: CircularProgressIndicator(),
                   );
@@ -75,7 +76,7 @@ class OrderIsPaid extends StatelessWidget {
                     itemCount: fillterOrder.length,
                     itemBuilder: (context, index) {
                       DetailOrders item = filteredCTDonHangs[index];
-
+                      print('11111111111111${fillterOrder.length}');
                       var product = controller.products[item.maMauSanPham['MaSanPham']];
                       OrdersModel? order = fillterOrder.firstWhereOrNull((order) => order.id == item.maDonHang);
                       if (order == null) {
@@ -83,6 +84,7 @@ class OrderIsPaid extends StatelessWidget {
                           child: Text('Order not found for detail order ${item.maDonHang}.'),
                         );
                       }
+                      print(fillterOrder.length);
                       print(order.isBeingShipped);
                       return order.isPaid == true
                           ? Container(
@@ -196,7 +198,7 @@ class OrderIsPaid extends StatelessWidget {
                                     ],
                                   ),
                                   SizedBox(height: 10.h),
-                                     Flexible(
+                                  Flexible(
                                     child: Padding(
                                       padding: EdgeInsets.only(left: 130.0.w),
                                       child: Row(
@@ -205,7 +207,7 @@ class OrderIsPaid extends StatelessWidget {
                                             child: Align(
                                               alignment: Alignment.bottomRight,
                                               child: Text(
-                                                 priceFormat(product!.giaTien),
+                                                priceFormat(product!.giaTien),
                                                 style: const TextStyle(
                                                   color: Colors.blueGrey,
                                                   decoration: TextDecoration.lineThrough,
@@ -218,7 +220,7 @@ class OrderIsPaid extends StatelessWidget {
                                             child: Align(
                                               alignment: Alignment.bottomRight,
                                               child: Text(
-                                               priceFormat(product!.giaTien),
+                                                priceFormat(product.giaTien),
                                                 style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.redAccent),
                                               ),
                                             ),

@@ -79,8 +79,7 @@ class OrderIsBeingShipped extends StatelessWidget {
                           child: Text('Order not found for detail order ${item.maDonHang}.'),
                         );
                       }
-                      print(order.isBeingShipped);
-                      return order.isBeingShipped == true
+                       return order.isBeingShipped == true
                           ? Container(
                               height: 182.h,
                               margin: EdgeInsets.symmetric(horizontal: 5.w, vertical: 3.h),

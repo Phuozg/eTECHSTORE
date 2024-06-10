@@ -68,7 +68,7 @@ class DetailScreen extends GetView {
           image: url,
           placeholder: ImageKey.whiteBackGround,
           imageErrorBuilder: (context, error, stackTrace) {
-            return Center(
+            return const Center(
               child: Text("Lỗi kết nối"),
             );
           },
@@ -332,9 +332,10 @@ class DetailScreen extends GetView {
           color: Colors.transparent,
           elevation: 0,
           child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.spaceAround, children: <Widget>[
-            GestureDetector(
-              onTap: () {
-                for (final sample in productSampleController.productSamples.where((p0) => id == p0.MaSanPham)) {
+            for (final sample in productSampleController.productSamples.where((p0) => id == p0.MaSanPham))
+              GestureDetector(
+                onTap: () {
+                  productSampleController.fetchProductSamples();
                   showModalBottomSheet(
                       isDismissible: true,
                       enableDrag: true,
@@ -615,25 +616,25 @@ class DetailScreen extends GetView {
                           },
                         );
                       });
-                }
-              },
-              child: Container(
-                alignment: Alignment.center,
-                width: 150.w,
-                height: 70.h,
-                decoration: BoxDecoration(
-                  border: Border.all(width: .5.w, color: TColros.purple_line),
-                  borderRadius: BorderRadius.circular(30.r),
-                ),
-                child: Text(
-                  TTexts.themVaoGioHang,
-                  style: const TextStyle(color: TColros.purple_line),
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  width: 150.w,
+                  height: 70.h,
+                  decoration: BoxDecoration(
+                    border: Border.all(width: .5.w, color: TColros.purple_line),
+                    borderRadius: BorderRadius.circular(30.r),
+                  ),
+                  child: Text(
+                    TTexts.themVaoGioHang,
+                    style: const TextStyle(color: TColros.purple_line),
+                  ),
                 ),
               ),
-            ),
             GestureDetector(
               onTap: () {
                 print("Mua Hang");
+                productSampleController.fetchProductSamples();
               },
               child: Container(
                 alignment: Alignment.bottomCenter,
