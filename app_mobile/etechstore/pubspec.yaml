@@ -44,6 +44,11 @@ dev_dependencies:
   flutter_native_splash: ^2.4.0
   build_runner: ^2.4.9
 
+flutter_native_splash:
+  android: true
+  background_image: assets/images/splash_native.png
+  fullscreen: true
+
 flutter:
   uses-material-design: true
 
