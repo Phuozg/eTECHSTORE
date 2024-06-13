@@ -6,7 +6,7 @@ class OrderDetail {
   int SoLuong;
   int TrangThai;
   int KhuyenMai;
-  Map<String,dynamic> MauSanPham;
+  Map<String,dynamic> MaMauSanPham;
 
 
   OrderDetail({
@@ -14,7 +14,7 @@ class OrderDetail {
     required this.SoLuong,
     required this.TrangThai,
     required this.KhuyenMai,
-    required this.MauSanPham,
+    required this.MaMauSanPham,
   });
 
   
@@ -24,7 +24,7 @@ class OrderDetail {
       'KhuyenMai':KhuyenMai,
       'SoLuong': SoLuong,
       'TrangThai': TrangThai,
-      'MauSanPham': MauSanPham
+      'MaMauSanPham': MaMauSanPham
     };
   }
 
@@ -34,7 +34,7 @@ class OrderDetail {
       SoLuong: document['SoLuong']??0,
       TrangThai: document['TrangThai']??0,
       KhuyenMai: document['KhuyenMai']??0,
-      MauSanPham: document['MaMauSanPham'].map((valueData)=>ModelProductModel.fromJson(valueData as Map<String,dynamic>)),
+      MaMauSanPham: document['MaMauSanPham'].map((valueData)=>ModelProductModel.fromJson(valueData as Map<String,dynamic>)),
     );
   }
 

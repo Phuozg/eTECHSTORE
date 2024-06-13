@@ -42,19 +42,6 @@ class OrderController extends GetxController{
   }
 
   Future<void> loopAddOrderDetail(var id,String userID) async{
-    // db.collection('GioHang').where('maKhachHang',isEqualTo: userID).snapshots().listen((event) {
-    //   event.docs.forEach((snapshot) {
-    //     var data = snapshot.data();
-    //     saveOrderDetail(
-    //     OrderDetail(
-    //       MaDonHang:  id, 
-    //       SoLuong: data['soLuong'], 
-    //       TrangThai: 1, 
-    //       KhuyenMai: 0, 
-    //       MauSanPham: ModelProductModel(CauHinh: '1TB',MaSanPham: data['mauSanPham']['maSanPham'],MauSac: 'Đen').toJson())
-    //   );
-    //   });
-    // });
     db.collection('GioHang').where('maKhachHang',isEqualTo: userID).get().then((value) {
       value.docs.forEach((snapshot) {
         var data = snapshot.data();
@@ -64,7 +51,7 @@ class OrderController extends GetxController{
           SoLuong: data['soLuong'], 
           TrangThai: 1, 
           KhuyenMai: 0, 
-          MauSanPham: ModelProductModel(CauHinh: '1TB',MaSanPham: data['mauSanPham']['maSanPham'],MauSac: 'Đen').toJson())
+          MaMauSanPham: ModelProductModel(CauHinh: '1TB',MaSanPham: data['mauSanPham']['maSanPham'],MauSac: 'Đen').toJson())
       );
       });
     });

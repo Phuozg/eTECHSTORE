@@ -1,4 +1,5 @@
 import 'package:etechstore/module/home/controllers/category_controller.dart';
+import 'package:etechstore/module/products/views/product_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -26,7 +27,9 @@ class Categories extends StatelessWidget{
           return Container(
                   padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
                   child: ElevatedButton(
-                    onPressed: (){}, 
+                    onPressed: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (builder)=> ProductScreen(danhMuc: category.id)));
+                    }, 
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 122, 125, 191),
                       shape: RoundedRectangleBorder(
