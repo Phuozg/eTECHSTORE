@@ -1,4 +1,5 @@
 import 'package:etechstore/module/cart/controller/cart_controller.dart';
+import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/module/orders/controller/orders_controller.dart';
 import 'package:etechstore/module/orders/model/detail_orders.dart';
 import 'package:etechstore/module/orders/model/orders_model.dart';
@@ -19,8 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../../home/views/home_screen.dart';
+import 'package:intl/intl.dart';
 
 class DetailOrderSreen extends StatelessWidget {
   final OrdersController controller = Get.put(OrdersController());
@@ -28,8 +28,8 @@ class DetailOrderSreen extends StatelessWidget {
   final ProfileController profileController = Get.put(ProfileController());
   final CartController cartController = Get.put(CartController());
 
-  DetailOrderSreen({super.key});
-
+  DetailOrderSreen({super.key, required this.maDonHang});
+  final maDonHang;
   @override
   Widget build(BuildContext context) {
     User? user = FirebaseAuth.instance.currentUser;
@@ -60,7 +60,6 @@ class DetailOrderSreen extends StatelessWidget {
             String currentUserUid = auth.currentUser?.uid ?? '';
 
             List<OrdersModel> userOrders = donHangs.where((order) => order.maKhachHang == currentUserUid).toList();
-            print(currentUserUid);
             if (userOrders.isEmpty) {
               return Container(
                 child: const Text('No orders found for current user.'),
@@ -78,9 +77,9 @@ class DetailOrderSreen extends StatelessWidget {
                   List<ProductModel> sanPham = snapshotProduct.data!;
 
                   List<ProductModel> filterProduct = sanPham.toList();
-                  List<OrdersModel> fillterOrder = donHangs.toList();
+                  List<OrdersModel> fillterOrder = donHangs.where((donHang) => donHang.id == maDonHang).toList();
                   return StreamBuilder<List<DetailOrders>>(
-                    stream: controller.getCTDonHangs(),
+                    stream: controller.getCTDonHangs(maDonHang),
                     builder: (context, snapshotCTDonHang) {
                       if (!snapshotCTDonHang.hasData) {
                         return const Center(child: CircularProgressIndicator());
@@ -170,19 +169,8 @@ class DetailOrderSreen extends StatelessWidget {
                                     () => ListView.builder(
                                       shrinkWrap: true,
                                       physics: const NeverScrollableScrollPhysics(),
-                                      itemCount: (controller.itemsToShow.value >= filteredCTDonHangs.length)
-                                          ? filteredCTDonHangs.length
-                                          : controller.itemsToShow.value + 1,
+                                      itemCount: controller.itemsToShow.value,
                                       itemBuilder: (context, index) {
-                                        if (index == controller.itemsToShow.value) {
-                                          return filteredCTDonHangs.length > controller.itemsToShow.value
-                                              ? TextButton(
-                                                  onPressed: controller.loadMore,
-                                                  child: const Text('Xem thêm'),
-                                                )
-                                              : Container();
-                                        }
-
                                         DetailOrders ctDonHang = filteredCTDonHangs[index];
                                         ProductModel product = filterProduct.firstWhere((p) => p.id == ctDonHang.maMauSanPham['MaSanPham']);
                                         OrdersModel order = fillterOrder.firstWhere((o) => o.id == ctDonHang.maDonHang);
@@ -226,9 +214,7 @@ class DetailOrderSreen extends StatelessWidget {
                                                                 SizedBox(width: 3.w),
                                                                 product.thumbnail != null
                                                                     ? GestureDetector(
-                                                                        onTap: () {
-                                                                          Get.to(DetailOrderSreen());
-                                                                        },
+                                                                        onTap: () {},
                                                                         child: FadeInImage.assetNetwork(
                                                                           image: product.thumbnail.toString(),
                                                                           placeholder: ImageKey.whiteBackGround,
@@ -364,44 +350,47 @@ class DetailOrderSreen extends StatelessWidget {
                                         width: double.infinity,
                                         margin: EdgeInsets.only(top: 8.h, bottom: 10.h),
                                         padding: EdgeInsets.only(left: 12.w, top: 10.h, bottom: 5.h, right: 5.w),
-                                        child: Column(
-                                          children: orders.map((order) {
-                                            return Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  "Chi tiết đơn hàng",
-                                                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15.sp),
-                                                ),
-                                                SizedBox(height: 10.h),
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text("Mã đơn hàng", style: TextStyle(fontSize: 13.sp)),
-                                                    Text(order.id),
-                                                  ],
-                                                ),
-                                                SizedBox(height: 5.h),
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text("Phương thức thanh toán", style: TextStyle(fontSize: 13.sp)),
-                                                    Text("Thanh toán qua ngân hàng", style: TextStyle(fontSize: 13.sp)),
-                                                  ],
-                                                ),
-                                                SizedBox(height: 5.h),
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    Text("Ngày đặt hàng", style: TextStyle(fontSize: 13.sp)),
-                                                    Text("${order.ngayTaoDon.toDate()}", style: TextStyle(fontSize: 13.sp)),
-                                                  ],
-                                                )
-                                              ],
-                                            );
-                                          }).toList(),
+                                        child: SingleChildScrollView(
+                                          child: Column(
+                                            children: orders.map((order) {
+                                              return Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    "Chi tiết đơn hàng",
+                                                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15.sp),
+                                                  ),
+                                                  SizedBox(height: 10.h),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text("Mã đơn hàng", style: TextStyle(fontSize: 13.sp)),
+                                                      Text(order.id),
+                                                    ],
+                                                  ),
+                                                  SizedBox(height: 5.h),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text("Phương thức thanh toán", style: TextStyle(fontSize: 13.sp)),
+                                                      Text("Thanh toán qua ngân hàng", style: TextStyle(fontSize: 13.sp)),
+                                                    ],
+                                                  ),
+                                                  SizedBox(height: 5.h),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      Text("Ngày đặt hàng", style: TextStyle(fontSize: 13.sp)),
+                                                      Text(DateFormat('dd-MM-yyyy, hh:mm a').format(order.ngayTaoDon.toDate()),
+                                                          style: TextStyle(fontSize: 13.sp)),
+                                                    ],
+                                                  )
+                                                ],
+                                              );
+                                            }).toList(),
+                                          ),
                                         ))
                                 ],
                               ),
