@@ -31,7 +31,7 @@ class OrderCancelled extends StatelessWidget {
 
           String userId = auth.currentUser?.uid ?? '';
           List<OrdersModel> donHangs = snapshotDonHang.data!;
-          List<OrdersModel> fillterOrder = donHangs.where((order) => order.maKhachHang == userId).toList();
+          List<OrdersModel> fillterOrder = donHangs.where((order) => order.maKhachHang == userId && order.isCancelled).toList();
           if (fillterOrder.isEmpty) {
             return Container(
               child: Column(
@@ -66,12 +66,22 @@ class OrderCancelled extends StatelessWidget {
                 } else {
                   List<DetailOrders> ctDonHangs = snapshot.data!;
 
+                  Set<String> displayedOrders = <String>{};
+
                   List<DetailOrders> filteredCTDonHangs =
-                      ctDonHangs.where((ctDonHang) => fillterOrder.any((order) => order.id == ctDonHang.maDonHang)).toList();
+                      ctDonHangs.where((ctDonHang) => fillterOrder.any((order) => order.id == ctDonHang.maDonHang)).where((ctDonHang) {
+                    if (displayedOrders.contains(ctDonHang.maDonHang)) {
+                      return false;
+                    } else {
+                      displayedOrders.add(ctDonHang.maDonHang);
+                      return true;
+                    }
+                  }).toList();
 
                   return ListView.builder(
                     shrinkWrap: true,
-                    itemCount: fillterOrder.length,
+                    itemCount:
+                        (controller.itemsToShow.value >= filteredCTDonHangs.length) ? filteredCTDonHangs.length : controller.itemsToShow.value + 1,
                     itemBuilder: (context, index) {
                       DetailOrders item = filteredCTDonHangs[index];
 
@@ -82,7 +92,7 @@ class OrderCancelled extends StatelessWidget {
                           child: Text('Order not found for detail order ${item.maDonHang}.'),
                         );
                       }
- 
+
                       return order.isCancelled == true
                           ? Container(
                               height: 180.h,
@@ -103,7 +113,7 @@ class OrderCancelled extends StatelessWidget {
                                     children: [
                                       GestureDetector(
                                         onTap: () {
-                                          Get.to(DetailOrderSreen());
+                                          Get.to(DetailOrderSreen(maDonHang: order.id));
                                         },
                                         child: Row(
                                           children: [
@@ -111,22 +121,24 @@ class OrderCancelled extends StatelessWidget {
                                             product?.thumbnail != null
                                                 ? GestureDetector(
                                                     onTap: () {
-                                                      Get.to(DetailOrderSreen());
+                                                      Get.to(DetailOrderSreen(maDonHang: order.id));
                                                     },
                                                     child: FadeInImage.assetNetwork(
-                                                        image:    product!.thumbnail.toString(),
-                                                        placeholder: ImageKey.whiteBackGround,
+                                                      image: product!.thumbnail.toString(),
+                                                      placeholder: ImageKey.whiteBackGround,
                                                       width: 60.w,
                                                       height: 60.h,
                                                       fit: BoxFit.cover,
-                                                        imageErrorBuilder: (context, error, stackTrace) {
-                                                          return Center(child: Image.asset(ImageKey.whiteBackGround,
-                                                      width: 60.w,
-                                                      height: 60.h,
-                                                      fit: BoxFit.cover,));
-                                                        },
-                                                      )
-                                                  )
+                                                      imageErrorBuilder: (context, error, stackTrace) {
+                                                        return Center(
+                                                            child: Image.asset(
+                                                          ImageKey.whiteBackGround,
+                                                          width: 60.w,
+                                                          height: 60.h,
+                                                          fit: BoxFit.cover,
+                                                        ));
+                                                      },
+                                                    ))
                                                 : Container(),
                                             SizedBox(
                                               width: 20.w,
@@ -139,7 +151,7 @@ class OrderCancelled extends StatelessWidget {
                                                     ? GestureDetector(
                                                         onTap: () {
                                                           //
-                                                          Get.to(DetailOrderSreen());
+                                                          Get.to(DetailOrderSreen(maDonHang: order.id));
                                                         },
                                                         child: SizedBox(
                                                           width: 170.w,
@@ -203,7 +215,7 @@ class OrderCancelled extends StatelessWidget {
                                     ],
                                   ),
                                   SizedBox(height: 10.h),
-                                       Flexible(
+                                  Flexible(
                                     child: Padding(
                                       padding: EdgeInsets.only(left: 130.0.w),
                                       child: Row(
@@ -212,7 +224,7 @@ class OrderCancelled extends StatelessWidget {
                                             child: Align(
                                               alignment: Alignment.bottomRight,
                                               child: Text(
-                                                 priceFormat(product!.giaTien),
+                                                priceFormat(product!.giaTien),
                                                 style: const TextStyle(
                                                   color: Colors.blueGrey,
                                                   decoration: TextDecoration.lineThrough,
@@ -225,7 +237,7 @@ class OrderCancelled extends StatelessWidget {
                                             child: Align(
                                               alignment: Alignment.bottomRight,
                                               child: Text(
-                                             priceFormat(product!.giaTien),
+                                                priceFormat(product.giaTien),
                                                 style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.redAccent),
                                               ),
                                             ),
@@ -250,18 +262,18 @@ class OrderCancelled extends StatelessWidget {
                                         children: [
                                           Text(
                                             "Thành tiền:",
-                                            style: TextStyle(color: const Color.fromARGB(255, 41, 40, 40), fontSize: 15.sp),
+                                            style: TextStyle(color: const Color.fromARGB(255, 41, 40, 40), fontSize: 13.sp),
                                           ),
                                           SizedBox(width: 5.w),
                                           Text(
                                             priceFormat(order.tongTien),
-                                            style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w500, color: Colors.redAccent),
+                                            style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Colors.redAccent),
                                           ),
                                         ],
                                       ),
                                     ],
                                   ),
-                                  SizedBox(height: 10.sp),
+                                  SizedBox(height: 5.sp),
                                   Linehelper(color: const Color.fromARGB(94, 217, 217, 217), height: 1),
                                   SizedBox(height: 5.sp),
                                   GestureDetector(
@@ -269,7 +281,7 @@ class OrderCancelled extends StatelessWidget {
                                       //Mua Lai
                                     },
                                     child: Container(
-                                      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
+                                      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 5.h),
                                       decoration: BoxDecoration(
                                         color: TColros.purple_line,
                                         border: const Border.fromBorderSide(BorderSide.none),
