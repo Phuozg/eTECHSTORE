@@ -85,7 +85,7 @@ class SignInController extends GetxController {
 
   //SignIn with Phone
   Future<void> signInPhoneNumber() async {
-    try {
+/*     try {
       //loading
       FullScreenLoader.openLoadingDialog('Quá trình đang diễn ra...', ImageKey.loadingAnimation);
 
@@ -112,12 +112,12 @@ class SignInController extends GetxController {
       } else {
         e.toString();
       }
-    }
+    } */
   }
 
   //Verifi PhoneNumber
   Future<void> verifyPhoneNumber() async {
-    try {
+    /*   try {
       //Loading
       FullScreenLoader.openLoadingDialog('Đang xử lý yêu cầu của bạn...', ImageKey.loadingAnimation);
 
@@ -142,6 +142,6 @@ class SignInController extends GetxController {
       } else {
         TLoaders.errorSnackBar(title: TTexts.thongBao, message: Text(TTexts.maXacNhanOTPChuaDung));
       }
-    }
+    } */
   }
 }

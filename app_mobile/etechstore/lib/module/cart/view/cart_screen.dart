@@ -1,6 +1,8 @@
 import 'package:etechstore/module/cart/controller/cart_controller.dart';
 import 'package:etechstore/module/cart/controller/enum.dart';
 import 'package:etechstore/module/cart/model/cart_model.dart';
+import 'package:etechstore/module/cart/view/widget/change_quantity_item_widget.dart';
+import 'package:etechstore/module/cart/view/widget/delete_item_widget.dart';
 import 'package:etechstore/module/fake/simmer.dart';
 import 'package:etechstore/module/fake/views/auth_controller.dart';
 import 'package:etechstore/module/home/views/home_screen.dart';
@@ -99,17 +101,7 @@ class CartScreen extends StatelessWidget {
                                 int quantity = item.soLuong;
                                 var product = controller.products[item.maSanPham['maSanPham']];
                                 return Slidable(
-                                  endActionPane: ActionPane(motion: const ScrollMotion(), children: [
-                                    SlidableAction(
-                                      onPressed: (context) {
-                                        controller.removeItemFromCart(item);
-                                      },
-                                      backgroundColor: const Color(0xFFFE4A49),
-                                      foregroundColor: Colors.white,
-                                      icon: Icons.delete,
-                                      label: 'Xóa',
-                                    ),
-                                  ]),
+                                  endActionPane: ActionPane(motion: const ScrollMotion(), children: [DeleteItem(item: item)]),
                                   child: SingleChildScrollView(
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -609,62 +601,7 @@ class CartScreen extends StatelessWidget {
                                                             ],
                                                           ),
                                                           SizedBox(height: 3.h),
-                                                          Container(
-                                                            alignment: Alignment.center,
-                                                            width: 60.w,
-                                                            height: 16.5.h,
-                                                            decoration: BoxDecoration(
-                                                              border: Border.all(width: .5.w),
-                                                              borderRadius: BorderRadius.circular(5.r),
-                                                              color: const Color.fromARGB(57, 187, 184, 184),
-                                                            ),
-                                                            child: Row(
-                                                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                              children: [
-                                                                GestureDetector(
-                                                                  child: Container(
-                                                                      alignment: Alignment.center, child: const Icon(Icons.remove, size: 18)),
-                                                                  onTap: () {
-                                                                    if (quantity > 1) {
-                                                                      quantity--;
-                                                                      item.soLuong = quantity;
-                                                                      controller.updateCartItem(item);
-                                                                    }
-                                                                  },
-                                                                ),
-                                                                Container(
-                                                                  height: double.infinity,
-                                                                  color: Colors.black,
-                                                                  width: .5,
-                                                                ),
-                                                                Container(
-                                                                  padding: EdgeInsets.only(left: 3.0.w, right: 4.w),
-                                                                  alignment: Alignment.topCenter,
-                                                                  child: Text(
-                                                                    '$quantity',
-                                                                    style: TextStyle(fontSize: 13.sp),
-                                                                  ),
-                                                                ),
-                                                                Container(
-                                                                  height: double.infinity,
-                                                                  color: Colors.black,
-                                                                  width: .5,
-                                                                ),
-                                                                GestureDetector(
-                                                                  child: Container(
-                                                                      height: 15.h,
-                                                                      alignment: Alignment.topCenter,
-                                                                      child: Icon(Icons.add, size: 17.sp)),
-                                                                  onTap: () {
-                                                                    //     controller.toggleItemSelection(item.id);
-                                                                    quantity++;
-                                                                    item.soLuong = quantity;
-                                                                    controller.updateCartItem(item);
-                                                                  },
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          )
+                                                          ChangeQuantityItemWidget(item: item, quantity: quantity)
                                                         ],
                                                       ),
                                                     ],
@@ -811,7 +748,7 @@ class CartScreen extends StatelessWidget {
                               SizedBox(width: 10.w),
                               GestureDetector(
                                 onTap: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> const OrderScreen()));
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const OrderScreen()));
                                 },
                                 child: Container(
                                   alignment: Alignment.center,
