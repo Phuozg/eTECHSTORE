@@ -21,6 +21,7 @@ class OrderDetail {
   Map<String, dynamic> toJson() {
     return {
       'MaDonHang': MaDonHang,
+      'KhuyenMai':KhuyenMai,
       'SoLuong': SoLuong,
       'TrangThai': TrangThai,
       'MauSanPham': MauSanPham
@@ -32,8 +33,8 @@ class OrderDetail {
       MaDonHang: document['MaDonHang']??'',
       SoLuong: document['SoLuong']??0,
       TrangThai: document['TrangThai']??0,
-      KhuyenMai: document['Khuyenmai']??0,
-      MauSanPham: document['MauSanPham'].map((valueData)=>ModelProductModel.fromJson(valueData as Map<String,dynamic>)),
+      KhuyenMai: document['KhuyenMai']??0,
+      MauSanPham: document['MaMauSanPham'].map((valueData)=>ModelProductModel.fromJson(valueData as Map<String,dynamic>)),
     );
   }
 

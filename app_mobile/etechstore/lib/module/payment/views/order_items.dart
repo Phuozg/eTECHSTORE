@@ -38,7 +38,7 @@ class OrderItem extends StatelessWidget {
                 return const CircularProgressIndicator();
               }
               return ListView.builder(
-                itemCount: orderItemController.orderItem.length,
+                itemCount: snapshot.data!.docs.length,
                 itemBuilder: (context,index){
                   final cart = carts[index];
                   final item = orderItemController.orderItem[index];

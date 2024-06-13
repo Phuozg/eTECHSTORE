@@ -86,7 +86,7 @@ class CartController extends GetxController {
         cartItems.value = items;
 
         for (var item in cartItems) {
-          selectedItems[item.id] = false;
+          selectedItems[item.id] = true;
         }
 
         for (var item in items) {

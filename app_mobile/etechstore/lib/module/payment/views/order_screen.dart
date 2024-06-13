@@ -1,3 +1,4 @@
+import 'package:etechstore/module/cart/controller/cart_controller.dart';
 import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/module/payment/controllers/order_controller.dart';
 import 'package:etechstore/module/payment/controllers/payment_controller.dart';
@@ -64,7 +65,7 @@ class OrderScreen extends StatelessWidget {
             backgroundColor: const Color(0xFF383CA0)
           ),
           child:Obx((){
-             return Text('Đặt hàng \n ${priceFormat(orderItemsController.totalPrice.toInt())}',style: const TextStyle(color: Colors.white,fontSize: 15),textAlign: TextAlign.center,);
+             return Text('Đặt hàng \n ${priceFormat(CartController().instance.totalPrice.value.toInt())}',style: const TextStyle(color: Colors.white,fontSize: 15),textAlign: TextAlign.center,);
           })
         ),
       ),
