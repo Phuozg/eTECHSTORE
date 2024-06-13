@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CategoryModel{
-  String id;
+  int id;
   String TenDanhMuc;
   String MoTa;
   String HinhAnh;
@@ -16,7 +16,7 @@ class CategoryModel{
   });
 
   //Empty Category
-  static CategoryModel empty() => CategoryModel(id: '', TenDanhMuc: '', MoTa: '', HinhAnh: '', TrangThai: 0);
+  static CategoryModel empty() => CategoryModel(id: 0, TenDanhMuc: '', MoTa: '', HinhAnh: '', TrangThai: 0);
 
   factory CategoryModel.fromSnapshot(DocumentSnapshot<Map<String,dynamic>> document){
     if(document.data()!=null){
@@ -24,7 +24,7 @@ class CategoryModel{
 
       //Map Json to Model
       return CategoryModel(
-        id: document.id, 
+        id: data['id'], 
         TenDanhMuc: data['TenDanhMuc']??'', 
         MoTa: data['MoTa']??'', 
         HinhAnh: data['HinhAnh']??'', 
