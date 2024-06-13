@@ -1,7 +1,5 @@
 import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:etechstore/module/cart/controller/cart_controller.dart';
 import 'package:etechstore/module/payment/controllers/order_items_controller.dart';
 import 'package:etechstore/module/payment/models/model_product_model.dart';
 import 'package:etechstore/module/payment/models/order_detail_model.dart';
@@ -15,10 +13,10 @@ class OrderController extends GetxController{
 
   final db = FirebaseFirestore.instance;
   final orderItemController = Get.put(OrderItemsController());
-  final id = generateRandomString(20);
+  var id = generateRandomString(20);
   Future<void> saveOrder(OrderModel order) async {
     try{
-      await db.collection('DonHang').add(order.toJson());
+      await db.collection('DonHang').doc(id).set(order.toJson());
     } catch (e){
       throw 'Something went wrong';
     }
@@ -26,7 +24,7 @@ class OrderController extends GetxController{
 
   Future<void> saveOrderDetail(OrderDetail orderDetail) async {
     try{
-      await db.collection('CTDonHang').doc(id).set(orderDetail.toJson());
+      await db.collection('CTDonHang').add(orderDetail.toJson());
     } catch (e){
       throw 'Something went wrong';
     }
@@ -43,12 +41,42 @@ class OrderController extends GetxController{
     }
   }
 
+  Future<void> loopAddOrderDetail(var id,String userID) async{
+    // db.collection('GioHang').where('maKhachHang',isEqualTo: userID).snapshots().listen((event) {
+    //   event.docs.forEach((snapshot) {
+    //     var data = snapshot.data();
+    //     saveOrderDetail(
+    //     OrderDetail(
+    //       MaDonHang:  id, 
+    //       SoLuong: data['soLuong'], 
+    //       TrangThai: 1, 
+    //       KhuyenMai: 0, 
+    //       MauSanPham: ModelProductModel(CauHinh: '1TB',MaSanPham: data['mauSanPham']['maSanPham'],MauSac: 'Đen').toJson())
+    //   );
+    //   });
+    // });
+    db.collection('GioHang').where('maKhachHang',isEqualTo: userID).get().then((value) {
+      value.docs.forEach((snapshot) {
+        var data = snapshot.data();
+        saveOrderDetail(
+        OrderDetail(
+          MaDonHang:  id, 
+          SoLuong: data['soLuong'], 
+          TrangThai: 1, 
+          KhuyenMai: 0, 
+          MauSanPham: ModelProductModel(CauHinh: '1TB',MaSanPham: data['mauSanPham']['maSanPham'],MauSac: 'Đen').toJson())
+      );
+      });
+    });
+  }
+
   void processOrder(String userID,int totalPrice,int totalDiscount) async {
     try{
       ScreenLoader.openLoadingDialog();
 
       if(userID.isEmpty) return;
-
+      
+      id = generateRandomString(20);
       final order = OrderModel(
         id: id,
         TongTien: totalPrice, 
@@ -63,22 +91,9 @@ class OrderController extends GetxController{
       );
       await saveOrder(order);
 
-      for(var cartDetail in orderItemController.allCartsDetail){
-        for(var item in orderItemController.allItems){
-          if(item.id == cartDetail.maSanPham){
-            await saveOrderDetail(
-              OrderDetail(
-                MaDonHang:  id, 
-                SoLuong: cartDetail.soLuong, 
-                TrangThai: 1, 
-                KhuyenMai: item.KhuyenMai, 
-                MauSanPham: ModelProductModel(CauHinh: '',MaSanPham: item.id,MauSac: '').toJson())
-            );
-          }
-        }
-      }
-
-      clearCart(userID);
+      await loopAddOrderDetail(id,userID);
+      
+      await clearCart(userID);
       Get.off(()=> const SuccessScreen());
     } catch (e){
       throw 'something went wrong';

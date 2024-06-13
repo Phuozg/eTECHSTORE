@@ -4,6 +4,7 @@ import 'package:etechstore/module/cart/model/cart_model.dart';
 import 'package:etechstore/module/fake/simmer.dart';
 import 'package:etechstore/module/fake/views/auth_controller.dart';
 import 'package:etechstore/module/home/views/home_screen.dart';
+import 'package:etechstore/module/payment/controllers/order_items_controller.dart';
 import 'package:etechstore/module/payment/views/order_screen.dart';
 import 'package:etechstore/module/product_detail/controller/product_controller.dart';
 import 'package:etechstore/module/product_detail/controller/product_sample_controller.dart';
@@ -802,7 +803,7 @@ class CartScreen extends StatelessWidget {
                                   SizedBox(height: 6.h),
                                   Text("Tổng thanh toán", style: TextStyle(fontSize: 10.sp)),
                                   Text(
-                                    controller.totalPrice.value.toStringAsFixed(2),
+                                    priceFormat(controller.totalPrice.value.toInt()),
                                     style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold, color: Colors.redAccent),
                                   ),
                                 ],

@@ -1,3 +1,4 @@
+import 'package:etechstore/module/cart/controller/cart_controller.dart';
 import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/module/payment/controllers/payment_controller.dart';
 import 'package:etechstore/module/payment/controllers/order_items_controller.dart';
@@ -38,7 +39,7 @@ class Payment extends StatelessWidget {
           ),
         ),
         const Divider(),
-        Text("Tổng tiền: ${priceFormat(orderController.totalPrice.toInt())}",style: const TextStyle(color: Colors.red,fontWeight: FontWeight.bold),)
+        Text("Tổng tiền: ${priceFormat(CartController().instance.totalPrice.value.toInt())}",style: const TextStyle(color: Colors.red,fontWeight: FontWeight.bold),)
       ],
     )
     );
