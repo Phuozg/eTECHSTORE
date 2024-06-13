@@ -27,19 +27,16 @@ class OrdersController extends GetxController {
     itemsToShow.value += 10;
   }
 
-  void disLoadMore() {
-    itemsToShow.value = 2;
-  }
-
   @override
   void onInit() {
     super.onInit();
-
+    super.onInit();
     fetchIsPaid();
     fetchData();
   }
 
   Stream<List<OrdersModel>> fetchIsPaid() {
+    print("hello 2");
     String? userId = _auth.currentUser?.uid;
 
     return FirebaseFirestore.instance.collection('DonHang').where('MaKhachHang', isEqualTo: userId).snapshots().map((querySnapshot) {
@@ -53,6 +50,9 @@ class OrdersController extends GetxController {
   }
 
   Stream<List<DetailOrders>> fetchData() {
+    print("hello 1");
+    String? userId = _auth.currentUser?.uid;
+
     return _firestore.collection('CTDonHang').where('TrangThai', isEqualTo: 1).snapshots().asyncMap((snapshot) async {
       final items = await Future.wait(
         snapshot.docs.map((doc) async {
@@ -76,22 +76,22 @@ class OrdersController extends GetxController {
   }
 
   Stream<List<OrdersModel>> getOrder() {
+    print("hello 3");
     return _firestore.collection('DonHang').snapshots().map((snapshot) => snapshot.docs.map((doc) => OrdersModel.fromJson(doc.data())).toList());
   }
 
-  Stream<List<DetailOrders>> getCTDonHangs(String maDonHang) {
-    return _firestore
-        .collection('CTDonHang')
-        .where('MaDonHang', isEqualTo: maDonHang)
-        .snapshots()
-        .map((snapshot) => snapshot.docs.map((doc) => DetailOrders.fromJson(doc.data())).toList());
+  Stream<List<DetailOrders>> getCTDonHangs() {
+    print("hello 4");
+    return _firestore.collection('CTDonHang').snapshots().map((snapshot) => snapshot.docs.map((doc) => DetailOrders.fromJson(doc.data())).toList());
   }
 
   Stream<List<ProductModel>> getProduct() {
+    print("hello 5");
     return _firestore.collection('SanPham').snapshots().map((snapshot) => snapshot.docs.map((doc) => ProductModel.fromJson(doc.data())).toList());
   }
 
   void fetchOrdersAndCartItems() async {
+    print("hello 6");
     String? userId = _auth.currentUser?.uid;
     if (userId != null) {
       FirebaseFirestore.instance.collection('DonHang').where('MaKhachHang', isEqualTo: userId).snapshots().listen((ordersSnapshot) async {

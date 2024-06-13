@@ -22,16 +22,21 @@ class AuthServices extends GetxController {
 
   //SignInWithFireStore
   Future<UserCredential?> signInWithEmailPassword(String email, String password) async {
-    UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+    try {
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-    if (await _isUserAllowedToSignIn(email)) {
-      return userCredential;
-    } else {
-      await _auth.signOut();
-      Get.snackbar('Đăng nhập thất bại', 'Email hoặc trạng thái không hợp lệ');
+      if (await _isUserAllowedToSignIn(email)) {
+        return userCredential;
+      } else {
+        await _auth.signOut();
+        Get.snackbar('Đăng nhập thất bại', 'Email hoặc trạng thái không hợp lệ');
+        return null;
+      }
+    } catch (e) {
+      Get.snackbar('Đăng nhập thất bại', e.toString());
       return null;
     }
   }
@@ -104,7 +109,44 @@ class AuthServices extends GetxController {
       final credentials = GoogleAuthProvider.credential(accessToken: googleAuth?.accessToken, idToken: googleAuth?.idToken);
       return await _auth.signInWithCredential(credentials);
     } catch (e) {
-      print(e);
+      rethrow;
+    }
+  }
+
+  //SignIn With PhoneNumber
+  Future<PhoneAuthCredential?> signInWithPhoneNumber(int timeOut, String phoneNumber, String verificationId) async {
+    try {
+      await _auth.verifyPhoneNumber(
+        timeout: Duration(seconds: timeOut),
+        phoneNumber: phoneNumber,
+        verificationCompleted: (AuthCredential credential) async {
+          await FirebaseAuth.instance.signInWithCredential(credential);
+        },
+        verificationFailed: (FirebaseAuthException exc) async {
+          if (exc.code == 'invalid-phone-number') {
+            print('Invalid phone number');
+          } else {
+            print('e r r o r');
+          }
+        },
+        codeSent: (String verificationid, int? resendToken) {
+          verificationId;
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {},
+      );
+    } catch (e) {
+      e.toString();
+    }
+    return null;
+  }
+
+  //VerifiPhoneNumber
+  Future<UserCredential>? verifyPhoneNumber(String verifyId, String smsCode) {
+    try {
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: verifyId, smsCode: smsCode);
+      return _auth.signInWithCredential(credential);
+    } catch (e) {
+      e.toString();
     }
     return null;
   }
