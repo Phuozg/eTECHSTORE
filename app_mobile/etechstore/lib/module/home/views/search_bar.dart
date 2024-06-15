@@ -1,15 +1,19 @@
+import 'package:etechstore/module/search/views/search_screen.dart';
 import 'package:flutter/material.dart';
 
-Widget searchBar(){
+Widget searchBar(BuildContext context){
      return Container(
       padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
-      child: const TextField(
-                decoration: InputDecoration(
-                  label: Text("Tìm kiếm sản phẩm",style: TextStyle(
-                    color: Colors.white
-                  ),),
-                  prefixIcon: Icon(Icons.search,color: Colors.white,)
-                ),
-              ),
+      child: ElevatedButton(
+        onPressed: (){
+          Navigator.push(context, MaterialPageRoute(builder: (builder)=>const SearchSreen()));
+        }, 
+        child: const Row(
+          children: [
+            Icon(Icons.search),
+            Text("Tìm kiếm"),
+          ],
+        )
+      )
     );
   }

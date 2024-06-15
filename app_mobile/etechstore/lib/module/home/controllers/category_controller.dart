@@ -16,7 +16,7 @@ class CategoryController extends GetxController{
 
   Future<void> fetchCategories() async {
     try{
-      final snapshot = await db.collection('DanhMucSanPham').where('TrangThai',isEqualTo: 1).get();
+      final snapshot = await db.collection('DanhMucSanPham').orderBy('id',descending: false).get();
       final categories = snapshot.docs.map((document) => CategoryModel.fromSnapshot(document)).toList();
       allCategories.assignAll(categories);
     }

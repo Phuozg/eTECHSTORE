@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:etechstore/module/cart/controller/cart_controller.dart';
 import 'package:etechstore/module/cart/view/cart_screen.dart';
-import 'package:etechstore/module/chat_with_admin/view/chat_home_screen.dart';
 import 'package:etechstore/module/fake/views/auth_controller.dart';
 import 'package:etechstore/module/home/views/category.dart';
 import 'package:etechstore/module/home/views/product.dart';
@@ -32,13 +31,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     ordersController.fetchIsPaid();
- productController.fetchProductSamples();
+    productController.fetchProductSamples();
     cartController.fetchCartItems();
     productController.fetchProducts();
-   productSampleController.fetchProductSamples();
+    productSampleController.fetchProductSamples();
   }
 
   @override
@@ -50,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
         flexibleSpace: Container(
           decoration: const BoxDecoration(color: Color(0xFF383CA0)),
         ),
-        title: searchBar(),
+        title: searchBar(context),
         actions: [
           ElevatedButton(
             onPressed: () async {
@@ -88,16 +86,16 @@ class _HomeScreenState extends State<HomeScreen> {
               )),
         ],
       ),
-      body: Container(
-        padding: const EdgeInsets.all(8),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
         child: ListView(
           shrinkWrap: true,
           children: [
-
+        
             //Banner khuyến mãi
             SizedBox(width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height / 6, child: const SlideShowBanner()),
             const Divider(),
-
+        
             //Danh mục sản phẩm
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const Divider(),
             
             //Danh sách sản phẩm
-            const Product()
+            const Product(),
           ],
         ),
       ),
