@@ -1,4 +1,4 @@
-import 'package:etechstore/module/favorite_product_screen/view/favorite_product_screen.dart';
+import 'package:etechstore/module/wishlist/view/wishlist_screen.dart';
 import 'package:etechstore/module/orders/views/orders_manage_screen.dart';
 import 'package:etechstore/module/profile/controller/profile_controller.dart';
 import 'package:etechstore/module/profile/model/profile_model.dart';
@@ -122,7 +122,7 @@ class ProfileScreen extends StatelessWidget {
                     ),
                     GestureDetector(
                         onTap: () {
-                          Get.to(const FavoriteProductScreen());
+                          Get.to(const WishListScreen());
                         },
                         child: ListHelpProfile(icon: const Image(image: AssetImage(ImageKey.iconHeart)), text: "Yêu thích")),
                     GestureDetector(

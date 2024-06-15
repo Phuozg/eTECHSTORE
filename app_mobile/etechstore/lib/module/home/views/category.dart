@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:etechstore/module/home/controllers/category_controller.dart';
+import 'package:etechstore/module/home/controllers/product_controller.dart';
 import 'package:etechstore/module/products/views/product_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,7 +14,7 @@ class Categories extends StatelessWidget{
   @override 
   Widget build(BuildContext context){
     final categoryController = Get.put(CategoryController());
-
+    final productController = Get.put(ProductControllerr());
     return Obx(() {
       if(categoryController.allCategories.isEmpty){
         return const Center(child: Text("Không có dữ liệu"),);
@@ -28,7 +30,10 @@ class Categories extends StatelessWidget{
                   padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
                   child: ElevatedButton(
                     onPressed: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (builder)=> ProductScreen(danhMuc: category.id)));
+                      Navigator.push(context, MaterialPageRoute(builder: (builder)=>ProductScreen(
+                        title: category.TenDanhMuc,
+                        futureMethod: productController.getProductsForCate(catId: category.id),
+                      )));
                     }, 
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 122, 125, 191),

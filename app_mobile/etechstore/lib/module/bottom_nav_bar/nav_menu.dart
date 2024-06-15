@@ -1,4 +1,4 @@
-import 'package:etechstore/module/favorite_product_screen/view/favorite_product_screen.dart';
+import 'package:etechstore/module/wishlist/view/wishlist_screen.dart';
 import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/module/orders/views/orders_manage_screen.dart';
 import 'package:etechstore/module/profile/views/profile_screen.dart';
@@ -18,7 +18,7 @@ class NavMenu extends StatelessWidget {
       return [
         const HomeScreen(),
         const OrderManageScreen(),
-        const FavoriteProductScreen(),
+        const WishListScreen(),
         ProfileScreen(),
       ];
     }
