@@ -1,11 +1,12 @@
-import 'package:etechstore/module/wishlist/view/wishlist_screen.dart';
-import 'package:etechstore/module/orders/views/orders_manage_screen.dart';
+import 'package:etechstore/module/auth/controller/sign_in_controller.dart';
+ import 'package:etechstore/module/orders/views/orders_manage_screen.dart';
 import 'package:etechstore/module/profile/controller/profile_controller.dart';
 import 'package:etechstore/module/profile/model/profile_model.dart';
 import 'package:etechstore/module/profile/views/edit_views/profile_edit_screen.dart';
 import 'package:etechstore/module/profile/views/setting_views/setting_screen.dart';
 import 'package:etechstore/module/profile/views/suport_views/suport_screen.dart';
 import 'package:etechstore/module/profile/views/widget/list_help_profile.dart';
+import 'package:etechstore/module/wishlist/view/wishlist_screen.dart';
 import 'package:etechstore/services/auth/auth_services.dart';
 import 'package:etechstore/utlis/constants/colors.dart';
 import 'package:etechstore/utlis/constants/image_key.dart';
