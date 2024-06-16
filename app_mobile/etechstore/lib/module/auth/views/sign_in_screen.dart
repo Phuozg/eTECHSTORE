@@ -1,7 +1,6 @@
 import 'package:etechstore/module/auth/controller/sign_in_controller.dart';
 import 'package:etechstore/module/auth/views/forget_password_screen.dart';
-import 'package:etechstore/module/auth/views/sign_in_with_phone_number_screen.dart';
-import 'package:etechstore/module/auth/views/sign_up_screen.dart';
+ import 'package:etechstore/module/auth/views/sign_up_screen.dart';
 import 'package:etechstore/services/auth/auth_gate.dart';
 import 'package:etechstore/services/auth/auth_services.dart';
 import 'package:etechstore/utlis/constants/colors.dart';
@@ -32,9 +31,9 @@ class SignInScreen extends GetView<SignInController> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    TTexts.dangNhap,
-                    style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  const Text(
+                    "Đăng nhập",
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(
                     height: 10.h,
@@ -51,7 +50,7 @@ class SignInScreen extends GetView<SignInController> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          TTexts.emailHoacSoDienThoai,
+                          TTexts.emai,
                           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, fontStyle: FontStyle.italic),
                         ),
                         SizedBox(
@@ -117,42 +116,23 @@ class SignInScreen extends GetView<SignInController> {
                   SizedBox(
                     height: 5.h,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        //   margin: const EdgeInsets.only(left: 180),
-                        child: TextButton(
-                          onPressed: () {
-                            Get.to(const SignInPhoneNumberScreen());
-                          },
-                          child: Text(
-                            TTexts.dangNhapVoiSmS,
-                            style: TextStyle(
-                              color: TColros.purple_line,
-                              fontSize: ScreenUtil().setSp(15),
-                            ),
-                          ),
+                  Container(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () {
+                        Get.to(const ForgetPasswordScreen());
+                      },
+                      child: Text(
+                        TTexts.quenMatKhau,
+                        style: TextStyle(
+                          color: TColros.purple_line,
+                          fontSize: ScreenUtil().setSp(15),
                         ),
                       ),
-                      Container(
-                        child: TextButton(
-                          onPressed: () {
-                            Get.to(const ForgetPasswordScreen());
-                          },
-                          child: Text(
-                            TTexts.quenMatKhau,
-                            style: TextStyle(
-                              color: TColros.purple_line,
-                              fontSize: ScreenUtil().setSp(15),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                   SizedBox(
-                    height: 50.h,
+                    height: 30.h,
                   ),
                   Center(
                       child: GestureDetector(
