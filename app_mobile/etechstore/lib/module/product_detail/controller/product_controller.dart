@@ -32,15 +32,13 @@ class ProductController extends GetxController {
   }
 
   void fetchProductSamples() async {
-    print("fetech product sample");
-    QuerySnapshot snapshot = await _firestore.collection('MauSanPham').get();
+     QuerySnapshot snapshot = await _firestore.collection('MauSanPham').get();
     productSamples.value = snapshot.docs.map((doc) => ProductSampleModel.fromFirestore(doc.data() as Map<String, dynamic>)).toList();
     fetchProducts();
   }
 
   void fetchProducts() async {
-        print("fetech product============");
-    for (var sample in productSamples) {
+     for (var sample in productSamples) {
       QuerySnapshot snapshot = await _firestore.collection('SanPham').where('id', isEqualTo: sample.MaSanPham).get();
       products.addAll(snapshot.docs.map((doc) => ProductModel.fromFirestore(doc.data() as Map<String, dynamic>)).toList());
     }

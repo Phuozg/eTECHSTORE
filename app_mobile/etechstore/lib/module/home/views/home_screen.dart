@@ -56,6 +56,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 Future.delayed(
                   const Duration(milliseconds: 1),
                   () {
+                    cartController.isEditMode.value = false;
+
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -91,7 +93,6 @@ class _HomeScreenState extends State<HomeScreen> {
         child: ListView(
           shrinkWrap: true,
           children: [
-        
             //Banner khuyến mãi
             SizedBox(width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height / 6, child: const SlideShowBanner()),
             const Divider(),
@@ -100,12 +101,15 @@ class _HomeScreenState extends State<HomeScreen> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text("Danh mục",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
+                const Text(
+                  "Danh mục",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
                 SizedBox(height: MediaQuery.of(context).size.height / 15, child: const Categories()),
               ],
             ),
             const Divider(),
-            
+
             //Danh sách sản phẩm
             const Product(),
           ],

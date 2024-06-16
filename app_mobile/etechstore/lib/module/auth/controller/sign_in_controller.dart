@@ -1,3 +1,4 @@
+import 'package:etechstore/module/auth/views/sign_in_screen.dart';
 import 'package:etechstore/module/auth/views/veryfi_phone_number_screen.dart';
 import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/services/auth/auth_gate.dart';
@@ -29,9 +30,24 @@ class SignInController extends GetxController {
   Rx<String> verify = "".obs;
   Rx<String> code = "".obs;
 
+  @override
+  void dispose() {
+    email.dispose();
+    password.dispose();
+    super.dispose();
+  }
+
+//
+  Future<void> checkSignIn() async {
+    await authServices.checkLoginStatus();
+  }
+
+  Future<void> signOut() async {
+    await authServices.signOut();
+  }
+
   //SignIn
-  void signIn() async {
-    FullScreenLoader.openLoadingDialog('', ImageKey.loadingAnimation);
+  Future<void> signIn() async {
     final isconnected = network.isConnectedToInternet.value;
     try {
       if (!isconnected) {

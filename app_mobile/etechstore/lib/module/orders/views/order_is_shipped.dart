@@ -5,6 +5,7 @@ import 'package:etechstore/module/orders/controller/orders_controller.dart';
 import 'package:etechstore/module/orders/model/detail_orders.dart';
 import 'package:etechstore/module/orders/model/orders_model.dart';
 import 'package:etechstore/module/orders/views/detail_order_screen.dart';
+import 'package:etechstore/module/orders/views/widget/order_isEmpty._widget.dart';
 import 'package:etechstore/utlis/constants/colors.dart';
 import 'package:etechstore/utlis/constants/image_key.dart';
 import 'package:etechstore/utlis/helpers/line/line_helper.dart';
@@ -219,7 +220,7 @@ class OrderIsShipped extends StatelessWidget {
                                               child: Align(
                                                 alignment: Alignment.bottomRight,
                                                 child: Text(
-                                                  priceFormat(productt.giaTien),
+                                                  priceFormat((productt.giaTien - (productt.giaTien * productt.KhuyenMai / 100)).toInt()),
                                                   style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.redAccent),
                                                 ),
                                               ),
@@ -256,12 +257,13 @@ class OrderIsShipped extends StatelessWidget {
                                           children: [
                                             Text(
                                               "Thành tiền:",
-                                              style: TextStyle(color: const Color.fromARGB(255, 41, 40, 40), fontSize: 15.sp),
+                                              style: TextStyle(color: const Color.fromARGB(255, 41, 40, 40), fontSize: 13.sp),
                                             ),
                                             SizedBox(width: 5.w),
                                             Text(
-                                              homeScreen.priceFormat(order.tongTien),
-                                              style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w500, color: Colors.redAccent),
+                                              homeScreen.priceFormat(
+                                                  ((productt.giaTien - (productt.giaTien * productt.KhuyenMai / 100)) * item.soLuong).toInt()),
+                                              style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Colors.redAccent),
                                             ),
                                           ],
                                         ),
@@ -270,29 +272,7 @@ class OrderIsShipped extends StatelessWidget {
                                   ],
                                 ),
                               )
-                            : Column(
-                                children: [
-                                  SizedBox(height: 20.h),
-                                  Image.asset(
-                                    ImageKey.cartEmpty,
-                                    width: 100.w,
-                                    height: 100.h,
-                                  ),
-                                  SizedBox(height: 20.h),
-                                  const Center(
-                                      child: Text(
-                                    "Chưa có đơn hàng nào",
-                                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w300),
-                                  )),
-                                  const SizedBox(height: 60),
-                                  Linehelper(color: const Color.fromARGB(39, 158, 158, 158), height: 5.h),
-                                  ListView(
-                                    shrinkWrap: true,
-                                    physics: const NeverScrollableScrollPhysics(),
-                                    children: const [Product()],
-                                  )
-                                ],
-                              );
+                            : OrderIsEmpty();
                       },
                     ),
                   );

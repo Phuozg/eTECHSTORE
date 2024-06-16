@@ -21,22 +21,23 @@ class OrderItemsController extends GetxController {
   }
 
   Future<void> fetchOrderItem() async {
-    final userCart = await db.collection('GioHang').where('maKhachHang', isEqualTo: userID).get();
-    final cartDetail = userCart.docs.map((document) => CartModel.fromSnapshot(document)).toList();
-    allCartsDetail.assignAll(cartDetail);
-
-    final products = await db.collection('SanPham').where('TrangThai', isEqualTo: true).get();
-    final items = products.docs.map((document) => ProductModel.fromSnapshot(document)).toList();
-    allItems.assignAll(items);
-
-    for (var cartDetail in allCartsDetail) {
-      for (var item in allItems) {
-        if (item.id == cartDetail.maSanPham) {
-          totalPrice += ((item.GiaTien - (item.GiaTien * item.KhuyenMai / 100)) * cartDetail.soLuong).toInt();
-          totalDiscount += ((item.GiaTien * item.KhuyenMai / 100) * cartDetail.soLuong).toInt();
-          orderItem.assign(item);
+    db.collection('GioHang').where('maKhachHang', isEqualTo: userID).snapshots().listen((snapshot) async {
+      var allCartsDetail = snapshot.docs.map((doc) => CartModel.fromSnapshot(doc)).toList();
+      final products = await db.collection('SanPham').where('TrangThai', isEqualTo: true).get();
+      final items = products.docs.map((document) => ProductModel.fromSnapshot(document)).toList();
+      allItems.assignAll(items);
+      orderItem.clear();
+      for (var cartDetail in allCartsDetail) {
+        for (var item in allItems) {
+          if (item.id == cartDetail.maSanPham) {
+            if (totalPrice <= CartController().instance.totalPrice.value) {
+              totalPrice += ((item.GiaTien - (item.GiaTien * item.KhuyenMai / 100)) * cartDetail.soLuong).toInt();
+              totalDiscount += ((item.GiaTien * item.KhuyenMai / 100) * cartDetail.soLuong).toInt();
+            }
+            orderItem.add(item);
+          }
         }
       }
-    }
+    });
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:etechstore/module/auth/views/sign_in_screen.dart';
 import 'package:etechstore/module/bottom_nav_bar/nav_menu.dart';
 import 'package:etechstore/module/profile/model/profile_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:bcrypt/bcrypt.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthServices extends GetxController {
   static AuthServices get instance => Get.find();
@@ -20,14 +22,27 @@ class AuthServices extends GetxController {
     return _auth.currentUser;
   }
 
+  Future<void> checkLoginStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+
+    if (isLoggedIn) {
+      Get.offAll(() => const NavMenu());
+    } else {
+      Get.offAll(() => const SignInScreen());
+    }
+  }
+
   //SignInWithFireStore
   Future<UserCredential?> signInWithEmailPassword(String email, String password) async {
     UserCredential userCredential = await _auth.signInWithEmailAndPassword(
       email: email,
       password: password,
     );
-
     if (await _isUserAllowedToSignIn(email)) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', true);
+      Get.offAll(() => const NavMenu());
       return userCredential;
     } else {
       await _auth.signOut();
@@ -91,9 +106,11 @@ class AuthServices extends GetxController {
   }
 
   //SignOut
-  Future<UserCredential?> signOut() async {
+  Future<void> signOut() async {
     await _auth.signOut();
-    return null;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLoggedIn', false);
+    Get.offAll(() => const SignInScreen());
   }
 
   //SignIn With Google

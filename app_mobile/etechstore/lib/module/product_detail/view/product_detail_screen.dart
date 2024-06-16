@@ -142,6 +142,7 @@ class DetailScreen extends GetView {
                                     MaterialPageRoute(
                                       builder: (context) => const CartScreen(),
                                     ));
+                                cartController.isEditMode.value = false;
                               },
                               icon: const Image(
                                 image: AssetImage(ImageKey.iconCart),
@@ -349,10 +350,16 @@ class DetailScreen extends GetView {
                         return StatefulBuilder(
                           builder: (context, setState) {
                             return Container(
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(40.0),
+                                  topLeft: Radius.circular(40.0),
+                                ),
+                                color: Colors.white,
+                              ),
                               padding: EdgeInsets.only(top: 20.h, left: 30.w),
                               width: double.infinity,
                               height: 375.h,
-                              color: Colors.white,
                               alignment: Alignment.center,
                               child: SingleChildScrollView(
                                 child: Column(
@@ -404,7 +411,19 @@ class DetailScreen extends GetView {
                                                     )
                                                   ],
                                                 ),
-                                                //   IconButton(onPressed: () {}, icon: const Icon(Icons.close))
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Container(
+                                                      margin: EdgeInsets.only(left: 70.w, bottom: 40.h),
+                                                      padding: EdgeInsets.only(bottom: 20.h),
+                                                      alignment: Alignment.topRight,
+                                                      child: const Text(
+                                                        "x",
+                                                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                                                      )),
+                                                ),
                                               ],
                                             ),
                                           ],
@@ -574,7 +593,7 @@ class DetailScreen extends GetView {
 
                                         User? user = auth.currentUser;
                                         var cartItem = CartModel(
-                                          id: sample.id,
+                                          id: cartController.generateRandomString(20),
                                           maKhachHang: user!.uid,
                                           soLuong: quantity,
                                           trangThai: 1,
@@ -633,7 +652,6 @@ class DetailScreen extends GetView {
               ),
             GestureDetector(
               onTap: () {
-                print("Mua Hang");
                 productSampleController.fetchProductSamples();
               },
               child: Container(

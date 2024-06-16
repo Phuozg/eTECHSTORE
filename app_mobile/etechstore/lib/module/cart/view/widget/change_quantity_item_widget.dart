@@ -34,11 +34,13 @@ class _ChangeQuantityItemWidgetState extends State<ChangeQuantityItemWidget> {
             GestureDetector(
               child: Container(alignment: Alignment.center, child: const Icon(Icons.remove, size: 18)),
               onTap: () {
-                if (widget.quantity > 1) {
-                  widget.quantity--;
-                  widget.item.soLuong = widget.quantity;
-                  controller.updateCartItem(widget.item);
-                }
+                setState(() {
+                  if (widget.quantity > 1) {
+                    widget.quantity--;
+                    widget.item.soLuong = widget.quantity;
+                    controller.updateCartItem(widget.item);
+                  }
+                });
               },
             ),
             Container(
@@ -63,9 +65,11 @@ class _ChangeQuantityItemWidgetState extends State<ChangeQuantityItemWidget> {
               child: Container(height: 15.h, alignment: Alignment.topCenter, child: Icon(Icons.add, size: 17.sp)),
               onTap: () {
                 //     controller.toggleItemSelection(item.id);
-                widget.quantity++;
-                widget.item.soLuong = widget.quantity;
-                controller.updateCartItem(widget.item);
+                setState(() {
+                  widget.quantity++;
+                  widget.item.soLuong = widget.quantity;
+                  controller.updateCartItem(widget.item);
+                });
               },
             ),
           ],

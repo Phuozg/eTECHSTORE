@@ -55,8 +55,7 @@ class ProductSampleController extends GetxController {
   }
 
   void fetchProductSamples() async {
-    print("99999o");
-    final isconnected = network.isConnectedToInternet.value;
+     final isconnected = network.isConnectedToInternet.value;
     if (!isconnected) {
       fetchProductSamplesLocally();
     } else {
