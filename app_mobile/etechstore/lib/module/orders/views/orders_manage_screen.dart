@@ -1,3 +1,4 @@
+import 'package:etechstore/module/cart/controller/cart_controller.dart';
 import 'package:etechstore/module/cart/view/cart_screen.dart';
 import 'package:etechstore/module/orders/controller/orders_controller.dart';
 import 'package:etechstore/module/orders/views/order_item_cancelled.dart';
@@ -16,16 +17,19 @@ class OrderManageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final OrdersController ordersController = Get.put(OrdersController());
+    CartController controller = Get.put(CartController());
     return DefaultTabController(
       length: 5,
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: TColros.purple_line,
           bottom: const TabBar(
+            unselectedLabelColor: Colors.white,
+            labelColor: Colors.white,
             tabAlignment: TabAlignment.start,
             indicatorColor: Colors.red,
-            indicatorSize: TabBarIndicatorSize.tab, isScrollable: true,
-            //  isScrollable: true,
+            indicatorSize: TabBarIndicatorSize.tab,
+            isScrollable: true,
             tabs: [
               SizedBox(width: 110, child: Tab(text: "Chờ xác nhận")),
               SizedBox(width: 110, child: Tab(text: "Đang vận chuyển")),
@@ -35,13 +39,14 @@ class OrderManageScreen extends StatelessWidget {
             ],
           ),
           centerTitle: true,
-          title: const Text('Đơn hàng'),
+          title: const Text('Đơn hàng', style: TextStyle(color: Colors.white, fontSize: 18)),
           actions: [
             IconButton(
                 onPressed: () {
                   Get.to(const CartScreen());
+                  controller.isEditMode.value = false;
                 },
-                icon: const Image(image: AssetImage(ImageKey.iconCart), color: Colors.black))
+                icon: const Image(image: AssetImage(ImageKey.iconCart), color: Colors.white))
           ],
         ),
         body: const TabBarView(

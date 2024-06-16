@@ -66,10 +66,14 @@ class SignUpController extends GetxController {
     currentPasswordController.clear();
     newPasswordController.clear();
     confirmPasswordController.clear();
+    email.clear();
+    password.clear();
+    conformPassword.clear();
+    fullName.clear();
   }
 
   //SignUp
-  void signUp() async {
+  Future<void> signUp() async {
     try {
       final isconnected = network.isConnectedToInternet.value;
       if (!isconnected) {
@@ -86,12 +90,6 @@ class SignUpController extends GetxController {
           return;
         }
 
-        //validation
-        if (!signUpFormKey.currentState!.validate()) {
-          //  FullScreenLoader.stopLoading();
-          return;
-        }
-
         //Check Email
         bool emailExists = await authServices.checkEmailExists(email.text.trim());
         if (emailExists) {
@@ -101,6 +99,7 @@ class SignUpController extends GetxController {
           //SignUp
           if (password.text == conformPassword.text) {
             await authServices.signUpWithEmailPassword(email.text.trim(), password.text.trim(), fullName.text.trim());
+            clearPassword();
           } else {
             TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.chuaNhapDuThongTin);
             return;

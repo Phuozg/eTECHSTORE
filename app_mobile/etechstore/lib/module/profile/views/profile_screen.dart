@@ -16,17 +16,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatelessWidget {
   final ProfileController profileController = Get.put(ProfileController());
+  SignInController controller = Get.put(SignInController());
   ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     User? user = FirebaseAuth.instance.currentUser;
-
-    // Gọi hàm fetchProfiles để tải dữ liệu
-    profileController.fetchProfilesStream(user!.uid);
 
     return ScreenUtilInit(
       builder: (context, child) => Scaffold(
@@ -35,7 +34,7 @@ class ProfileScreen extends StatelessWidget {
           centerTitle: true,
         ),
         body: StreamBuilder<List<ProfileModel>>(
-          stream: profileController.fetchProfilesStream(user.uid),
+          stream: profileController.fetchProfilesStream(user!.uid),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -141,8 +140,8 @@ class ProfileScreen extends StatelessWidget {
                         },
                         child: ListHelpProfile(icon: const Image(image: AssetImage(ImageKey.iconHelp)), text: "Hỗ trợ")),
                     GestureDetector(
-                        onTap: () {
-                          profileController.signOut();
+                        onTap: () async {
+                          controller.signOut();
                         },
                         child: ListHelpProfile(icon: const Image(image: AssetImage(ImageKey.iconLogOut)), text: "Đăng xuất"))
                   ]);

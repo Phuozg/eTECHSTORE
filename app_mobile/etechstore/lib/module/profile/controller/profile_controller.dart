@@ -39,6 +39,12 @@ class ProfileController extends GetxController {
     isTextValid.value = text.isNotEmpty;
   }
 
+  @override
+  void onInit() {
+    super.onInit();
+    fetchProfilesStream(user!.uid);
+  }
+
   //Get Profile
   Stream<List<ProfileModel>> fetchProfilesStream(String userId) {
     try {

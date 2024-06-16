@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:etechstore/module/cart/model/cart_model.dart';
 import 'package:etechstore/module/product_detail/model/product_model.dart';
@@ -40,32 +42,21 @@ class CartController extends GetxController {
     super.onInit();
     fetchCartItems();
     getCartData();
-    loadquantity();
+   }
+
+  void total() {
+    double total = 0.0;
+    for (var item in cartItems) {
+      var product = products[item.maSanPham['maSanPham']];
+      if (selectedItems[item.id] == true && products[item.maSanPham['maSanPham']] != null) {
+        total += ((product!.giaTien - (product.giaTien * product.KhuyenMai / 100)) * item.soLuong);
+      }
+    }
+    totalPrice.value = total;
   }
 
-  final BehaviorSubject<List<CartModel>> _cartItemsSubject = BehaviorSubject<List<CartModel>>.seeded([]);
-  final BehaviorSubject<Map<String, ProductModel>> _productsSubject = BehaviorSubject<Map<String, ProductModel>>.seeded({});
-
-  Stream<List<CartModel>> get cartItemsStream => _cartItemsSubject.stream;
-  Stream<Map<String, ProductModel>> get productsStream => _productsSubject.stream;
-
-  void increament() async {
-    final quantityData = await SharedPreferences.getInstance();
-
-    quantity.value = (quantityData.getInt('quantity') ?? 0) + 1;
-    quantityData.setInt('quantity', quantity.value);
-  }
-
-  void decreament() async {
-    final quantityData = await SharedPreferences.getInstance();
-
-    quantity.value = (quantityData.getInt('quantity') ?? 0) - 1;
-    quantityData.setInt('quantity', quantity.value);
-  }
-
-  void loadquantity() async {
-    final quantityData = await SharedPreferences.getInstance();
-    quantity.value = (quantityData.getInt('quantity') ?? 0);
+  void setTotalPrice() {
+    totalPrice.value = 0;
   }
 
   void toggleEditMode() {
@@ -86,20 +77,19 @@ class CartController extends GetxController {
         cartItems.value = items;
 
         for (var item in cartItems) {
-          selectedItems[item.id] = true;
+          selectedItems[item.id] = false;
         }
 
         for (var item in items) {
           var productDoc = await _firestore.collection('SanPham').doc(item.maSanPham['maSanPham']).get();
           if (productDoc.exists) {
             products[item.maSanPham['maSanPham']] = ProductModel.fromFirestore(productDoc.data() as Map<String, dynamic>);
+            // total();
+            updateSelectedItemCount();
           }
         }
-
         localStorageService.saveCartItems(cartItems);
         localStorageService.saveProducts(productList);
-
-        calculateTotalPrice();
       });
     }
   }
@@ -114,8 +104,6 @@ class CartController extends GetxController {
     for (var item in cartItems) {
       selectedItems[item.id] = false;
     }
-
-    calculateTotalPrice();
   }
 
   void fetchCartsLocally() async {
@@ -127,41 +115,11 @@ class CartController extends GetxController {
     return _firestore.collection("GioHang").snapshots().map((snapshot) => snapshot.docs.map((doc) => CartModel.fromMap(doc.data())).toList());
   }
 
-  Stream<int> calculateProductPrice(CartModel item) {
-    return _firestore.collection('SanPham').doc(item.maSanPham['maSanPham']).snapshots().asyncMap((productDoc) {
-      if (productDoc.exists) {
-        int giaTien = productDoc.get('GiaTien');
-        int khuyenMai = productDoc.get('KhuyenMai');
-        return ((giaTien * (1 - khuyenMai / 100)) * item.soLuong).toInt();
-      } else {
-        return 0;
-      }
-    });
-  }
+  var selectedItemCount = 0.obs;
 
-  Future<void> calculateTotalPrice() async {
-    double total = 0.0;
-    for (var item in cartItems) {
-      getProductPriceStream(item).listen((itemPrice) {
-        total += itemPrice;
-        totalPrice.value = total;
-      });
-    }
-  }
-
-  Stream<int> getProductPriceStream(CartModel item) async* {
-    await for (int price in calculateProductPrice(item)) {
-      if (selectedItems[item.id] == true) {
-        yield price;
-      } else {
-        yield 0;
-      }
-    }
-  }
-
-  void toggleItemSelection(String itemId) {
-    selectedItems[itemId] = !selectedItems[itemId]!;
-    calculateTotalPrice();
+  void toggleSelectedItem(String itemId, bool value) {
+    selectedItems[itemId] = value;
+    updateSelectedItemCount();
   }
 
   void toggleSelectAll() {
@@ -169,7 +127,21 @@ class CartController extends GetxController {
     for (var key in selectedItems.keys) {
       selectedItems[key] = isSelectAll.value;
     }
-    calculateTotalPrice();
+    updateSelectedItemCount();
+  }
+
+  void updateSelectedItemCount() {
+    total();
+    selectedItemCount.value = selectedItems.values.where((value) => value).length;
+  }
+
+  String generateRandomString(int length) {
+    final random = Random();
+    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    return String.fromCharCodes(Iterable.generate(
+      length,
+      (_) => chars.codeUnitAt(random.nextInt(chars.length)),
+    ));
   }
 
   void addItemToCart(CartModel newItem) async {
@@ -178,7 +150,8 @@ class CartController extends GetxController {
       TLoaders.errorSnackBar(title: TTexts.thongBao, message: "Không có kết nối internet");
       return;
     } else {
-      int index = cartItems.indexWhere((item) => item.maSanPham['maSanPham'] == newItem.maSanPham['maSanPham']);
+      int index = cartItems
+          .indexWhere((item) => item.maSanPham['cauHinh'] == newItem.maSanPham['cauHinh'] && item.maSanPham['mauSac'] == newItem.maSanPham['mauSac']);
 
       if (index != -1) {
         CartModel existingItem = cartItems[index];
@@ -197,9 +170,15 @@ class CartController extends GetxController {
         await saveCartItemToFirestore(newItem);
         TLoaders.successSnackBar(title: "Thông báo", message: "Thêm thành công!");
       }
-
-      calculateTotalPrice();
     }
+  }
+
+  Future<void> removeItemsWithSameMauSacButDifferentCauHinh(String mauSac) async {
+    cartItems.removeWhere((item) => item.maSanPham['mauSac'] == mauSac);
+  }
+
+  Future<void> removeItemsWithSameCauHinhButDifferentMauSac(String mauSac) async {
+    cartItems.removeWhere((item) => item.maSanPham['mauSac'] == mauSac);
   }
 
   void removeItemFromCart(CartModel item) async {
@@ -210,8 +189,11 @@ class CartController extends GetxController {
     } else {
       cartItems.removeWhere((cartItem) => cartItem.id == item.id && cartItem.maSanPham['maSanPham'] == item.maSanPham['maSanPham']);
       selectedItems.remove(item.id);
+      removeItemsWithSameMauSacButDifferentCauHinh(item.maSanPham['mauSac']);
+      removeItemsWithSameCauHinhButDifferentMauSac(item.maSanPham['cauHinh']);
       await removeCartItemFromFirestore(item.id, item.maKhachHang);
-      calculateTotalPrice();
+
+      setTotalPrice();
     }
   }
 
@@ -234,7 +216,6 @@ class CartController extends GetxController {
       if (index != -1) {
         cartItems[index] = item;
         await updateCartItemInFirestore(item);
-        calculateTotalPrice();
       }
     }
   }
@@ -254,7 +235,7 @@ class CartController extends GetxController {
     } else {
       cartItems.clear();
       selectedItems.clear();
-      totalPrice.value = 0.0;
+      setTotalPrice();
     }
   }
 

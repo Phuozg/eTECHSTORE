@@ -39,11 +39,11 @@ class DetailOrderSreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 243, 243, 244),
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF3F3F4),
-        iconTheme: const IconThemeData(color: TColros.purple_line),
+        backgroundColor: TColros.purple_line,
+        iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
           'Thông tin đơn hàng',
-          style: TColros.black_18,
+          style: TextStyle(color: Colors.white, fontSize: 17),
         ),
         centerTitle: true,
       ),
@@ -106,6 +106,7 @@ class DetailOrderSreen extends StatelessWidget {
                             return SingleChildScrollView(
                               child: Column(
                                 children: [
+                                  Linehelper(color: const Color.fromARGB(94, 217, 217, 217), height: 5),
                                   ListView.builder(
                                     shrinkWrap: true,
                                     physics: const NeverScrollableScrollPhysics(),
@@ -165,183 +166,183 @@ class DetailOrderSreen extends StatelessWidget {
                                     },
                                   ),
                                   SizedBox(height: 3.h),
-                                  Obx(
-                                    () => ListView.builder(
-                                      shrinkWrap: true,
-                                      physics: const NeverScrollableScrollPhysics(),
-                                      itemCount: controller.itemsToShow.value,
-                                      itemBuilder: (context, index) {
-                                        DetailOrders ctDonHang = filteredCTDonHangs[index];
-                                        ProductModel product = filterProduct.firstWhere((p) => p.id == ctDonHang.maMauSanPham['MaSanPham']);
-                                        OrdersModel order = fillterOrder.firstWhere((o) => o.id == ctDonHang.maDonHang);
-                                        orders.add(order);
-                                        return SingleChildScrollView(
-                                          child: Column(
-                                            children: [
-                                              SizedBox(height: 5.w),
-                                              GestureDetector(
-                                                onTap: () {
-                                                  cartController.fetchCartItems();
-                                                  Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) => DetailScreen(
-                                                            GiaTien: product.giaTien,
-                                                            KhuyenMai: product.KhuyenMai,
-                                                            MaDanhMuc: product.maDanhMuc,
-                                                            MoTa: product.moTa,
-                                                            Ten: product.ten,
-                                                            TrangThai: product.trangThai,
-                                                            id: product.id,
-                                                            thumbnail: product.thumbnail,
-                                                            HinhAnh: product.hinhAnh),
-                                                      ));
-                                                },
-                                                child: Container(
-                                                  width: double.infinity,
-                                                  color: Colors.white,
-                                                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
-                                                  child: SingleChildScrollView(
-                                                    child: Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.end,
-                                                      children: [
-                                                        Row(
-                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          children: [
-                                                            Row(
-                                                              children: [
-                                                                SizedBox(width: 3.w),
-                                                                product.thumbnail != null
-                                                                    ? GestureDetector(
-                                                                        onTap: () {},
-                                                                        child: FadeInImage.assetNetwork(
-                                                                          image: product.thumbnail.toString(),
-                                                                          placeholder: ImageKey.whiteBackGround,
-                                                                          width: 60.w,
-                                                                          height: 60.h,
-                                                                          fit: BoxFit.cover,
-                                                                          imageErrorBuilder: (context, error, stackTrace) {
-                                                                            return Center(
-                                                                                child: Image.asset(
-                                                                              ImageKey.whiteBackGround,
-                                                                              width: 60.w,
-                                                                              height: 60.h,
-                                                                              fit: BoxFit.cover,
-                                                                            ));
-                                                                          },
-                                                                        ))
-                                                                    : Container(),
-                                                                SizedBox(width: 20.w),
-                                                                Column(
-                                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                                  children: [
-                                                                    product.ten != null
-                                                                        ? GestureDetector(
-                                                                            onTap: () {},
-                                                                            child: SizedBox(
-                                                                              width: 150.w,
-                                                                              child: Text(
-                                                                                product.ten,
-                                                                                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14.sp),
-                                                                                overflow: TextOverflow.ellipsis,
-                                                                                softWrap: true,
-                                                                              ),
+                                  ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    itemCount: filteredCTDonHangs.length,
+                                    itemBuilder: (context, index) {
+                                      DetailOrders ctDonHang = filteredCTDonHangs[index];
+                                      ProductModel product = filterProduct.firstWhere((p) => p.id == ctDonHang.maMauSanPham['MaSanPham']);
+                                      OrdersModel order = fillterOrder.firstWhere((o) => o.id == ctDonHang.maDonHang);
+                                      orders.add(order);
+                                      return SingleChildScrollView(
+                                        child: Column(
+                                          children: [
+                                            SizedBox(height: 5.w),
+                                            GestureDetector(
+                                              onTap: () {
+                                                cartController.fetchCartItems();
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) => DetailScreen(
+                                                          GiaTien: product.giaTien,
+                                                          KhuyenMai: product.KhuyenMai,
+                                                          MaDanhMuc: product.maDanhMuc,
+                                                          MoTa: product.moTa,
+                                                          Ten: product.ten,
+                                                          TrangThai: product.trangThai,
+                                                          id: product.id,
+                                                          thumbnail: product.thumbnail,
+                                                          HinhAnh: product.hinhAnh),
+                                                    ));
+                                              },
+                                              child: Container(
+                                                width: double.infinity,
+                                                color: Colors.white,
+                                                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
+                                                child: SingleChildScrollView(
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                                    children: [
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          Row(
+                                                            children: [
+                                                              SizedBox(width: 3.w),
+                                                              product.thumbnail != null
+                                                                  ? GestureDetector(
+                                                                      onTap: () {},
+                                                                      child: FadeInImage.assetNetwork(
+                                                                        image: product.thumbnail.toString(),
+                                                                        placeholder: ImageKey.whiteBackGround,
+                                                                        width: 60.w,
+                                                                        height: 60.h,
+                                                                        fit: BoxFit.cover,
+                                                                        imageErrorBuilder: (context, error, stackTrace) {
+                                                                          return Center(
+                                                                              child: Image.asset(
+                                                                            ImageKey.whiteBackGround,
+                                                                            width: 60.w,
+                                                                            height: 60.h,
+                                                                            fit: BoxFit.cover,
+                                                                          ));
+                                                                        },
+                                                                      ))
+                                                                  : Container(),
+                                                              SizedBox(width: 20.w),
+                                                              Column(
+                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: [
+                                                                  product.ten != null
+                                                                      ? GestureDetector(
+                                                                          onTap: () {},
+                                                                          child: SizedBox(
+                                                                            width: 150.w,
+                                                                            child: Text(
+                                                                              product.ten,
+                                                                              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14.sp),
+                                                                              overflow: TextOverflow.ellipsis,
+                                                                              softWrap: true,
                                                                             ),
-                                                                          )
-                                                                        : const Text("Loading..."),
-                                                                    SizedBox(height: 5.h),
-                                                                    Row(
-                                                                      children: [
-                                                                        const Text("Loại:", style: TextStyle(color: Colors.grey)),
-                                                                        ctDonHang.maMauSanPham['MauSac'] != null
-                                                                            ? Text(" ${ctDonHang.maMauSanPham['MauSac']}",
-                                                                                style: const TextStyle(fontWeight: FontWeight.w400))
-                                                                            : const Text("Loading..."),
-                                                                        Text(
-                                                                          " | ",
-                                                                          style: TextStyle(fontSize: 12.sp, color: Colors.grey),
-                                                                        ),
-                                                                        ctDonHang.maMauSanPham['CauHinh'] != null
-                                                                            ? Text(" ${ctDonHang.maMauSanPham['CauHinh']}",
-                                                                                style: const TextStyle(fontWeight: FontWeight.w400))
-                                                                            : const Text("Loading..."),
-                                                                      ],
-                                                                    ),
-                                                                    Row(
-                                                                      children: [
-                                                                        const Text("Số lượng: ",
-                                                                            style: TextStyle(fontWeight: FontWeight.w400, color: Colors.grey)),
-                                                                        ctDonHang.soLuong != null
-                                                                            ? Text("${ctDonHang.soLuong}")
-                                                                            : const Text("Loading..."),
-                                                                      ],
-                                                                    ),
-                                                                  ],
-                                                                )
-                                                              ],
+                                                                          ),
+                                                                        )
+                                                                      : const Text("Loading..."),
+                                                                  SizedBox(height: 5.h),
+                                                                  Row(
+                                                                    children: [
+                                                                      const Text("Loại:", style: TextStyle(color: Colors.grey)),
+                                                                      ctDonHang.maMauSanPham['MauSac'] != null
+                                                                          ? Text(" ${ctDonHang.maMauSanPham['MauSac']}",
+                                                                              style: const TextStyle(fontWeight: FontWeight.w400))
+                                                                          : const Text("Loading..."),
+                                                                      Text(
+                                                                        " | ",
+                                                                        style: TextStyle(fontSize: 12.sp, color: Colors.grey),
+                                                                      ),
+                                                                      ctDonHang.maMauSanPham['CauHinh'] != null
+                                                                          ? Text(" ${ctDonHang.maMauSanPham['CauHinh']}",
+                                                                              style: const TextStyle(fontWeight: FontWeight.w400))
+                                                                          : const Text("Loading..."),
+                                                                    ],
+                                                                  ),
+                                                                  Row(
+                                                                    children: [
+                                                                      const Text("Số lượng: ",
+                                                                          style: TextStyle(fontWeight: FontWeight.w400, color: Colors.grey)),
+                                                                      ctDonHang.soLuong != null
+                                                                          ? Text("${ctDonHang.soLuong}")
+                                                                          : const Text("Loading..."),
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      SizedBox(height: 10.h),
+                                                      Padding(
+                                                        padding: EdgeInsets.only(left: 160.0.w),
+                                                        child: Row(
+                                                          children: [
+                                                            Text(
+                                                              priceFormat(product.giaTien),
+                                                              style: const TextStyle(
+                                                                color: Colors.grey,
+                                                                decoration: TextDecoration.lineThrough,
+                                                              ),
+                                                            ),
+                                                            SizedBox(width: 10.w),
+                                                            Text(
+                                                              priceFormat((product.giaTien - (product.giaTien * product.KhuyenMai / 100)).toInt()),
+                                                              style: const TextStyle(fontWeight: FontWeight.w500),
                                                             ),
                                                           ],
                                                         ),
-                                                        SizedBox(height: 10.h),
-                                                        Padding(
-                                                          padding: EdgeInsets.only(left: 160.0.w),
-                                                          child: Row(
+                                                      ),
+                                                      SizedBox(height: 10.w),
+                                                      Linehelper(color: const Color.fromARGB(94, 217, 217, 217), height: 1),
+                                                      const SizedBox(height: 10),
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          ctDonHang.soLuong != null
+                                                              ? Text(
+                                                                  "${ctDonHang.soLuong} sản phẩm",
+                                                                  style: TextStyle(color: const Color.fromARGB(255, 41, 40, 40), fontSize: 13.sp),
+                                                                )
+                                                              : const Text("Loading..."),
+                                                          Row(
                                                             children: [
                                                               Text(
-                                                                priceFormat(product.giaTien),
-                                                                style: const TextStyle(
-                                                                  color: Colors.grey,
-                                                                  decoration: TextDecoration.lineThrough,
-                                                                ),
+                                                                "Thành tiền:",
+                                                                style: TextStyle(color: const Color.fromARGB(255, 41, 40, 40), fontSize: 14.sp),
                                                               ),
-                                                              SizedBox(width: 10.w),
+                                                              SizedBox(width: 5.w),
                                                               Text(
-                                                                priceFormat(ctDonHang.khuyenMai),
-                                                                style: const TextStyle(fontWeight: FontWeight.w500),
+                                                                priceFormat(((product.giaTien - (product.giaTien * product.KhuyenMai / 100)) *
+                                                                        ctDonHang.soLuong)
+                                                                    .toInt()),
+                                                                style:
+                                                                    TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Colors.redAccent),
                                                               ),
                                                             ],
                                                           ),
-                                                        ),
-                                                        SizedBox(height: 10.w),
-                                                        Linehelper(color: const Color.fromARGB(94, 217, 217, 217), height: 1),
-                                                        const SizedBox(height: 10),
-                                                        Row(
-                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                          children: [
-                                                            ctDonHang.soLuong != null
-                                                                ? Text(
-                                                                    "${ctDonHang.soLuong} sản phẩm",
-                                                                    style: TextStyle(color: const Color.fromARGB(255, 41, 40, 40), fontSize: 13.sp),
-                                                                  )
-                                                                : const Text("Loading..."),
-                                                            Row(
-                                                              children: [
-                                                                Text(
-                                                                  "Thành tiền:",
-                                                                  style: TextStyle(color: const Color.fromARGB(255, 41, 40, 40), fontSize: 15.sp),
-                                                                ),
-                                                                SizedBox(width: 5.w),
-                                                                Text(
-                                                                  priceFormat(ctDonHang.khuyenMai),
-                                                                  style: TextStyle(
-                                                                      fontSize: 15.sp, fontWeight: FontWeight.w500, color: Colors.redAccent),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
+                                                        ],
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
-                                              )
-                                            ],
-                                          ),
-                                        );
-                                      },
-                                    ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      );
+                                    },
                                   ),
                                   if (orders.isNotEmpty)
                                     Container(

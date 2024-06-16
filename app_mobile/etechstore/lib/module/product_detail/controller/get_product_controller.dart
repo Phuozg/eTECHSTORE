@@ -30,8 +30,7 @@ class GetProductController implements GetProductAbstractController {
   //update quantity -
   @override
   Future<void> decreaseQuantity() async {
-    print("777777777777777777777777777777777777");
-    int currentQuantity = cartModel['SoLuong'];
+     int currentQuantity = cartModel['SoLuong'];
     await fireStore.collection('SanPhamTrongGioHang').doc("SjO623BnZQKTuMEjcZcg").update({
       'SoLuong': currentQuantity - 1,
     });
@@ -40,8 +39,7 @@ class GetProductController implements GetProductAbstractController {
   @override
   Future<void> increaseQuantity() async {
     // TODO: implement _increaseQuantity
-    print("888888888888888888888888888888888888");
-    int currentQuantity = cartModel['SoLuong'];
+     int currentQuantity = cartModel['SoLuong'];
     await fireStore.collection('SanPhamTrongGioHang').doc("SjO623BnZQKTuMEjcZcg").update({
       'SoLuong': currentQuantity + 1,
     });

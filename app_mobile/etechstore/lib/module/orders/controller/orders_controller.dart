@@ -34,7 +34,7 @@ class OrdersController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
+    loadMore();
     fetchIsPaid();
     fetchData();
   }
@@ -89,41 +89,5 @@ class OrdersController extends GetxController {
 
   Stream<List<ProductModel>> getProduct() {
     return _firestore.collection('SanPham').snapshots().map((snapshot) => snapshot.docs.map((doc) => ProductModel.fromJson(doc.data())).toList());
-  }
-
-  void fetchOrdersAndCartItems() async {
-    String? userId = _auth.currentUser?.uid;
-    if (userId != null) {
-      FirebaseFirestore.instance.collection('DonHang').where('MaKhachHang', isEqualTo: userId).snapshots().listen((ordersSnapshot) async {
-        ordersItem.clear();
-        for (var doc in ordersSnapshot.docs) {
-          var order = OrdersModel.fromJson(doc.data());
-          ordersItem[doc.id] = order;
-        }
-
-        await for (var snapshot in _firestore.collection('CTDonHang').where('TrangThai', isEqualTo: 1).snapshots()) {
-          var items = snapshot.docs.map((doc) => DetailOrders.fromJson(doc.data())).toList();
-          var validItems = <DetailOrders>[];
-
-          for (var item in items) {
-            if (ordersItem[item.maDonHang] != null) {
-              var order = ordersItem[item.maDonHang]!;
-              if (order.isPaid || order.isBeingShipped || order.isShipped || order.isCompleted || order.isCancelled) {
-                validItems.add(item);
-              }
-            }
-          }
-
-          for (var item in validItems) {
-            var productDoc = await _firestore.collection('SanPham').doc(item.maMauSanPham['MaSanPham']).get();
-            if (productDoc.exists) {
-              products[item.maMauSanPham['MaSanPham']] = ProductModel.fromFirestore(productDoc.data() as Map<String, dynamic>);
-            }
-          }
-
-          detailOrder.assignAll(validItems);
-        }
-      });
-    }
   }
 }

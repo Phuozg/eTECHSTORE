@@ -1,4 +1,5 @@
 import 'package:etechstore/module/home/views/home_screen.dart';
+import 'package:etechstore/module/orders/views/widget/order_isEmpty._widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -237,7 +238,7 @@ class OrderCancelled extends StatelessWidget {
                                             child: Align(
                                               alignment: Alignment.bottomRight,
                                               child: Text(
-                                                priceFormat(product.giaTien),
+                                                priceFormat((product.giaTien - (product.giaTien * product.KhuyenMai / 100)).toInt()),
                                                 style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.redAccent),
                                               ),
                                             ),
@@ -246,9 +247,19 @@ class OrderCancelled extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                  SizedBox(height: 10.h),
+                                  SizedBox(height: 5.h),
                                   Linehelper(color: const Color.fromARGB(94, 217, 217, 217), height: 1),
-                                  SizedBox(height: 10.h),
+                                  GestureDetector(
+                                    onTap: () {
+                                      controller.loadMore();
+                                      Get.to(DetailOrderSreen(maDonHang: order.id));
+                                    },
+                                    child: Container(
+                                        alignment: Alignment.center,
+                                        child: const Text("Xem chi tiết", style: TextStyle(color: Colors.grey, fontSize: 11))),
+                                  ),
+                                  Linehelper(color: const Color.fromARGB(94, 217, 217, 217), height: 1),
+                                  SizedBox(height: 5.h),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
@@ -266,7 +277,7 @@ class OrderCancelled extends StatelessWidget {
                                           ),
                                           SizedBox(width: 5.w),
                                           Text(
-                                            priceFormat(order.tongTien),
+                                            priceFormat(((product.giaTien - (product.giaTien * product.KhuyenMai / 100)) * item.soLuong).toInt()),
                                             style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Colors.redAccent),
                                           ),
                                         ],
@@ -296,24 +307,7 @@ class OrderCancelled extends StatelessWidget {
                                 ],
                               ),
                             )
-                          : Container(
-                              child: Column(
-                                children: [
-                                  SizedBox(height: 50.h),
-                                  Image.asset(
-                                    ImageKey.cartEmpty,
-                                    width: 100.w,
-                                    height: 100.h,
-                                  ),
-                                  SizedBox(height: 20.h),
-                                  Center(
-                                      child: Text(
-                                    "Chưa có đơn hàng nào",
-                                    style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w300),
-                                  )),
-                                ],
-                              ),
-                            );
+                          : OrderIsEmpty();
                     },
                   );
                 }

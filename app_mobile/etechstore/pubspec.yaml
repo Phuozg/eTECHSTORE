@@ -49,6 +49,11 @@ flutter_native_splash:
   background_image: assets/images/splash_native.png
   fullscreen: true
 
+  android_12:
+    background_image: assets/images/splash_native.png
+
+  background_image_android: assets/images/splash_native.png
+
 flutter:
   uses-material-design: true
 

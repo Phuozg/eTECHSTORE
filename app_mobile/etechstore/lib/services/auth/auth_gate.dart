@@ -1,27 +1,30 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:etechstore/module/auth/controller/sign_in_controller.dart';
 import 'package:etechstore/module/auth/views/sign_in_screen.dart';
 import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/module/bottom_nav_bar/nav_menu.dart';
+import 'package:etechstore/services/auth/auth_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class AuthGate extends StatelessWidget {
+class AuthGate extends StatefulWidget {
   const AuthGate({super.key});
 
   @override
+  State<AuthGate> createState() => _AuthGateState();
+}
+
+class _AuthGateState extends State<AuthGate> {
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: StreamBuilder(
-          stream: FirebaseAuth.instance.authStateChanges(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return const NavMenu();
-            } else {
-              return const SignInScreen();
-            }
-          },
-        ),
+    final SignInController authController = Get.put(SignInController());
+    authController.checkSignIn();
+
+    return const Scaffold(
+      body: Center(
+        child: CircularProgressIndicator(),
       ),
     );
   }
