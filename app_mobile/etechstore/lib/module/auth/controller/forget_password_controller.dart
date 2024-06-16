@@ -39,7 +39,7 @@ class ForgetPasswordController extends GetxController {
 
         //Send Email to reset password
         await authServices.sendPasswordResetEmail(email.text.trim()).then(
-              (value) => Get.offAll(
+              (value) => Get.to(
                 () => ResetPasswordScreen(
                   email: email.text.trim(),
                 ),
@@ -60,12 +60,12 @@ class ForgetPasswordController extends GetxController {
   //reSendPassword
   Future<void> resendPasswordResetEmail(String email) async {
     try {
-
-          final isconnected = network.isConnectedToInternet.value;
+      final isconnected = network.isConnectedToInternet.value;
       if (!isconnected) {
         TLoaders.errorSnackBar(title: TTexts.thongBao, message: "Không có kết nối internet");
         return;
-      } else {    //Loading
+      } else {
+        //Loading
         FullScreenLoader.openLoadingDialog('Đang xử lý yêu cầu của bạn...', ImageKey.loadingAnimation);
 
         //Check Internet Connected

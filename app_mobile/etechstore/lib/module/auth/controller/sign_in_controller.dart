@@ -1,6 +1,5 @@
 import 'package:etechstore/module/auth/views/sign_in_screen.dart';
-import 'package:etechstore/module/auth/views/veryfi_phone_number_screen.dart';
-import 'package:etechstore/module/home/views/home_screen.dart';
+ import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/services/auth/auth_gate.dart';
 import 'package:etechstore/services/auth/auth_services.dart';
 import 'package:etechstore/utlis/connection/network_manager.dart';
@@ -54,6 +53,7 @@ class SignInController extends GetxController {
         TLoaders.errorSnackBar(title: TTexts.thongBao, message: "Không có kết nối internet");
         return;
       } else {
+        FullScreenLoader.openLoadingDialog('Quá trình đang diễn ra...', ImageKey.loadingAnimation);
         await authServices.signInWithEmailPassword(email.text.trim(), password.text.trim());
         await authServices.updatePasswordInFirestore(email.text.trim(), password.text.trim());
       }
@@ -99,65 +99,5 @@ class SignInController extends GetxController {
     }
   }
 
-  //SignIn with Phone
-  Future<void> signInPhoneNumber() async {
-/*     try {
-      //loading
-      FullScreenLoader.openLoadingDialog('Quá trình đang diễn ra...', ImageKey.loadingAnimation);
-
-      //check Internet connected
-      final isconnected = network.isConnectedToInternet.value;
-      if (!isconnected) {
-        return;
-      }
-
-      //validation
-      if (!signInFormKey.currentState!.validate()) {
-        return;
-      }
-
-      //send OTP
-      authServices.signInWithPhoneNumber(
-        60,
-        phoneNumber.text.trim(),
-        '${Get.off(VerifyPhoneNumberScreen(phoneNumber: phoneNumber.text.trim(), verifyId: verify.toString()))}',
-      );
-    } catch (e) {
-      if (phoneNumber.text.isEmpty) {
-        TLoaders.errorSnackBar(title: TTexts.thongBao, message: Text(TTexts.chuaNhapSoDienThoai));
-      } else {
-        e.toString();
-      }
-    } */
-  }
-
-  //Verifi PhoneNumber
-  Future<void> verifyPhoneNumber() async {
-    /*   try {
-      //Loading
-      FullScreenLoader.openLoadingDialog('Đang xử lý yêu cầu của bạn...', ImageKey.loadingAnimation);
-
-      //Check Internet Connected
-      final isconnected = network.isConnectedToInternet.value;
-      if (isconnected) {
-        return;
-      }
-
-      //Form Validation
-      if (!signInFormKey.currentState!.validate()) {
-        return;
-      }
-
-      //Send Email to reset password
-      await authServices.verifyPhoneNumber(verify.value, code.value)!.then((value) => Get.off(const HomeScreen()));
-
-      //Redirect
-    } catch (e) {
-      if (verify.value.isEmpty || code.value.isEmpty) {
-        TLoaders.errorSnackBar(title: TTexts.thongBao, message: Text(TTexts.maOTPThieu));
-      } else {
-        TLoaders.errorSnackBar(title: TTexts.thongBao, message: Text(TTexts.maXacNhanOTPChuaDung));
-      }
-    } */
-  }
+ 
 }

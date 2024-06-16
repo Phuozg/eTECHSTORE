@@ -1,8 +1,7 @@
 class TTexts {
-  static String SignIn = "Đăng nhập";
-  static String singUp = "Đăng ký";
+   static String singUp = "Đăng ký";
   static String etechStore = "e T E C H S T O R E";
-  static String dangNhap = " Đăng nhập";
+  static String dangNhap = "Đăng nhập";
   static String dangNhapBangTaiKhoanDaDangKy = "Đăng nhập với tài khoản đã đăng ký";
   static String emailHoacSoDienThoai = "Email hoặc số điện thoại";
   static String emai = "Email";
@@ -10,7 +9,7 @@ class TTexts {
   static String matKhau = "Mật khẩu";
   static String nhapMatKhau = "Nhập mật khẩu";
   static String nhapLaiMatKhau = "Nhập lại mật khẩu";
-    static String nhapMatKhauMoi = "Nhập mật khẩu mới";
+  static String nhapMatKhauMoi = "Nhập mật khẩu mới";
   static String quenMatKhau = "Quên mật khẩu?";
   static String hoacSuDungMotTrongCacLuaChonNay = "Hoặc";
   static String dangNhapThanhCong = "Đăng nhập thành công";
