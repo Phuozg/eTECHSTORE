@@ -155,14 +155,16 @@ class EditProfileScreen extends StatelessWidget {
                               onTap: () {
                                 Get.to(EditScreen(
                                   title: "Sửa số điện thoại",
-                                  text: "0${profile.SoDienThoai.toString()}",
+                                  text: profile.SoDienThoai != 0 ? "0${profile.SoDienThoai.toString()}" : ("Số điện thoại"),
                                   func: () {
                                     profileController.editProfile(1);
                                   },
                                   controller: profileController.phoneNumberController,
                                 ));
                               },
-                              child: EditProfile(title: "Điện thoại", text: "0${profile.SoDienThoai}")),
+                              child: EditProfile(
+                                  title: "Điện thoại",
+                                  text: profile.SoDienThoai != 0 ? "0${profile.SoDienThoai.toString()}" : ("Thêm số điện thoại"))),
                           Linehelper(color: const Color.fromARGB(94, 217, 217, 217), height: 9.h),
                           GestureDetector(
                               onTap: () {
@@ -175,13 +177,13 @@ class EditProfileScreen extends StatelessWidget {
                                 Get.to(EditScreen(
                                   controller: profileController.DressController,
                                   title: "Sửa địa chỉ",
-                                  text: profile.DiaChi,
+                                  text: profile.DiaChi == '' ? "Thêm địa chỉ" : profile.DiaChi,
                                   func: () {
                                     profileController.editProfile(2);
                                   },
                                 ));
                               },
-                              child: EditProfile(title: "Địa chỉ", text: profile.DiaChi)),
+                              child: EditProfile(title: "Địa chỉ", text: profile.DiaChi == '' ? "Thêm địa chỉ" : profile.DiaChi)),
                         ]);
                       },
                     );
