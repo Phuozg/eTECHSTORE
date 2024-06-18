@@ -45,6 +45,7 @@ class OrderManageScreen extends StatelessWidget {
                 onPressed: () {
                   Get.to(const CartScreen());
                   controller.isEditMode.value = false;
+                  controller.setTotalPriceAndCheckAll();
                 },
                 icon: const Image(image: AssetImage(ImageKey.iconCart), color: Colors.white))
           ],

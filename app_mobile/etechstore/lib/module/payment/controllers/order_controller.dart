@@ -78,7 +78,7 @@ class OrderController extends GetxController {
       await saveOrder(order);
 
       await loopAddOrderDetail(id, userID);
-      controller.setTotalPrice();
+      controller.setTotalPriceAndCheckAll();
       await clearCart(userID);
       Get.off(() => const SuccessScreen());
     } catch (e) {

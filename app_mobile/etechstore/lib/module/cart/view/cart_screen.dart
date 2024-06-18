@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:etechstore/module/cart/controller/cart_controller.dart';
 import 'package:etechstore/module/cart/controller/enum.dart';
 import 'package:etechstore/module/cart/model/cart_model.dart';
@@ -117,15 +118,14 @@ class CartScreen extends StatelessWidget {
                                                     () => Transform.scale(
                                                       scale: 1,
                                                       child: Checkbox(
-                                                        checkColor: Colors.white,
-                                                        activeColor: Colors.deepOrange,
-                                                        value: controller.selectedItems[item.id] ?? false,
-                                                        side: BorderSide(color: Colors.grey.shade400),
-                                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                                                        onChanged: (bool? val) {
-                                                          controller.toggleSelectedItem(item.id, val!);
-                                                        },
-                                                      ),
+                                                          checkColor: Colors.white,
+                                                          activeColor: Colors.deepOrange,
+                                                          value: controller.selectedItems[item.id] ?? false,
+                                                          side: BorderSide(color: Colors.grey.shade400),
+                                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                                                          onChanged: (bool? val) {
+                                                            controller.toggleSelectedItem(item.id, val!);
+                                                          }),
                                                     ),
                                                   ),
                                                   GestureDetector(

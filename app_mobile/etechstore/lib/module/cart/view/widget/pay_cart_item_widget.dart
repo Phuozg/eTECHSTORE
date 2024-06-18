@@ -36,7 +36,6 @@ class PayCartItem extends StatelessWidget {
               onTap: controller.selectedItemCount.value >= 1
                   ? () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => const OrderScreen()));
-                     
                     }
                   : null,
               child: Obx(
@@ -45,7 +44,6 @@ class PayCartItem extends StatelessWidget {
                   width: 114.w,
                   height: 30.h,
                   decoration: BoxDecoration(
-                    border: Border.all(width: .5.w),
                     borderRadius: BorderRadius.circular(10.w),
                     color: controller.selectedItemCount >= 1 ? const Color(0xFFCB291C) : Colors.grey,
                   ),
