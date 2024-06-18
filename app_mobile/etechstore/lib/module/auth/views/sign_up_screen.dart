@@ -204,6 +204,7 @@ class SignUpScreen extends GetView<SignUpController> {
                     style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.symmetric(horizontal: 130.w, vertical: 13.h), backgroundColor: TColros.purple_line),
                     onPressed: () {
+                      
                       controller.signUp();
                     },
                     child: Text(

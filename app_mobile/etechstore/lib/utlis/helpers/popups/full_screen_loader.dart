@@ -13,7 +13,7 @@ class FullScreenLoader {
     showDialog(
       barrierDismissible: false,
       context: Get.overlayContext!,
-      builder: (_) => PopScope(
+      builder: (_) => PopScope( 
         canPop: false,
         child: SizedBox(
           width: double.infinity,

@@ -57,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   const Duration(milliseconds: 1),
                   () {
                     cartController.isEditMode.value = false;
-
+                    cartController.setTotalPriceAndCheckAll();
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -96,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
             //Banner khuyến mãi
             SizedBox(width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height / 6, child: const SlideShowBanner()),
             const Divider(),
-        
+
             //Danh mục sản phẩm
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,

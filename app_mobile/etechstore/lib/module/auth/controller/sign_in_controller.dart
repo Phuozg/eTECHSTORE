@@ -1,5 +1,5 @@
 import 'package:etechstore/module/auth/views/sign_in_screen.dart';
- import 'package:etechstore/module/home/views/home_screen.dart';
+import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/services/auth/auth_gate.dart';
 import 'package:etechstore/services/auth/auth_services.dart';
 import 'package:etechstore/utlis/connection/network_manager.dart';
@@ -18,8 +18,7 @@ class SignInController extends GetxController {
   final AuthServices authServices = Get.put(AuthServices());
   final NetworkManager network = Get.put(NetworkManager());
 
-  GlobalKey<FormState> signInFormKey = GlobalKey<FormState>();
-  //Variables
+   //Variables
   final hidePassword = true.obs;
   final fullName = TextEditingController();
   final email = TextEditingController();

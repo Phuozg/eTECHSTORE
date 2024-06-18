@@ -1,7 +1,11 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:etechstore/firebase_options.dart';
 import 'package:etechstore/module/auth/controller/sign_in_controller.dart';
+import 'package:etechstore/module/auth/views/sign_in_screen.dart';
 import 'package:etechstore/module/auth/views/splash_screen.dart';
+import 'package:etechstore/module/bottom_nav_bar/nav_menu.dart';
+import 'package:etechstore/module/fake/lala.dart';
+import 'package:etechstore/module/fake/views/auth_controller.dart';
 import 'package:etechstore/services/auth/auth_gate.dart';
 import 'package:etechstore/services/auth/auth_services.dart';
 import 'package:flutter/material.dart';
@@ -33,12 +37,16 @@ void main() async {
         initial: savedThemeMode ?? AdaptiveThemeMode.light,
         builder: (light, dark) => GetMaterialApp(
               initialBinding: BindingsBuilder(() {
-                Get.put(SignInController());
+                Get.put(AuthServices());
               }),
               theme: light,
               darkTheme: dark,
               debugShowCheckedModeBanner: false,
-              home: const AuthGate(),
+              home: AuthGate(),
+              getPages: [
+                GetPage(name: '/navMenu', page: () => const NavMenu()),
+                GetPage(name: '/SignInScreen', page: () => const SignInScreen()),
+              ],
             )),
   );
 }

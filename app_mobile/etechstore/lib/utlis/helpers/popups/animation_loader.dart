@@ -28,7 +28,6 @@ class _AnimationLoaderWidgetState extends State<AnimationLoaderWidget> with Sing
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     controller = AnimationController(
       vsync: this,
@@ -36,7 +35,9 @@ class _AnimationLoaderWidgetState extends State<AnimationLoaderWidget> with Sing
 
     controller.addStatusListener((status) async {
       if (status == AnimationStatus.completed) {
-        Navigator.pop(context);
+        if (mounted) {
+          Navigator.pop(context);
+        }
         controller.reset();
       }
     });
@@ -44,9 +45,8 @@ class _AnimationLoaderWidgetState extends State<AnimationLoaderWidget> with Sing
 
   @override
   void dispose() {
-    // TODO: implement dispose
-    super.dispose();
     controller.dispose();
+    super.dispose();
   }
 
   @override
