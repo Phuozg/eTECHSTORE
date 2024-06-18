@@ -143,6 +143,7 @@ class DetailScreen extends GetView {
                                       builder: (context) => const CartScreen(),
                                     ));
                                 cartController.isEditMode.value = false;
+                                cartController.setTotalPriceAndCheckAll();
                               },
                               icon: const Image(
                                 image: AssetImage(ImageKey.iconCart),
@@ -596,7 +597,7 @@ class DetailScreen extends GetView {
                                           id: cartController.generateRandomString(20),
                                           maKhachHang: user!.uid,
                                           soLuong: quantity,
-                                          trangThai: 1,
+                                          trangThai: 0,
                                           maSanPham: {
                                             'maSanPham': sample.MaSanPham,
                                             'mauSac': selectedColor,

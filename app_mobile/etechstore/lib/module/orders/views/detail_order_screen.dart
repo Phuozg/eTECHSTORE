@@ -115,7 +115,7 @@ class DetailOrderSreen extends StatelessWidget {
                                       final profile = profiles[index];
 
                                       return ConstrainedBox(
-                                        constraints: BoxConstraints(maxHeight: 100.h, minHeight: 100.h),
+                                        constraints: BoxConstraints(maxHeight: 94.h, minHeight: 70.h),
                                         child: Container(
                                           width: double.infinity,
                                           color: Colors.white,
@@ -150,15 +150,27 @@ class DetailOrderSreen extends StatelessWidget {
                                                 children: [
                                                   Text(profile.HoTen),
                                                   const Text(" | "),
-                                                  Text("0${profile.SoDienThoai}"),
+                                                  profile.SoDienThoai != 0
+                                                      ? Text(
+                                                          "0${profile.SoDienThoai.toString()}",
+                                                          style: TColros.black_15_w400,
+                                                        )
+                                                      : const Text("Thêm số điện thoại"),
                                                 ],
                                               ),
-                                              Text(
-                                                profile.DiaChi,
-                                                overflow: TextOverflow.ellipsis,
-                                                softWrap: true,
-                                                maxLines: 2,
-                                              ),
+                                              profile.DiaChi != ''
+                                                  ? Text(
+                                                      profile.DiaChi,
+                                                      overflow: TextOverflow.ellipsis,
+                                                      softWrap: true,
+                                                      maxLines: 2,
+                                                    )
+                                                  : const Text(
+                                                      'Địa chỉ trống',
+                                                      overflow: TextOverflow.ellipsis,
+                                                      softWrap: true,
+                                                      maxLines: 2,
+                                                    ),
                                             ],
                                           ),
                                         ),

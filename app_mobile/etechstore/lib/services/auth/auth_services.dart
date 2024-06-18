@@ -27,9 +27,10 @@ class AuthServices extends GetxController {
     bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 
     if (isLoggedIn) {
-      Get.offAll(() => const NavMenu());
+      Get.offNamed('/navMenu');
     } else {
-      Get.offAll(() => const SignInScreen());
+      Get.offNamed('/SignInScreen');
+      signOut();
     }
   }
 
@@ -42,7 +43,7 @@ class AuthServices extends GetxController {
     if (await _isUserAllowedToSignIn(email)) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setBool('isLoggedIn', true);
-      Get.offAll(() => const NavMenu());
+      Get.offNamed('/navMenu');
       return userCredential;
     } else {
       await _auth.signOut();
@@ -107,21 +108,45 @@ class AuthServices extends GetxController {
 
   //SignOut
   Future<void> signOut() async {
-    await _auth.signOut();
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('isLoggedIn', false);
-    Get.offAll(() => const SignInScreen());
+    await prefs.remove('isLoggedIn');
+    await _auth.signOut();
+    Get.offAllNamed('/SignInScreen');
   }
 
   //SignIn With Google
   Future<UserCredential?> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? userAccount = await GoogleSignIn().signIn();
-      final GoogleSignInAuthentication? googleAuth = await userAccount?.authentication;
-      final credentials = GoogleAuthProvider.credential(accessToken: googleAuth?.accessToken, idToken: googleAuth?.idToken);
-      return await _auth.signInWithCredential(credentials);
+      if (userAccount == null) {
+        return null;
+      }
+      final GoogleSignInAuthentication googleAuth = await userAccount.authentication;
+      final credentials = GoogleAuthProvider.credential(accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
+      UserCredential userCredential = await _auth.signInWithCredential(credentials);
+
+      if (userCredential.user != null) {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('isLoggedIn', true);
+        Get.offNamed('/navMenu');
+
+        firestore.collection('Users').doc(userCredential.user!.uid).set({
+          'HoTen': userAccount.email,
+          'email': userAccount.email,
+          'password': 'Trống',
+          'uid': userCredential.user!.uid,
+          'HinhDaiDien': 'https://th.bing.com/th/id/R.3268de3daaeef4cdc5cd0bbc5d0e8d20?rik=RgusFJOHX7X%2fCg&pid=ImgRaw&r=0',
+          'TrangThai': 1,
+          'Quyen': true,
+          'SoDienThoai': 0,
+          'DiaChi': ''
+        });
+
+        return userCredential;
+      }
     } catch (e) {
-      print(e);
+      print("Lỗi đăng nhập Google: $e");
+      Get.snackbar('Đăng nhập thất bại', e.toString());
     }
     return null;
   }

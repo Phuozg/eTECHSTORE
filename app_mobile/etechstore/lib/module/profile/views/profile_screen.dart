@@ -1,5 +1,5 @@
 import 'package:etechstore/module/auth/controller/sign_in_controller.dart';
- import 'package:etechstore/module/orders/views/orders_manage_screen.dart';
+import 'package:etechstore/module/orders/views/orders_manage_screen.dart';
 import 'package:etechstore/module/profile/controller/profile_controller.dart';
 import 'package:etechstore/module/profile/model/profile_model.dart';
 import 'package:etechstore/module/profile/views/edit_views/profile_edit_screen.dart';
@@ -100,7 +100,7 @@ class ProfileScreen extends StatelessWidget {
                                     : const Text("Khách hàng"),
                               ),
                               SizedBox(height: 10.h),
-                              profile.SoDienThoai.toString() != null || profile.SoDienThoai.toString() != ''
+                              profile.SoDienThoai != 0
                                   ? Text(
                                       "0${profile.SoDienThoai.toString()}",
                                       style: TColros.black_15_w400,
