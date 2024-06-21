@@ -63,7 +63,6 @@ class OrderIsPaid extends StatelessWidget {
               stream: controller.fetchData(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
-                  print("không có dữ liệu!");
                   return const Center(
                     child: CircularProgressIndicator(),
                   );

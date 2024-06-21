@@ -19,6 +19,8 @@ Widget productHorizontalListTile(BuildContext context,ProductModel product){
                                   TrangThai: product.TrangThai,
                                   id: product.id,
                                   thumbnail: product.thumbnail,
+                                  isPopular: product.isPopular,
+                                  NgayNhap: product.NgayNhap,
                                 ),
                               ));
                     },

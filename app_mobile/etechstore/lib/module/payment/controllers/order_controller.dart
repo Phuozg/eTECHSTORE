@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:etechstore/module/cart/controller/cart_controller.dart';
+import 'package:etechstore/module/home/models/product_model.dart';
 import 'package:etechstore/module/payment/controllers/order_items_controller.dart';
 import 'package:etechstore/module/payment/models/model_product_model.dart';
 import 'package:etechstore/module/payment/models/order_detail_model.dart';
@@ -78,6 +79,40 @@ class OrderController extends GetxController {
       await saveOrder(order);
 
       await loopAddOrderDetail(id, userID);
+      controller.setTotalPriceAndCheckAll();
+      await clearCart(userID);
+      Get.off(() => const SuccessScreen());
+    } catch (e) {
+      throw 'something went wrong';
+    }
+  }
+
+  void processOrderBuyNow(String userID, int totalPrice, int totalDiscount,ProductModel product) async {
+    try {
+      ScreenLoader.openLoadingDialog();
+
+      if (userID.isEmpty) return;
+
+      id = generateRandomString(20);
+      final order = OrderModel(
+          id: id,
+          TongTien: totalPrice,
+          TongDuocGiam: totalDiscount,
+          NgayTaoDon: Timestamp.now(),
+          MaKhachHang: userID,
+          isPaid: true,
+          isBeingShipped: false,
+          isShipped: false,
+          isCompleted: false,
+          isCancelled: false);
+      await saveOrder(order);
+
+      await saveOrderDetail(OrderDetail(
+            MaDonHang: id,
+            SoLuong: 1,
+            TrangThai: 1,
+            KhuyenMai: 0,
+            MaMauSanPham: ModelProductModel(CauHinh: '1TB', MaSanPham: product.id, MauSac: 'Đen').toJson()));
       controller.setTotalPriceAndCheckAll();
       await clearCart(userID);
       Get.off(() => const SuccessScreen());

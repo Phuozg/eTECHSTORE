@@ -206,7 +206,9 @@ class DetailOrderSreen extends StatelessWidget {
                                                           TrangThai: product.trangThai,
                                                           id: product.id,
                                                           thumbnail: product.thumbnail,
-                                                          HinhAnh: product.hinhAnh),
+                                                          HinhAnh: product.hinhAnh,
+                                                          isPopular: product.isPopular,
+                                                          NgayNhap: product.NgayNhap,),
                                                     ));
                                               },
                                               child: Container(

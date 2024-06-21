@@ -12,6 +12,8 @@ class ProductModel {
   int maDanhMuc;
   List<dynamic> hinhAnh;
   String thumbnail;
+  Timestamp NgayNhap;
+  bool isPopular;
 
   ProductModel({
     required this.thumbnail,
@@ -23,6 +25,8 @@ class ProductModel {
     required this.ten,
     required this.trangThai,
     required this.giaTien,
+    required this.NgayNhap,
+    required this.isPopular
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
@@ -36,6 +40,8 @@ class ProductModel {
         moTa: json['MoTa'],
         ten: json['Ten'],
         trangThai: json['TrangThai'],
+        NgayNhap: json['NgayNhap']??Timestamp.now(),
+        isPopular: json['isPopular']??false
       );
 
   Map<String, dynamic> toJson() {
@@ -67,6 +73,8 @@ class ProductModel {
       ten: document['Ten'],
       trangThai: document['TrangThai'],
       giaTien: document['GiaTien'],
+      NgayNhap: document['NgayNhap'],
+      isPopular: document['isPopular']
     );
   }
 
@@ -81,6 +89,8 @@ class ProductModel {
       maDanhMuc: data['MaDanhMuc'] ?? 0,
       hinhAnh: List<dynamic>.from(data['DSHinhAnh'] ?? []),
       thumbnail: data['thumbnail'] ?? '',
+      NgayNhap: data['NgayNhap']??Timestamp.now(),
+      isPopular: data['isPopular']??false
     );
   }
 }

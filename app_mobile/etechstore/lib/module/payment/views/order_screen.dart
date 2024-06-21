@@ -57,7 +57,6 @@ class OrderScreen extends StatelessWidget {
         child: ElevatedButton(
             onPressed: () {
               if (paymentController.selectedPaymentMethod.value.ten == 'VNPay') {
-                print(1);
               } else {
                 orderController.processOrder(userID, orderItemsController.totalPrice.toInt(), orderItemsController.totalDiscount.toInt());
               }

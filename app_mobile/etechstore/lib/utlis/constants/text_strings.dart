@@ -41,7 +41,7 @@ class TTexts {
   static String taiKhoanDaTonTai = "Tài khoản đã tồn tại";
   static String guiTinNhan = "Gửi tin nhắn ...";
   static String xemTatCa = "Xem tất cả >";
-  static String muaVoiVoucher = "Mua với voucher";
+  static String muaVoiVoucher = "Mua ngay";
   static String themVaoGioHang = "Thêm vào giỏ hàng";
   static String danhGiaSanPham = "Đánh giá sản phẩm";
   static String thuGon = "Thu gọn";

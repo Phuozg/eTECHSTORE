@@ -142,7 +142,9 @@ class CartScreen extends StatelessWidget {
                                                                   TrangThai: product.trangThai,
                                                                   id: product.id,
                                                                   thumbnail: product.thumbnail,
-                                                                  HinhAnh: product.hinhAnh)));
+                                                                  HinhAnh: product.hinhAnh,
+                                  isPopular: product.isPopular,
+                                  NgayNhap: product.NgayNhap,)));
                                                     },
                                                     child: SizedBox(
                                                       width: 70.w,
@@ -181,7 +183,10 @@ class CartScreen extends StatelessWidget {
                                                                         TrangThai: product.trangThai,
                                                                         id: product.id,
                                                                         thumbnail: product.thumbnail,
-                                                                        HinhAnh: product.hinhAnh),
+                                                                        HinhAnh: product.hinhAnh,
+                                                                        
+                                  isPopular: product.isPopular,
+                                  NgayNhap: product.NgayNhap,),
                                                                   ));
                                                             },
                                                             child: SizedBox(

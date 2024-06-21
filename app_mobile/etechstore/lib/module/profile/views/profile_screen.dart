@@ -120,16 +120,7 @@ class ProfileScreen extends StatelessWidget {
                         text: "Sửa hồ sơ",
                       ),
                     ),
-                    GestureDetector(
-                        onTap: () {
-                          Get.to(const WishListScreen());
-                        },
-                        child: ListHelpProfile(icon: const Image(image: AssetImage(ImageKey.iconHeart)), text: "Yêu thích")),
-                    GestureDetector(
-                        onTap: () {
-                          Get.to(const OrderManageScreen());
-                        },
-                        child: ListHelpProfile(icon: const Image(image: AssetImage(ImageKey.iconBoxCart)), text: "Đơn hàng")),
+                    
                     GestureDetector(
                         onTap: () {
                           Get.to(const SettingScreen());
