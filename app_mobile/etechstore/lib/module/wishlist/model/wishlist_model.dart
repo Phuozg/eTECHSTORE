@@ -9,7 +9,7 @@ class WishList{
     required this.DSSanPham
   });
 
-  //Empty Product
+  //Empty
   static WishList empty() => WishList(MaKhachHang: '', DSSanPham: []);
 
   //

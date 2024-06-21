@@ -1,7 +1,6 @@
 import 'package:etechstore/module/cart/controller/cart_controller.dart';
 import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/module/payment/controllers/payment_controller.dart';
-import 'package:etechstore/module/payment/controllers/order_items_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -11,7 +10,6 @@ class Payment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(PaymentController());
-    final orderController = Get.put(OrderItemsController());
     return Obx(()=> Column(
       children: [
         GestureDetector(

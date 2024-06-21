@@ -18,18 +18,18 @@ class CategoryModel{
   //Empty Category
   static CategoryModel empty() => CategoryModel(id: 0, TenDanhMuc: '', MoTa: '', HinhAnh: '', TrangThai: 0);
 
-  factory CategoryModel.fromSnapshot(DocumentSnapshot<Map<String,dynamic>> document){
-    if(document.data()!=null){
+  factory CategoryModel.fromSnapshot(
+      DocumentSnapshot<Map<String, dynamic>> document) {
+    if (document.data() != null) {
       final data = document.data()!;
 
       //Map Json to Model
       return CategoryModel(
-        id: data['id'], 
-        TenDanhMuc: data['TenDanhMuc']??'', 
-        MoTa: data['MoTa']??'', 
-        HinhAnh: data['HinhAnh']??'', 
-        TrangThai: data['TrangThai']??0
-      );
+          id: data['id'],
+          TenDanhMuc: data['TenDanhMuc'] ?? '',
+          MoTa: data['MoTa'] ?? '',
+          HinhAnh: data['HinhAnh'] ?? '',
+          TrangThai: data['TrangThai'] ?? 0);
     } else {
       return CategoryModel.empty();
     }

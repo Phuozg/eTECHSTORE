@@ -1,13 +1,15 @@
 import 'package:etechstore/module/home/controllers/product_controller.dart';
 import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/module/product_detail/view/product_detail_screen.dart';
+import 'package:etechstore/module/wishlist/controller/wishlist_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 Widget productHorizontalSample(BuildContext context,String query){
   final productController = Get.put(ProductControllerr());
+  final wishListController = Get.put(WishListController());
   return SizedBox(
-    height: MediaQuery.of(context).size.height/3.5,
+    height: MediaQuery.of(context).size.height/3.2,
     child: ListView.builder(
       shrinkWrap: true,
       itemCount: productController.queryProduct(query).length,
@@ -29,6 +31,8 @@ Widget productHorizontalSample(BuildContext context,String query){
                                   TrangThai: product.TrangThai,
                                   id: product.id,
                                   thumbnail: product.thumbnail,
+                                  isPopular: product.isPopular,
+                                  NgayNhap: product.NgayNhap,
                                 ),
                               ));
                     },
@@ -41,7 +45,7 @@ Widget productHorizontalSample(BuildContext context,String query){
                             Stack(
                               children: [
                                 SizedBox(
-                                  height: MediaQuery.of(context).size.height/7,
+                                  height: MediaQuery.of(context).size.height/6.5,
                                   child: Image.network(product.thumbnail,fit: BoxFit.cover,)
                                 ),
                                 Builder(
@@ -49,35 +53,57 @@ Widget productHorizontalSample(BuildContext context,String query){
                                     if(product.KhuyenMai!=0){
                                       return Positioned(
                                         top: 0,
-                                        left: 90,
+                                        left: 80,
+                                        right: 2,
+                                        bottom: 85,
                                         child: Container(
                                           decoration: const BoxDecoration(
-                                            shape: BoxShape.rectangle,
+                                            shape: BoxShape.circle,
                                             color: Colors.red
                                           ),
                                           width: 100,
                                           height: 50,
-                                          child: Padding(
-                                            padding: const EdgeInsets.fromLTRB(5,0,0,0),
-                                            child: Row(
-                                              children: [
-                                                Text("${product.KhuyenMai.toString()}%",
-                                                style: const TextStyle(
-                                                  color: Colors.white
-                                                ),
-                                              )],
-                                            ),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Text("-${product.KhuyenMai.toString()}%",
+                                              style: const TextStyle(
+                                                color: Colors.white
+                                              ),
+                                            )],
                                           ),
                                         ));
                                     }
                                     return const Text("");
                                   },
+                                  ),
+                                  Positioned(
+                                    top: -10,
+                                    left: -10,
+                                    child: Obx(() {
+                                      return IconButton(
+                                        onPressed: (){
+                                          if(!wishListController.isWish(product.id)){
+                                            wishListController.addWish(product.id);
+                                          } else {
+                                            wishListController.removeWish(product.id);
+                                          }
+                                        }, 
+                                        icon: Icon(Icons.favorite,color: wishListController.isWish(product.id)?Colors.red:Colors.black,)
+                                      );
+                                    })
                                   )
-                                
                               ],
                             ),
-                            
-                            Text(product.Ten,style: const TextStyle(fontWeight: FontWeight.bold),textAlign: TextAlign.center,),
+                            Text(
+                              product.Ten,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold
+                              ),
+                              textAlign: TextAlign.center,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                             Builder(
                                   builder: (context){
                                     if(product.KhuyenMai!=0){
@@ -96,7 +122,8 @@ Widget productHorizontalSample(BuildContext context,String query){
                                     }
                                     return Text(priceFormat(product.GiaTien),style: const TextStyle(color: Colors.red));
                                   },
-                                  )
+                                  ),
+                                  
                           ],
                         ),
                       ),
