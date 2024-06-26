@@ -99,9 +99,10 @@ class SignUpController extends GetxController {
           //SignUp
           if (password.text == conformPassword.text) {
             await authServices.signUpWithEmailPassword(email.text.trim(), password.text.trim(), fullName.text.trim());
+
             clearPassword();
           } else {
-            TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.chuaNhapDuThongTin);
+            TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.matKhauKhongTrungKhop);
             return;
           }
         }
@@ -115,15 +116,16 @@ class SignUpController extends GetxController {
     } catch (e) {
       TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.chuaNhapDuThongTin);
     } finally {
-      //  FullScreenLoader.stopLoading();
+      FullScreenLoader.stopLoading();
     }
   }
 
   //Google SignIn
   Future<void> googleSignIn() async {
     try {
-      //     final isConnected = await NetworkManager.instance.isConneted();
-      final userCredentials = AuthServices.instance.signInWithGoogle();
+      FullScreenLoader.openLoadingDialog('Quá trình đang diễn ra...', ImageKey.loadingAnimation);
+
+      AuthServices.instance.signInWithGoogle();
     } catch (e) {
       TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.chuaNhapDuThongTin);
     } finally {

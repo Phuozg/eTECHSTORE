@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:etechstore/module/auth/views/sign_in_screen.dart';
 import 'package:etechstore/module/bottom_nav_bar/nav_menu.dart';
 import 'package:etechstore/module/profile/model/profile_model.dart';
+import 'package:etechstore/utlis/constants/text_strings.dart';
+import 'package:etechstore/utlis/helpers/popups/loader.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -47,13 +49,13 @@ class AuthServices extends GetxController {
       return userCredential;
     } else {
       await _auth.signOut();
-      Get.snackbar('Đăng nhập thất bại', 'Email hoặc trạng thái không hợp lệ');
+      TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.dangNhapThatBai);
+
       return null;
     }
   }
 
-  // Check if the user is allowed to sign in
-  Future<bool> _isUserAllowedToSignIn(String email) async {
+   Future<bool> _isUserAllowedToSignIn(String email) async {
     try {
       QuerySnapshot snapshot = await firestore.collection('Users').where('email', isEqualTo: email).where('TrangThai', isEqualTo: 1).get();
 
@@ -63,7 +65,8 @@ class AuthServices extends GetxController {
         return false;
       }
     } catch (e) {
-      print('Error checking user status: $e');
+      TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.dangNhapThatBai);
+
       return false;
     }
   }
@@ -73,7 +76,7 @@ class AuthServices extends GetxController {
     try {
       await _auth.sendPasswordResetEmail(email: email);
     } on FirebaseAuthException catch (e) {
-      throw 'Đã xãy ra lỗi. Hãy thử lại sau';
+      TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.dangNhapThatBai);
     }
   }
 
@@ -82,7 +85,7 @@ class AuthServices extends GetxController {
     try {
       await _auth.currentUser?.sendEmailVerification();
     } on FirebaseAuthException catch (e) {
-      throw 'Đã xãy ra lỗi. Hãy thử lại sau';
+      TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.daXayRaLoi);
     }
   }
 
@@ -145,8 +148,7 @@ class AuthServices extends GetxController {
         return userCredential;
       }
     } catch (e) {
-      print("Lỗi đăng nhập Google: $e");
-      Get.snackbar('Đăng nhập thất bại', e.toString());
+      TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.dangNhapThatBai);
     }
     return null;
   }
@@ -166,16 +168,13 @@ class AuthServices extends GetxController {
     }
 
     try {
-      // Kiểm tra mật khẩu hiện tại
       bool isCurrentPasswordCorrect = await _isCurrentPasswordCorrect(currentPassword, user);
       if (!isCurrentPasswordCorrect) {
         return false;
       }
 
-      // Cập nhật mật khẩu trong Firestore
       await _updatePasswordInFirestore(user, newPassword);
 
-      // Cập nhật mật khẩu trong Authentication
       await user.updatePassword(newPassword);
 
       return true;
@@ -195,6 +194,8 @@ class AuthServices extends GetxController {
         return false;
       }
     } catch (e) {
+      TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.daXayRaLoi);
+
       return false;
     }
   }
