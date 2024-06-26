@@ -1,24 +1,25 @@
 class TValidator {
   //email validate
-  static String? validateEmail(String? value) {
+  static String? validateEmptyText(String? value, String fieldName) {
     if (value == null || value.isEmpty) {
-      return 'Email is required.';
-    }
-
-    const emailRegex = r"[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9]+(?:\.[a-zA-Z0-9-]+)*";
-    final regex = RegExp(emailRegex);
-
-    if (!regex.hasMatch(value)) {
-      return 'Invalid email format.';
+      return '$fieldName không được để trống';
     }
     return null;
   }
 
-  //Empty text validation
-  static String? validateEmptyText(String? fieldName, String? value) {
+  static String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
-      return '${fieldName} is required';
+      return 'Email không được để trống';
     }
+
+    // Sử dụng regex để kiểm tra định dạng email
+    const pattern = r'^[^@]+@[^@]+\.[^@]+';
+    final regExp = RegExp(pattern);
+
+    if (!regExp.hasMatch(value)) {
+      return 'Định dạng email không hợp lệ';
+    }
+
     return null;
   }
 

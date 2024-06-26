@@ -26,15 +26,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  
-  final wishListController = Get.put(WishListController());
-  wishListController.createWishList(FirebaseAuth.instance.currentUser!.uid);
-  final ProductController productController = Get.put(ProductController());
-  final ProductSampleController productSampleController = Get.put(ProductSampleController());
-  final db = FirebaseFirestore.instance;
-  final OrdersController ordersController = Get.put(OrdersController());
-  final AuthController auth = Get.put(AuthController());
-
+ 
   runApp(
     AdaptiveTheme(
         light: ThemeData(

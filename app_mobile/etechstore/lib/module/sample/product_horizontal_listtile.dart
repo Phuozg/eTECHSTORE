@@ -1,4 +1,4 @@
-import 'package:etechstore/module/home/models/product_model.dart';
+import 'package:etechstore/module/home/models/product_model_home.dart';
 import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/module/product_detail/view/product_detail_screen.dart';
 import 'package:flutter/material.dart';

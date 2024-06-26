@@ -20,6 +20,7 @@ class SignUpScreen extends GetView<SignUpController> {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(SignUpController());
+    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
     return Scaffold(
       appBar: AppBar(
@@ -47,7 +48,8 @@ class SignUpScreen extends GetView<SignUpController> {
                 SizedBox(
                   height: 20.h,
                 ),
-                Container(
+                Form(
+                  key: formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -90,26 +92,38 @@ class SignUpScreen extends GetView<SignUpController> {
                       //email
                       TextFormField(
                         validator: (value) {
-                          TValidator.validateEmptyText(value, 'email');
-                          return null;
+                          String? emptyValidation = TValidator.validateEmptyText(value, 'Email');
+                          if (emptyValidation != null) {
+                            return emptyValidation;
+                          }
+                          return TValidator.validateEmail(value);
                         },
                         expands: false,
                         controller: controller.email,
                         decoration: InputDecoration(
-                            prefixIcon: const Icon(
-                              Icons.email_outlined,
-                              color: TColros.grey,
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(width: 1, color: TColros.grey),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(width: 1, color: TColros.grey),
-                              borderRadius: BorderRadius.circular(20.r),
-                            ),
-                            hintText: TTexts.nhapEmail,
-                            hintStyle: const TextStyle(color: TColros.grey)),
+                          prefixIcon: const Icon(
+                            Icons.email_outlined,
+                            color: Colors.grey,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(width: 1, color: Colors.grey),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(width: 1, color: Colors.grey),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          hintText: TTexts.nhapEmail, 
+                          hintStyle: const TextStyle(color: Colors.grey),
+                          errorBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(width: 1, color: Colors.grey),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(width: 1, color: Colors.grey),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
                       ),
                       SizedBox(height: 10.h),
                       Text(
@@ -204,8 +218,9 @@ class SignUpScreen extends GetView<SignUpController> {
                     style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.symmetric(horizontal: 130.w, vertical: 13.h), backgroundColor: TColros.purple_line),
                     onPressed: () {
-                      
-                      controller.signUp();
+                      if (formKey.currentState?.validate() == true) {
+                        controller.signUp();
+                      }
                     },
                     child: Text(
                       TTexts.singUp,

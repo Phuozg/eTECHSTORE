@@ -1,7 +1,8 @@
 class TTexts {
    static String singUp = "Đăng ký";
   static String etechStore = "e T E C H S T O R E";
-  static String dangNhap = "Đăng nhập";
+  static String dangNhap = "Đăng nhập";  static String dangNhapThatBai = "Đăng nhập thất bại";
+  static String daXayRaLoi = "Đã xãy ra lỗi. Hãy thử lại sau";
   static String dangNhapBangTaiKhoanDaDangKy = "Đăng nhập với tài khoản đã đăng ký";
   static String emailHoacSoDienThoai = "Email hoặc số điện thoại";
   static String emai = "Email";
@@ -25,7 +26,7 @@ class TTexts {
   static String hoac = "Hoặc";
   static String nhapTenTaiKhoan = "Nhập tên tài khoản";
   static String tenTaiKhoan = "Tên tài khoản";
-  static String matKhauKhongTrungKhop = "Mật khẩu không trung khớp";
+  static String matKhauKhongTrungKhop = "Mật khẩu không trùng khớp";
   static String thongBao = "Thông báo";
   static String thatBai = "Thất bại";
   static String thanhCong = "Thành công";

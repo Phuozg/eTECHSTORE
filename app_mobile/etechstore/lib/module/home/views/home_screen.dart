@@ -121,6 +121,7 @@
 // }
 import 'package:etechstore/module/cart/controller/cart_controller.dart';
 import 'package:etechstore/module/cart/view/cart_screen.dart';
+import 'package:etechstore/module/cart/view/widget/cart_icon_widget.dart';
 import 'package:etechstore/module/home/views/category.dart';
 import 'package:etechstore/module/home/views/product.dart';
 import 'package:etechstore/module/home/views/search_bar.dart';
@@ -136,8 +137,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final CartController cartController = Get.put(CartController());
-    final Uri facbook =
-        Uri.parse('https://www.facebook.com/messages/t/323929774140624');
+    final Uri facbook = Uri.parse('https://www.facebook.com/messages/t/323929774140624');
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -146,8 +146,8 @@ class HomeScreen extends StatelessWidget {
         ),
         title: searchBar(context),
         actions: [
-          ElevatedButton(
-            onPressed: () async {
+          GestureDetector(
+            onTap: () async {
               await cartController.fetchCartItems().then((value) {
                 Future.delayed(
                   const Duration(milliseconds: 1),
@@ -157,19 +157,19 @@ class HomeScreen extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const CartScreen(),
+                          builder: (context) => const CartScreen(
+                            price: 0,
+                          ),
                         ));
                   },
                 );
               });
             },
-            style: ElevatedButton.styleFrom(
-              shape: const CircleBorder(),
-              backgroundColor: const Color(0xFF383CA0),
-            ),
-            child: const Icon(
-              Icons.shopping_cart,
-              color: Colors.white,
+            child: Obx(
+              () => Padding(
+                padding: const EdgeInsets.only(left: 5.0),
+                child: CartIconWithBadge(itemCount: cartController.cartItems.length),
+              ),
             ),
           ),
           ElevatedButton(
@@ -177,9 +177,7 @@ class HomeScreen extends StatelessWidget {
                 //  auth.logout();
                 await launchUrl(facbook);
               },
-              style: ElevatedButton.styleFrom(
-                  shape: const CircleBorder(),
-                  backgroundColor: const Color(0xFF383CA0)),
+              style: ElevatedButton.styleFrom(shape: const CircleBorder(), backgroundColor: const Color(0xFF383CA0)),
               child: const Icon(
                 Icons.message,
                 color: Colors.white,
@@ -193,10 +191,7 @@ class HomeScreen extends StatelessWidget {
           shrinkWrap: true,
           children: [
             //Banner khuyến mãi
-            SizedBox(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height / 6,
-                child: const SlideShowBanner()),
+            SizedBox(width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height / 6, child: const SlideShowBanner()),
             const Divider(),
 
             //Danh mục sản phẩm
@@ -207,9 +202,7 @@ class HomeScreen extends StatelessWidget {
                   "Danh mục",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(
-                    height: MediaQuery.of(context).size.height / 15,
-                    child: const Categories()),
+                SizedBox(height: MediaQuery.of(context).size.height / 15, child: const Categories()),
               ],
             ),
             const Divider(),

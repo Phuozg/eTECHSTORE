@@ -21,6 +21,7 @@ import 'package:etechstore/module/product_detail/controller/product_sample_contr
 import 'package:etechstore/module/product_detail/model/product_model.dart';
 import 'package:etechstore/module/product_detail/model/product_sample_model.dart';
 import 'package:etechstore/module/product_detail/view/product_detail_screen.dart';
+import 'package:etechstore/module/product_detail/view/widget/sample_bottom_sheet.dart';
 import 'package:etechstore/utlis/connection/network_manager.dart';
 import 'package:etechstore/utlis/constants/colors.dart';
 import 'package:etechstore/utlis/constants/image_key.dart';
@@ -36,7 +37,8 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class CartScreen extends StatelessWidget {
-  const CartScreen({super.key});
+  const CartScreen({super.key, required this.price});
+  final int price;
 
   @override
   Widget build(BuildContext context) {
@@ -95,6 +97,7 @@ class CartScreen extends StatelessWidget {
                                 String selectedColor = item.maSanPham['mauSac'];
                                 String selectedConfig = item.maSanPham['cauHinh'];
                                 int quantity = item.soLuong;
+                                int price = controller.calculatePrice(item);
                                 var product = controller.products[item.maSanPham['maSanPham']];
                                 return Slidable(
                                   endActionPane: ActionPane(motion: const ScrollMotion(), children: [DeleteItem(item: item)]),
@@ -134,17 +137,18 @@ class CartScreen extends StatelessWidget {
                                                           context,
                                                           MaterialPageRoute(
                                                               builder: (context) => DetailScreen(
-                                                                  GiaTien: product!.giaTien,
-                                                                  KhuyenMai: product.KhuyenMai,
-                                                                  MaDanhMuc: product.maDanhMuc,
-                                                                  MoTa: product.moTa,
-                                                                  Ten: product.ten,
-                                                                  TrangThai: product.trangThai,
-                                                                  id: product.id,
-                                                                  thumbnail: product.thumbnail,
-                                                                  HinhAnh: product.hinhAnh,
-                                  isPopular: product.isPopular,
-                                  NgayNhap: product.NgayNhap,)));
+                                                                    GiaTien: product!.giaTien,
+                                                                    KhuyenMai: product.KhuyenMai,
+                                                                    MaDanhMuc: product.maDanhMuc,
+                                                                    MoTa: product.moTa,
+                                                                    Ten: product.ten,
+                                                                    TrangThai: product.trangThai,
+                                                                    id: product.id,
+                                                                    thumbnail: product.thumbnail,
+                                                                    HinhAnh: product.hinhAnh,
+                                                                    isPopular: product.isPopular,
+                                                                    NgayNhap: product.NgayNhap,
+                                                                  )));
                                                     },
                                                     child: SizedBox(
                                                       width: 70.w,
@@ -175,18 +179,18 @@ class CartScreen extends StatelessWidget {
                                                                   context,
                                                                   MaterialPageRoute(
                                                                     builder: (context) => DetailScreen(
-                                                                        GiaTien: product!.giaTien,
-                                                                        KhuyenMai: product.KhuyenMai,
-                                                                        MaDanhMuc: product.maDanhMuc,
-                                                                        MoTa: product.moTa,
-                                                                        Ten: product.ten,
-                                                                        TrangThai: product.trangThai,
-                                                                        id: product.id,
-                                                                        thumbnail: product.thumbnail,
-                                                                        HinhAnh: product.hinhAnh,
-                                                                        
-                                  isPopular: product.isPopular,
-                                  NgayNhap: product.NgayNhap,),
+                                                                      GiaTien: product!.giaTien,
+                                                                      KhuyenMai: product.KhuyenMai,
+                                                                      MaDanhMuc: product.maDanhMuc,
+                                                                      MoTa: product.moTa,
+                                                                      Ten: product.ten,
+                                                                      TrangThai: product.trangThai,
+                                                                      id: product.id,
+                                                                      thumbnail: product.thumbnail,
+                                                                      HinhAnh: product.hinhAnh,
+                                                                      isPopular: product.isPopular,
+                                                                      NgayNhap: product.NgayNhap,
+                                                                    ),
                                                                   ));
                                                             },
                                                             child: SizedBox(
@@ -205,18 +209,40 @@ class CartScreen extends StatelessWidget {
                                                           onTap: () async {
                                                             for (final sample
                                                                 in productController.productSamples.where((p0) => product?.id == p0.MaSanPham)) {
-                                                              showCustomModalBottomSheet(
-                                                                  context: context, item: item, product: product!, sample: sample);
+                                                              if (sample.cauHinh.isEmpty || sample.mauSac.isEmpty) {
+                                                                return;
+                                                              } else {
+                                                                showModalBottomSheet(
+                                                                  context: context,
+                                                                  builder: (ctx) {
+                                                                    return ShowCustomModalBottomSheet(
+                                                                      GiaTien: product!.giaTien,
+                                                                      KhuyenMai: product.KhuyenMai,
+                                                                      sample: sample,
+                                                                      thumbnail: product.thumbnail,
+                                                                      item: item,
+                                                                      id: product.id,
+                                                                    );
+                                                                  },
+                                                                );
+                                                              }
                                                             }
                                                           },
-                                                          child: TypeProductItemWidget(
-                                                            selectedColor: selectedColor,
-                                                            selectedConfig: selectedConfig,
-                                                          )),
+                                                          child: selectedConfig.isNotEmpty || selectedColor.isNotEmpty
+                                                              ? TypeProductItemWidget(
+                                                                  selectedColor: selectedColor,
+                                                                  selectedConfig: selectedConfig,
+                                                                )
+                                                              : Container()),
                                                       SizedBox(height: 5.h),
-                                                      PriceProductItemWidget(product: product!),
+                                                      PriceProductItemWidget(
+                                                        product: product!,
+                                                        pirce: price != 0
+                                                            ? price
+                                                            : ((product.giaTien - (product.giaTien * product.KhuyenMai / 100)).toInt()),
+                                                      ),
                                                       SizedBox(height: 3.h),
-                                                      ChangeQuantityItemWidget(item: item, quantity: quantity)
+                                                      ChangeQuantityItemWidget(item: item,quantity: quantity)
                                                     ],
                                                   ),
                                                 ],

@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:etechstore/module/cart/controller/cart_controller.dart';
-import 'package:etechstore/module/home/models/product_model.dart';
+import 'package:etechstore/module/home/models/product_model_home.dart';
 import 'package:etechstore/module/payment/models/cart_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';

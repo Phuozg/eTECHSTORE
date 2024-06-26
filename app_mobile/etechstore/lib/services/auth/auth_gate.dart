@@ -17,11 +17,16 @@ class AuthGate extends StatefulWidget {
 }
 
 class _AuthGateState extends State<AuthGate> {
+  final SignInController authController = Get.put(SignInController());
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     final SignInController authController = Get.put(SignInController());
     authController.checkSignIn();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return const Scaffold(
       body: Center(
         child: CircularProgressIndicator(),

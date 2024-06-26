@@ -37,6 +37,7 @@ class CartController extends GetxController {
   var productList = <ProductModel>[].obs;
   RxInt quantity = 0.obs;
   var selectedItemCount = 0.obs;
+  RxMap priceMap = {}.obs;
 
   @override
   void onInit() {
@@ -51,13 +52,67 @@ class CartController extends GetxController {
 
   void total() {
     double total = 0.0;
+
     for (var item in cartItems) {
-      var product = products[item.maSanPham['maSanPham']];
-      if (selectedItems[item.id] == true && products[item.maSanPham['maSanPham']] != null) {
-        total += ((product!.giaTien - (product.giaTien * product.KhuyenMai / 100)) * item.soLuong);
+      var productId = item.maSanPham['maSanPham'];
+      var color = item.maSanPham['mauSac'] ?? '';
+      var storage = item.maSanPham['cauHinh'] ?? '';
+
+      var key = '$color-$storage';
+
+      int price;
+      if (selectedItems[item.id] == true) {
+        if (priceMap.containsKey(productId) && priceMap[productId]!.containsKey(key)) {
+          price = priceMap[productId]![key]!;
+        } else if (products.containsKey(productId)) {
+          price = products[productId]!.giaTien - (products[productId]!.giaTien * products[productId]!.KhuyenMai) ~/ 100;
+        } else {
+          price = 0;
+        }
+        total += price * item.soLuong;
       }
     }
+
     totalPrice.value = total;
+  }
+
+  Future<void> fetchPriceMap(String productId) async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('MauSanPham').get();
+    Map<String, Map<String, int>> prices = {};
+
+    for (var doc in querySnapshot.docs) {
+      Map data = doc.data() as Map<String, dynamic>;
+      productId = data['MaSanPham'];
+      Map<String, int> priceData = Map<String, int>.from(data['GiaTien']);
+      prices[productId] = priceData;
+    }
+
+    priceMap.value = prices;
+  }
+
+  int calculatePrice(CartModel cartItem) {
+    String productId = cartItem.maSanPham['maSanPham'];
+    String color = cartItem.maSanPham['mauSac'] ?? '';
+    String storage = cartItem.maSanPham['cauHinh'] ?? '';
+    String key = '$color-$storage';
+    String keyColor = '$color-';
+    String keyStorage = '$storage-';
+
+    if (priceMap.containsKey(productId)) {
+      if (priceMap[productId]!.containsKey(key)) {
+        return priceMap[productId]![key]!;
+      } else if (priceMap[productId]!.containsKey(keyColor)) {
+        return priceMap[productId]![keyColor]!;
+      } else if (priceMap[productId]!.containsKey(keyStorage)) {
+        return priceMap[productId]![keyStorage]!;
+      }
+    }
+
+    if (products.containsKey(productId)) {
+      return products[productId]!.giaTien - (products[productId]!.giaTien * products[productId]!.KhuyenMai) ~/ 100;
+    } else {
+      return 0;
+    }
   }
 
   Future<void> setTotalPriceAndCheckAll() async {
@@ -104,11 +159,11 @@ class CartController extends GetxController {
             products[item.maSanPham['maSanPham']] = ProductModel.fromFirestore(productDoc.data() as Map<String, dynamic>);
             // total();
             updateSelectedItemCount();
+            fetchPriceMap(item.maSanPham['maSanPham']);
           }
         }
         localStorageService.saveCartItems(cartItems);
         localStorageService.saveProducts(productList);
-        
       });
     }
   }
@@ -199,11 +254,11 @@ class CartController extends GetxController {
 
         if (existingItem.maSanPham['cauHinh'] != newItem.maSanPham['cauHinh'] ||
             existingItem.maSanPham['mauSac'] != newItem.maSanPham['mauSac'] ||
-            existingItem.id != newItem.id) {
+            existingItem.maSanPham['maSanPham'] != newItem.maSanPham['maSanPham']) {
           cartItems.add(newItem);
           TLoaders.successSnackBar(title: "Thông báo", message: "Thêm thành công!");
           await saveCartItemToFirestore(newItem);
-        } else {
+        } else if (existingItem.id != newItem.id) {
           existingItem.soLuong = newItem.soLuong;
           updateCartItem(existingItem);
           TLoaders.successSnackBar(title: "Thông báo", message: "Thêm thành công!");
@@ -249,7 +304,7 @@ class CartController extends GetxController {
     }
   }
 
-  void updateCartItem(CartModel item) async {
+  Future<void> updateCartItem(CartModel item) async {
     final isconnected = network.isConnectedToInternet.value;
     if (!isconnected) {
       TLoaders.errorSnackBar(title: TTexts.thongBao, message: "Không có kết nối internet");

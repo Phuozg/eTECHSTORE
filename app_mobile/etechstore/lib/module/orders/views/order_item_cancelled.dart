@@ -148,7 +148,7 @@ class OrderCancelled extends StatelessWidget {
                                               mainAxisAlignment: MainAxisAlignment.start,
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                product?.ten != null
+                                                product?.Ten != null
                                                     ? GestureDetector(
                                                         onTap: () {
                                                           //
@@ -157,7 +157,7 @@ class OrderCancelled extends StatelessWidget {
                                                         child: SizedBox(
                                                           width: 170.w,
                                                           child: Text(
-                                                            product!.ten,
+                                                            product!.Ten,
                                                             style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14.sp),
                                                             overflow: TextOverflow.ellipsis,
                                                             softWrap: true,
@@ -225,7 +225,7 @@ class OrderCancelled extends StatelessWidget {
                                             child: Align(
                                               alignment: Alignment.bottomRight,
                                               child: Text(
-                                                priceFormat(product!.giaTien),
+                                                priceFormat(product!.GiaTien),
                                                 style: const TextStyle(
                                                   color: Colors.blueGrey,
                                                   decoration: TextDecoration.lineThrough,
@@ -238,7 +238,7 @@ class OrderCancelled extends StatelessWidget {
                                             child: Align(
                                               alignment: Alignment.bottomRight,
                                               child: Text(
-                                                priceFormat((product.giaTien - (product.giaTien * product.KhuyenMai / 100)).toInt()),
+                                                priceFormat((product.GiaTien - (product.GiaTien * product.KhuyenMai / 100)).toInt()),
                                                 style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.redAccent),
                                               ),
                                             ),
@@ -277,7 +277,7 @@ class OrderCancelled extends StatelessWidget {
                                           ),
                                           SizedBox(width: 5.w),
                                           Text(
-                                            priceFormat(((product.giaTien - (product.giaTien * product.KhuyenMai / 100)) * item.soLuong).toInt()),
+                                            priceFormat(((product.GiaTien - (product.GiaTien * product.KhuyenMai / 100)) * item.soLuong).toInt()),
                                             style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Colors.redAccent),
                                           ),
                                         ],

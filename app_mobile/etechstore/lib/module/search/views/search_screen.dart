@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:etechstore/module/home/models/product_model.dart';
+import 'package:etechstore/module/home/models/product_model_home.dart';
 import 'package:etechstore/module/sample/product_horizontal_listtile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';

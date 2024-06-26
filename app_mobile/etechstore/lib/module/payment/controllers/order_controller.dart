@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:etechstore/module/cart/controller/cart_controller.dart';
-import 'package:etechstore/module/home/models/product_model.dart';
+import 'package:etechstore/module/home/models/product_model_home.dart';
 import 'package:etechstore/module/payment/controllers/order_items_controller.dart';
 import 'package:etechstore/module/payment/models/model_product_model.dart';
 import 'package:etechstore/module/payment/models/order_detail_model.dart';
@@ -46,7 +46,7 @@ class OrderController extends GetxController {
 
   Future<void> loopAddOrderDetail(var id, String userID) async {
     db.collection('GioHang').where('maKhachHang', isEqualTo: userID).get().then((value) {
-      for (var snapshot in value.docs) {
+      for (var snapshot in value.docs) {  
         var data = snapshot.data();
         saveOrderDetail(OrderDetail(
             MaDonHang: id,
@@ -66,7 +66,7 @@ class OrderController extends GetxController {
 
       id = generateRandomString(20);
       final order = OrderModel(
-          id: id,
+          id: id, 
           TongTien: totalPrice,
           TongDuocGiam: totalDiscount,
           NgayTaoDon: Timestamp.now(),
