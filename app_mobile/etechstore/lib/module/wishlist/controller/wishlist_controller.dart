@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:etechstore/module/home/models/product_model.dart';
+import 'package:etechstore/module/home/models/product_model_home.dart';
 import 'package:etechstore/module/payment/controllers/order_controller.dart';
 import 'package:etechstore/module/wishlist/model/wishlist_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';

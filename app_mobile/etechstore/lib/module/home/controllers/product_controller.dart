@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:etechstore/module/home/models/product_model.dart';
+import 'package:etechstore/module/home/models/product_model_home.dart';
 import 'package:get/get.dart';
 
 class ProductControllerr extends GetxController {

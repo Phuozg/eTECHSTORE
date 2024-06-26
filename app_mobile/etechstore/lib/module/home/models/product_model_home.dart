@@ -54,6 +54,19 @@ class ProductModel{
     }
   }
 
+  factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
+      thumbnail: json['thumbnail'],
+      HinhAnh: json['DSHinhAnh'] as List<dynamic>,
+      MaDanhMuc: json['MaDanhMuc'],
+      // mauSac: json['MauSac'],
+      GiaTien: json['GiaTien'],
+      id: json['id'],
+      KhuyenMai: json['KhuyenMai'],
+      MoTa: json['MoTa'],
+      Ten: json['Ten'],
+      TrangThai: json['TrangThai'],
+      NgayNhap: json['NgayNhap'] ?? Timestamp.now(),
+      isPopular: json['isPopular'] ?? false);
   //
   factory ProductModel.fromQuerySnapshot(QueryDocumentSnapshot<Object?> document){
     final data = document.data() as Map<String,dynamic>;

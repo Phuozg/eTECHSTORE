@@ -1,5 +1,5 @@
 import 'package:etechstore/module/home/controllers/product_controller.dart';
-import 'package:etechstore/module/home/models/product_model.dart';
+import 'package:etechstore/module/home/models/product_model_home.dart';
 import 'package:etechstore/module/sample/product_vertical_sample.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

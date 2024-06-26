@@ -28,16 +28,17 @@ class PreviewsController extends GetxController {
     }
   }
 
-  Future<void> fetchUser() async {
-    try {
-      final snapshot = await db.collection('Users').get();
-      snapshot.docs.forEach((doc) {
-        user.add(UserModel.fromSnapshot(doc));
-      });
-    } catch (e) {
-      throw 'Something wrong';
-    }
+
+Future<void> fetchUser() async {
+    db.collection("Users").where("TrangThai", isEqualTo: true).get().then(
+      (querySnapshot) {
+        for (var docSnapshot in querySnapshot.docs) {
+          user.add(UserModel.fromSnapshot(docSnapshot));
+        }
+      },
+    );
   }
+
 
   num getAverage() {
     num average = 0;

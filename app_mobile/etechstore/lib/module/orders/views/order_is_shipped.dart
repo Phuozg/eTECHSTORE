@@ -141,7 +141,7 @@ class OrderIsShipped extends StatelessWidget {
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
-                                                  productt?.ten != null
+                                                  productt?.Ten != null
                                                       ? GestureDetector(
                                                           onTap: () {
                                                             //
@@ -150,7 +150,7 @@ class OrderIsShipped extends StatelessWidget {
                                                           child: SizedBox(
                                                             width: 140.w,
                                                             child: Text(
-                                                              productt!.ten,
+                                                              productt!.Ten,
                                                               style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14.sp),
                                                               overflow: TextOverflow.ellipsis,
                                                               softWrap: true,
@@ -207,7 +207,7 @@ class OrderIsShipped extends StatelessWidget {
                                               child: Align(
                                                 alignment: Alignment.bottomRight,
                                                 child: Text(
-                                                  homeScreen.priceFormat(productt!.giaTien),
+                                                  homeScreen.priceFormat(productt!.GiaTien),
                                                   style: const TextStyle(
                                                     color: Colors.blueGrey,
                                                     decoration: TextDecoration.lineThrough,
@@ -220,7 +220,7 @@ class OrderIsShipped extends StatelessWidget {
                                               child: Align(
                                                 alignment: Alignment.bottomRight,
                                                 child: Text(
-                                                  priceFormat((productt.giaTien - (productt.giaTien * productt.KhuyenMai / 100)).toInt()),
+                                                  priceFormat((productt.GiaTien - (productt.GiaTien * productt.KhuyenMai / 100)).toInt()),
                                                   style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.redAccent),
                                                 ),
                                               ),
@@ -262,7 +262,7 @@ class OrderIsShipped extends StatelessWidget {
                                             SizedBox(width: 5.w),
                                             Text(
                                               homeScreen.priceFormat(
-                                                  ((productt.giaTien - (productt.giaTien * productt.KhuyenMai / 100)) * item.soLuong).toInt()),
+                                                  ((productt.GiaTien - (productt.GiaTien * productt.KhuyenMai / 100)) * item.soLuong).toInt()),
                                               style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Colors.redAccent),
                                             ),
                                           ],
