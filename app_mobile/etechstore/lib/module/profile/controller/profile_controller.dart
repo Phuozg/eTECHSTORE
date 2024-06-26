@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 import 'package:etechstore/module/profile/model/local_storage_service.dart';
 import 'package:etechstore/module/profile/model/profile_model.dart';
+import 'package:etechstore/module/profile/views/edit_views/profile_edit_screen.dart';
 import 'package:etechstore/services/auth/auth_services.dart';
 import 'package:etechstore/utlis/connection/network_manager.dart';
 import 'package:etechstore/utlis/constants/text_strings.dart';
@@ -82,7 +83,9 @@ class ProfileController extends GetxController {
   }
 
   //Edit Profile
-  Future<void> editProfile(int choice) async {
+  Future<void> editProfile(
+    int choice,
+  ) async {
     try {
       final isconnected = network.isConnectedToInternet.value;
       if (!isconnected) {

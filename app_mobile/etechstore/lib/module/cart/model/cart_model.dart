@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class CartModel {
   String id;
   String maKhachHang;
@@ -22,6 +24,18 @@ class CartModel {
       maSanPham: data['mauSanPham'],
     );
   }
+
+factory CartModel.fromFirestore(DocumentSnapshot doc) {
+    Map data = doc.data() as Map<String, dynamic>;
+    return CartModel(
+      id: data['id'],
+      maKhachHang: data['maKhachHang'],
+      soLuong: data['soLuong'],
+      trangThai: data['trangThai'],
+      maSanPham: data['mauSanPham'],
+    );
+  }
+
 
   Map<String, dynamic> toMap() {
     return {

@@ -47,7 +47,7 @@ class EditScreen extends StatelessWidget {
                       autofocus: true,
                       onChanged: (text) {
                         profileController.validateText(text);
-                       },
+                      },
                       decoration: InputDecoration(
                         border: const OutlineInputBorder(borderSide: BorderSide(width: .5)),
                         label: Text(

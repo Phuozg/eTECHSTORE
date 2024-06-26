@@ -1,11 +1,9 @@
 import 'package:etechstore/module/cart/controller/cart_controller.dart';
+import 'package:etechstore/module/home/models/product_model_home.dart';
 import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/module/orders/controller/orders_controller.dart';
 import 'package:etechstore/module/orders/model/detail_orders.dart';
 import 'package:etechstore/module/orders/model/orders_model.dart';
-import 'package:etechstore/module/product_detail/controller/product_controller.dart';
-import 'package:etechstore/module/product_detail/controller/product_sample_controller.dart';
-import 'package:etechstore/module/product_detail/model/product_model.dart';
 import 'package:etechstore/module/product_detail/view/product_detail_screen.dart';
 import 'package:etechstore/module/profile/controller/profile_controller.dart';
 import 'package:etechstore/module/profile/model/profile_model.dart';
@@ -198,17 +196,18 @@ class DetailOrderSreen extends StatelessWidget {
                                                     context,
                                                     MaterialPageRoute(
                                                       builder: (context) => DetailScreen(
-                                                          GiaTien: product.giaTien,
-                                                          KhuyenMai: product.KhuyenMai,
-                                                          MaDanhMuc: product.maDanhMuc,
-                                                          MoTa: product.moTa,
-                                                          Ten: product.ten,
-                                                          TrangThai: product.trangThai,
-                                                          id: product.id,
-                                                          thumbnail: product.thumbnail,
-                                                          HinhAnh: product.hinhAnh,
-                                                          isPopular: product.isPopular,
-                                                          NgayNhap: product.NgayNhap,),
+                                                        GiaTien: product.GiaTien,
+                                                        KhuyenMai: product.KhuyenMai,
+                                                        MaDanhMuc: product.MaDanhMuc,
+                                                        MoTa: product.MoTa,
+                                                        Ten: product.Ten,
+                                                        TrangThai: product.TrangThai,
+                                                        id: product.id,
+                                                        thumbnail: product.thumbnail,
+                                                        HinhAnh: product.HinhAnh,
+                                                        isPopular: product.isPopular,
+                                                        NgayNhap: product.NgayNhap,
+                                                      ),
                                                     ));
                                               },
                                               child: Container(
@@ -251,13 +250,13 @@ class DetailOrderSreen extends StatelessWidget {
                                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                                 children: [
-                                                                  product.ten != null
+                                                                  product.Ten != null
                                                                       ? GestureDetector(
                                                                           onTap: () {},
                                                                           child: SizedBox(
                                                                             width: 150.w,
                                                                             child: Text(
-                                                                              product.ten,
+                                                                              product.Ten,
                                                                               style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14.sp),
                                                                               overflow: TextOverflow.ellipsis,
                                                                               softWrap: true,
@@ -300,11 +299,11 @@ class DetailOrderSreen extends StatelessWidget {
                                                       ),
                                                       SizedBox(height: 10.h),
                                                       Padding(
-                                                        padding: EdgeInsets.only(left: 160.0.w),
+                                                        padding: EdgeInsets.only(left: 158.0.w),
                                                         child: Row(
                                                           children: [
                                                             Text(
-                                                              priceFormat(product.giaTien),
+                                                              priceFormat(product.GiaTien),
                                                               style: const TextStyle(
                                                                 color: Colors.grey,
                                                                 decoration: TextDecoration.lineThrough,
@@ -312,7 +311,7 @@ class DetailOrderSreen extends StatelessWidget {
                                                             ),
                                                             SizedBox(width: 10.w),
                                                             Text(
-                                                              priceFormat((product.giaTien - (product.giaTien * product.KhuyenMai / 100)).toInt()),
+                                                              priceFormat((product.GiaTien - (product.GiaTien * product.KhuyenMai / 100)).toInt()),
                                                               style: const TextStyle(fontWeight: FontWeight.w500),
                                                             ),
                                                           ],
@@ -338,7 +337,7 @@ class DetailOrderSreen extends StatelessWidget {
                                                               ),
                                                               SizedBox(width: 5.w),
                                                               Text(
-                                                                priceFormat(((product.giaTien - (product.giaTien * product.KhuyenMai / 100)) *
+                                                                priceFormat(((product.GiaTien - (product.GiaTien * product.KhuyenMai / 100)) *
                                                                         ctDonHang.soLuong)
                                                                     .toInt()),
                                                                 style:

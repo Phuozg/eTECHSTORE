@@ -1,9 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class ProductSampleModel {
   String id;
   String MaSanPham;
   int soLuong;
   List<String> mauSac;
   List<String> cauHinh;
+  Map<String, int> giaTien;
 
   ProductSampleModel({
     required this.id,
@@ -11,6 +14,7 @@ class ProductSampleModel {
     required this.mauSac,
     required this.cauHinh,
     required this.MaSanPham,
+    required this.giaTien,
   });
 
   Map<String, dynamic> toMap() {
@@ -30,16 +34,19 @@ class ProductSampleModel {
       mauSac: map['MauSac'],
       cauHinh: map['CauHinh'],
       MaSanPham: map['MaSanPham'],
+      giaTien: Map<String, int>.from(map['GiaTien'] ?? {}),
     );
   }
 
-    factory ProductSampleModel.fromFirestore(Map<String, dynamic> data) {
+  factory ProductSampleModel.fromFirestore(DocumentSnapshot doc) {
+    Map data = doc.data() as Map<String, dynamic>;
     return ProductSampleModel(
-      id: data['id'] ?? '',
+      id: doc.id,
       MaSanPham: data['MaSanPham'] ?? '',
       soLuong: data['SoLuong'] ?? 0,
       mauSac: List<String>.from(data['MauSac'] ?? []),
       cauHinh: List<String>.from(data['CauHinh'] ?? []),
+      giaTien: Map<String, int>.from(data['GiaTien'] ?? {}),
     );
   }
 }
