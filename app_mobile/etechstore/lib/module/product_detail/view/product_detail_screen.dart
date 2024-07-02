@@ -150,9 +150,7 @@ class DetailScreen extends GetView {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => const CartScreen(
-                                        price: 0,
-                                      ),
+                                      builder: (context) => const CartScreen(),
                                     ));
                                 cartController.isEditMode.value = false;
                                 cartController.setTotalPriceAndCheckAll();

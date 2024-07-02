@@ -6,7 +6,7 @@ class ProductSampleModel {
   int soLuong;
   List<String> mauSac;
   List<String> cauHinh;
-  Map<String, int> giaTien;
+  List<int> giaTien;
 
   ProductSampleModel({
     required this.id,
@@ -24,6 +24,7 @@ class ProductSampleModel {
       'MauSac': mauSac,
       'CauHinh': cauHinh,
       'MaSanPham': MaSanPham,
+      'GiaTien': giaTien,
     };
   }
 
@@ -31,11 +32,21 @@ class ProductSampleModel {
     return ProductSampleModel(
       id: map['id'],
       soLuong: map['SoLuong'],
-      mauSac: map['MauSac'],
-      cauHinh: map['CauHinh'],
+      mauSac: List<String>.from(map['MauSac'] ?? []),
+      cauHinh: List<String>.from(map['CauHinh'] ?? []),
       MaSanPham: map['MaSanPham'],
-      giaTien: Map<String, int>.from(map['GiaTien'] ?? {}),
+      giaTien: List<int>.from(map['GiaTien'] ?? []),
     );
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'MaSanPham': MaSanPham,
+      'SoLuong': soLuong,
+      'MauSac': mauSac,
+      'CauHinh': cauHinh,
+      'GiaTien': giaTien,
+    };
   }
 
   factory ProductSampleModel.fromFirestore(DocumentSnapshot doc) {
@@ -46,7 +57,7 @@ class ProductSampleModel {
       soLuong: data['SoLuong'] ?? 0,
       mauSac: List<String>.from(data['MauSac'] ?? []),
       cauHinh: List<String>.from(data['CauHinh'] ?? []),
-      giaTien: Map<String, int>.from(data['GiaTien'] ?? {}),
+      giaTien: List<int>.from(data['GiaTien'] ?? []),
     );
   }
 }

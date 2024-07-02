@@ -43,7 +43,7 @@ class OrderManageScreen extends StatelessWidget {
           actions: [
             IconButton(
                 onPressed: () {
-                  Get.to(  CartScreen(price: 0));
+                  Get.to(  CartScreen( ));
                   controller.isEditMode.value = false;
                   controller.setTotalPriceAndCheckAll();
                 },

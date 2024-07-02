@@ -30,10 +30,26 @@ class ProductSampleController extends GetxController {
   String selectedColor1 = '';
   String selectedStorage = '';
 
+  var selectedColorIndex = 0.obs;
+  var selectedConfigIndex = 0.obs;
+  var displayedPrice = 0.obs;
+  var currentPrice = ''.obs;
+
   @override
   void onInit() {
     super.onInit();
     fetchProductSamples();
+    getSampleProduct();
+  }
+
+  void setSelectedColorIndex(int index, ProductSampleModel sample) {
+    selectedColorIndex.value = index;
+    updatePrice(sample);
+  }
+
+  void setSelectedConfigIndex(int index, ProductSampleModel sample) {
+    selectedConfigIndex.value = index;
+    updatePrice(sample);
   }
 
   var currentIndex = 1.obs;
@@ -49,36 +65,20 @@ class ProductSampleController extends GetxController {
 
   Future<void> fetchProductSamples() async {
     final isconnected = network.isConnectedToInternet.value;
-    if (!isconnected) {
-      fetchProductSamplesLocally();
-    } else {
-      fetchProductSamplesLocally();
-      _firestore.collection('MauSanPham').snapshots().listen((event) async {
-        productSamples.value = event.docs.map((doc) => ProductSampleModel.fromFirestore(doc)).toList();
-      });
+    try {
+      if (!isconnected) {
+        fetchProductSamplesLocally();
+      } else {
+        fetchProductSamplesLocally();
+        _firestore.collection('MauSanPham').snapshots().listen((event) async {
+          productSamples.value = event.docs.map((doc) => ProductSampleModel.fromFirestore(doc)).toList();
+        });
 
-      _localStorageService.saveProductSamples(productSamples);
-      fetchProducts();
-    }
-  }
-
-  void updatePrice() {
-    if (selectedColor1.isNotEmpty && selectedStorage.isNotEmpty) {
-      String key = '$selectedColor1-$selectedStorage';
-
-      price = priceMap[key] ?? 0;
-    } else if (selectedColor1.isNotEmpty && selectedStorage.isEmpty) {
-      String key = '$selectedColor1-';
-
-      price = priceMap[key] ?? 0;
-
-      print("== $priceMap");
-    } else if (selectedStorage.isNotEmpty && selectedColor1.isEmpty) {
-      String key = '$selectedStorage-';
-
-      price = priceMap[key] ?? 0;
-    } else {
-      return;
+        _localStorageService.saveProductSamples(productSamples);
+        fetchProducts();
+      }
+    } catch (e) {
+      Get.snackbar("Thông báo", "Thất bại $e");
     }
   }
 
@@ -104,6 +104,27 @@ class ProductSampleController extends GetxController {
     productSamples.assignAll(localProductSamples);
 
     fetchProductsLocally();
+  }
+
+  Stream<List<ProductSampleModel>> getSampleProduct() {
+     return _firestore.collection("MauSanPham").snapshots().map((event) {
+      var item = event.docs.map((e) => ProductSampleModel.fromMap(e.data())).toList();
+      productSamples.value = item;
+      print(item.length);
+      return item;
+    });
+  }
+
+  String getPrice(ProductSampleModel sample) {
+    final colorIndex = selectedColorIndex.value;
+    final configIndex = selectedConfigIndex.value;
+    final index = colorIndex * sample.cauHinh.length + configIndex;
+
+    if (index < sample.giaTien.length) {
+      return sample.giaTien[index].toString();
+    } else {
+      return 'Không có giá';
+    }
   }
 
   void fetchProducts() async {
@@ -138,5 +159,43 @@ class ProductSampleController extends GetxController {
   void fetchProductsLocally() async {
     List<ProductModel> localProducts = await _localStorageService.getProducts();
     products.assignAll(localProducts);
+  }
+
+  String getSelectedPrice() {
+    return currentPrice.value;
+  }
+
+  Future<void> updatePrice(ProductSampleModel sample) async {
+    final colorIndex = selectedColorIndex.value;
+    final configIndex = selectedConfigIndex.value;
+
+    // Tính chỉ số của giá tiền dựa trên chỉ số màu sắc và cấu hình
+    final index = colorIndex * sample.cauHinh.length + configIndex;
+    print('Color Index: $colorIndex, Config Index: $configIndex, Calculated Index: $index'); // Debugging line
+
+    if (index >= 0 && index < sample.giaTien.length) {
+      displayedPrice.value = sample.giaTien[index];
+    } else {
+      displayedPrice.value = 0; // Thêm thông báo nếu không có giá cho sự kết hợp này
+    }
+  }
+
+  Future<void> checkPrice(ProductSampleModel sample , String price) async {
+    final index = selectedColorIndex.value * sample.cauHinh.length + selectedConfigIndex.value;
+    if (index < sample.giaTien.length) {
+      currentPrice.value = sample.giaTien[index].toString();
+    } else {
+      currentPrice.value = price.toString();
+    }
+  }
+
+  ProductController() {
+    getSampleProduct().listen((samples) {
+      productSamples.value = samples;
+      // Call checkPrice for the first sample (or the relevant sample)
+      if (samples.isNotEmpty) {
+        checkPrice(samples.first,'' ); // Update this as per your logic
+      }
+    });
   }
 }

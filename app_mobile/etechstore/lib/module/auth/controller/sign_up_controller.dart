@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:etechstore/module/auth/views/sign_in_screen.dart';
+import 'package:etechstore/services/auth/auth.config.dart';
 import 'package:etechstore/services/auth/auth_services.dart';
 import 'package:etechstore/utlis/connection/network_manager.dart';
 import 'package:etechstore/utlis/constants/image_key.dart';
@@ -9,6 +10,8 @@ import 'package:etechstore/utlis/helpers/popups/full_screen_loader.dart';
 import 'package:etechstore/utlis/helpers/popups/loader.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:email_auth/email_auth.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -28,7 +31,19 @@ class SignUpController extends GetxController {
   final password = TextEditingController();
   final conformPassword = TextEditingController();
   final newPassword = TextEditingController();
+  final verificationController = TextEditingController();
+  final emailAuth = EmailAuth(sessionName: "Email Verification");
+
+  RxBool isCodeSent = false.obs;
+
   Rx<bool> checkEmail = false.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    emailAuth.config(Config.remoteServerConfiguration  );
+  }
+
 
 //change Password
   var currentPasswordController = TextEditingController();
@@ -74,41 +89,48 @@ class SignUpController extends GetxController {
 
   //SignUp
   Future<void> signUp() async {
+    String emailController = email.text;
     try {
       final isconnected = network.isConnectedToInternet.value;
       if (!isconnected) {
         TLoaders.errorSnackBar(title: TTexts.thongBao, message: "Không có kết nối internet");
         return;
       } else {
-        //loading
-        FullScreenLoader.openLoadingDialog('Quá trình đang diễn ra...', ImageKey.loadingAnimation);
+        bool result = await emailAuth.sendOtp(recipientMail: emailController);
+        if (result) {
+          isCodeSent.value = true;
+          //loading
+          FullScreenLoader.openLoadingDialog('Quá trình đang diễn ra...', ImageKey.loadingAnimation);
 
-        //check Internet connected
-        final isconnected = network.isConnectedToInternet.value;
-        if (!isconnected) {
-          //    FullScreenLoader.stopLoading();
-          return;
-        }
-
-        //Check Email
-        bool emailExists = await authServices.checkEmailExists(email.text.trim());
-        if (emailExists) {
-          TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.taiKhoanDaTonTai);
-          return;
-        } else {
-          //SignUp
-          if (password.text == conformPassword.text) {
-            await authServices.signUpWithEmailPassword(email.text.trim(), password.text.trim(), fullName.text.trim());
-
-            clearPassword();
-          } else {
-            TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.matKhauKhongTrungKhop);
+          //check Internet connected
+          final isconnected = network.isConnectedToInternet.value;
+          if (!isconnected) {
+            //    FullScreenLoader.stopLoading();
             return;
           }
-        }
 
-        //showSuccess
-        TLoaders.successSnackBar(title: 'Đăng ký tài khoản thành công', message: 'Hãy sử dụng tài khoản đã đăng ký để tiếp tục.');
+          //Check Email
+          bool emailExists = await authServices.checkEmailExists(email.text.trim());
+          if (emailExists) {
+            TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.taiKhoanDaTonTai);
+            return;
+          } else {
+            //SignUp
+            if (password.text == conformPassword.text) {
+              await authServices.signUpWithEmailPassword(email.text.trim(), password.text.trim(), fullName.text.trim());
+
+              clearPassword();
+            } else {
+              TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.matKhauKhongTrungKhop);
+              return;
+            }
+          }
+
+          //showSuccess
+          TLoaders.successSnackBar(title: 'Đăng ký tài khoản thành công', message: 'Hãy sử dụng tài khoản đã đăng ký để tiếp tục.');
+        } else {
+          Get.snackbar("Error", "Gửi mã xác thực thất bại");
+        }
       }
 
       /*   //Move to LoginScreen
@@ -117,6 +139,66 @@ class SignUpController extends GetxController {
       TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.chuaNhapDuThongTin);
     } finally {
       FullScreenLoader.stopLoading();
+    }
+  }
+
+  void verifyCode() async {
+    String emailControleler = email.text;
+    String passwordController = password.text;
+    String verificationCode = verificationController.text;
+
+    bool isValid = emailAuth.validateOtp(
+      recipientMail: emailControleler,
+      userOtp: verificationCode,
+    );
+
+    if (isValid) {
+      try {
+        final isconnected = network.isConnectedToInternet.value;
+        if (!isconnected) {
+          TLoaders.errorSnackBar(title: TTexts.thongBao, message: "Không có kết nối internet");
+          return;
+        } else {
+          //loading
+          FullScreenLoader.openLoadingDialog('Quá trình đang diễn ra...', ImageKey.loadingAnimation);
+
+          //check Internet connected
+          final isconnected = network.isConnectedToInternet.value;
+          if (!isconnected) {
+            //    FullScreenLoader.stopLoading();
+            return;
+          }
+
+          //Check Email
+          bool emailExists = await authServices.checkEmailExists(emailControleler.trim());
+          if (emailExists) {
+            TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.taiKhoanDaTonTai);
+            return;
+          } else {
+            //SignUp
+            if (password.text == conformPassword.text) {
+              await authServices.signUpWithEmailPassword(emailControleler.trim(), passwordController.trim(), fullName.text.trim());
+
+              clearPassword();
+            } else {
+              TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.matKhauKhongTrungKhop);
+              return;
+            }
+          }
+
+          //showSuccess
+          TLoaders.successSnackBar(title: 'Đăng ký tài khoản thành công', message: 'Hãy sử dụng tài khoản đã đăng ký để tiếp tục.');
+        }
+
+        /*   //Move to LoginScreen
+      Get.offAll(const SignInScreen()); */
+      } catch (e) {
+        TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.chuaNhapDuThongTin);
+      } finally {
+        FullScreenLoader.stopLoading();
+      }
+    } else {
+      Get.snackbar("Error", "Mã xác thực không hợp lệ");
     }
   }
 

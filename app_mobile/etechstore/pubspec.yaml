@@ -35,6 +35,14 @@ dependencies:
   bcrypt: ^1.1.3
   url_launcher: ^6.3.0
   internet_connection_checker_plus: ^2.3.0
+  email_auth: ^2.0.0
+
+email_auth:
+  smtp:
+    host: 'smtp.gmail.com'
+    port: 587
+    username: 'vuhuy1262@gmail.com'
+    password: 'Librathienbinh'
 
 dev_dependencies:
   flutter_test:

@@ -33,12 +33,12 @@ class HomeScreen extends StatelessWidget {
                   const Duration(milliseconds: 1),
                   () {
                     cartController.isEditMode.value = false;
-                    cartController.setTotalPriceAndCheckAll();
+                    cartController.    fetchCartItems();
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => const CartScreen(
-                            price: 0,
+                         
                           ),
                         ));
                   },

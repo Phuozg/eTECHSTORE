@@ -43,6 +43,40 @@ class LocalStorageService {
     return [];
   }
 
+  //Price
+  Future<void> saveItemPrices(Map<String, String> itemPrices) async {
+  try {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    
+    // Lưu itemPrices
+    List<String> itemPricesJson = itemPrices.entries.map((entry) => jsonEncode({entry.key: entry.value})).toList();
+    await prefs.setStringList('itemPrices', itemPricesJson);
+  } catch (e) {
+    print('Error saving item prices: $e');
+  }
+}
+
+Future<Map<String, String>> getItemPrices() async {
+  try {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    
+    // Lấy itemPrices
+    List<String>? itemPricesJson = prefs.getStringList('itemPrices');
+    Map<String, String> itemPrices = {};
+    if (itemPricesJson != null) {
+      for (var entry in itemPricesJson) {
+        Map<String, String> price = Map<String, String>.from(jsonDecode(entry));
+        itemPrices.addAll(price);
+      }
+    }
+    return itemPrices;
+  } catch (e) {
+    print('Error retrieving item prices: $e');
+    return {};
+  }
+}
+
+
   //product
   Future<void> saveProducts(List<ProductModel> products) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -80,4 +114,6 @@ class LocalStorageService {
     await prefs.remove('products');
      await prefs.remove('productSamples'); await prefs.remove('profiles');
   }
+
+  
 }
