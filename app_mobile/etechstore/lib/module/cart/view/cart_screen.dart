@@ -12,7 +12,6 @@ import 'package:etechstore/module/cart/view/widget/price_product_item_widget.dar
 import 'package:etechstore/module/cart/view/widget/show_modal_bottom_sheet_widget.dart';
 import 'package:etechstore/module/cart/view/widget/type_product_item_widget.dart';
 import 'package:etechstore/module/fake/simmer.dart';
-import 'package:etechstore/module/fake/views/auth_controller.dart';
 import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/module/payment/controllers/order_items_controller.dart';
 import 'package:etechstore/module/payment/views/order_screen.dart';
@@ -37,8 +36,7 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class CartScreen extends StatelessWidget {
-  const CartScreen({super.key, required this.price});
-  final int price;
+  const CartScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -97,8 +95,14 @@ class CartScreen extends StatelessWidget {
                                 String selectedColor = item.maSanPham['mauSac'];
                                 String selectedConfig = item.maSanPham['cauHinh'];
                                 int quantity = item.soLuong;
-                                int price = controller.calculatePrice(item);
-                                var product = controller.products[item.maSanPham['maSanPham']];
+                                final productSample = productController.productSamples.firstWhere(
+                                  (p) => p.MaSanPham == item.maSanPham['maSanPham'],
+                                  orElse: () => ProductSampleModel(id: '', MaSanPham: '', soLuong: 0, mauSac: [], cauHinh: [], giaTien: []),
+                                );
+                                final product = controller.products[item.maSanPham['maSanPham']]!;
+
+                                final price = controller.calculatePrice(productSample, product, selectedColor, selectedConfig);
+
                                 return Slidable(
                                   endActionPane: ActionPane(motion: const ScrollMotion(), children: [DeleteItem(item: item)]),
                                   child: SingleChildScrollView(
@@ -137,7 +141,7 @@ class CartScreen extends StatelessWidget {
                                                           context,
                                                           MaterialPageRoute(
                                                               builder: (context) => DetailScreen(
-                                                                    GiaTien: product!.giaTien,
+                                                                    GiaTien: product.giaTien,
                                                                     KhuyenMai: product.KhuyenMai,
                                                                     MaDanhMuc: product.maDanhMuc,
                                                                     MoTa: product.moTa,
@@ -179,7 +183,7 @@ class CartScreen extends StatelessWidget {
                                                                   context,
                                                                   MaterialPageRoute(
                                                                     builder: (context) => DetailScreen(
-                                                                      GiaTien: product!.giaTien,
+                                                                      GiaTien: product.giaTien,
                                                                       KhuyenMai: product.KhuyenMai,
                                                                       MaDanhMuc: product.maDanhMuc,
                                                                       MoTa: product.moTa,
@@ -208,19 +212,22 @@ class CartScreen extends StatelessWidget {
                                                       GestureDetector(
                                                           onTap: () async {
                                                             for (final sample
-                                                                in productController.productSamples.where((p0) => product?.id == p0.MaSanPham)) {
-                                                              if (sample.cauHinh.isEmpty || sample.mauSac.isEmpty) {
+                                                                in productController.productSamples.where((p0) => product.id == p0.MaSanPham)) {
+                                                              productController.setSelectedColorIndex(0, sample);
+                                                              productController.setSelectedConfigIndex(0, sample);
+                                                              productController.checkPrice(sample, price.toString());
+                                                              if (sample.cauHinh.isEmpty && sample.mauSac.isEmpty) {
                                                                 return;
                                                               } else {
                                                                 showModalBottomSheet(
                                                                   context: context,
                                                                   builder: (ctx) {
                                                                     return ShowCustomModalBottomSheet(
-                                                                      GiaTien: product!.giaTien,
+                                                                      cart: item,
+                                                                      GiaTien: product.giaTien,
                                                                       KhuyenMai: product.KhuyenMai,
                                                                       sample: sample,
                                                                       thumbnail: product.thumbnail,
-                                                                      item: item,
                                                                       id: product.id,
                                                                     );
                                                                   },
@@ -236,13 +243,13 @@ class CartScreen extends StatelessWidget {
                                                               : Container()),
                                                       SizedBox(height: 5.h),
                                                       PriceProductItemWidget(
-                                                        product: product!,
+                                                        product: product,
                                                         pirce: price != 0
-                                                            ? price
-                                                            : ((product.giaTien - (product.giaTien * product.KhuyenMai / 100)).toInt()),
+                                                            ? priceFormat(price)
+                                                            : priceFormat((product.giaTien - product.giaTien * product.KhuyenMai ~/ 100)),
                                                       ),
                                                       SizedBox(height: 3.h),
-                                                      ChangeQuantityItemWidget(item: item,quantity: quantity)
+                                                      ChangeQuantityItemWidget(item: item, quantity: quantity)
                                                     ],
                                                   ),
                                                 ],

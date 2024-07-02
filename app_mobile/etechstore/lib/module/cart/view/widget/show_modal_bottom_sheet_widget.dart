@@ -18,21 +18,20 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ShowCustomModalBottomSheet extends StatefulWidget {
   final ProductSampleModel sample;
-
+  CartModel cart;
   final String thumbnail;
+  final String id;
   final int GiaTien;
   final int KhuyenMai;
-  final String id;
-  final CartModel item;
 
-  const ShowCustomModalBottomSheet(
+  ShowCustomModalBottomSheet(
       {super.key,
       required this.sample,
       required this.thumbnail,
       required this.GiaTien,
-      required this.KhuyenMai,
       required this.id,
-      required this.item});
+      required this.KhuyenMai,
+      required this.cart});
 
   @override
   _ShowCustomModalBottomSheetState createState() => _ShowCustomModalBottomSheetState();
@@ -40,26 +39,11 @@ class ShowCustomModalBottomSheet extends StatefulWidget {
 
 class _ShowCustomModalBottomSheetState extends State<ShowCustomModalBottomSheet> {
   final NetworkManager network = Get.put(NetworkManager());
+
   ProductSampleController controller = Get.put(ProductSampleController());
-  @override
-  void initState() {
-    controller.resetIndex();
-    super.initState();
-    controller.fetchProductAttributes(widget.id).then((product) {
-      setState(() {
-        controller.colors = product!.mauSac;
-        controller.storages = product.cauHinh;
-        controller.priceMap = product.giaTien;
-        if (controller.colors.isNotEmpty) {
-          controller.selectedColor1 = controller.colors.first;
-        }
-        if (controller.storages.isNotEmpty) {
-          controller.selectedStorage = controller.storages.first;
-        }
-        controller.updatePrice();
-      });
-    });
-  }
+  int quantity = 1;
+
+  int price = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -71,19 +55,20 @@ class _ShowCustomModalBottomSheetState extends State<ShowCustomModalBottomSheet>
         ),
         color: Colors.white,
       ),
-      padding: EdgeInsets.only(left: 20.w, top: 5),
+      padding: EdgeInsets.only(left: 25.w, top: 5.h),
       width: double.infinity,
-      height: controller.selectedColor1.isEmpty || controller.selectedStorage.isEmpty ? 280.h : 450.h,
+      height: widget.sample.cauHinh.isEmpty || widget.sample.mauSac.isEmpty ? 280.h : 450.h,
       alignment: Alignment.topCenter,
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             buildHeader(context),
-            controller.selectedColor1.isNotEmpty ? buildColorOptions() : Container(),
-            controller.selectedStorage.isNotEmpty ? buildConfigOptions() : Container(),
+            widget.sample.mauSac.isNotEmpty ? buildColorOptions() : Container(),
+            widget.sample.cauHinh.isNotEmpty ? buildConfigOptions() : Container(),
             buildQuantitySelector(),
-            buildAddToCartButton(context, widget.item),
+            buildAddToCartButton(context, widget.cart),
+            const Padding(padding: EdgeInsets.only(bottom: 5))
           ],
         ),
       ),
@@ -100,7 +85,7 @@ class _ShowCustomModalBottomSheetState extends State<ShowCustomModalBottomSheet>
           child: Center(
               child: Container(
             margin: EdgeInsets.only(right: 40.w, bottom: 5),
-            width: 35.w,
+            width: 40.w,
             height: 5.h,
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: const Color.fromARGB(126, 209, 207, 207)),
           )),
@@ -138,15 +123,12 @@ class _ShowCustomModalBottomSheetState extends State<ShowCustomModalBottomSheet>
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        controller.price == 0
-                            ? Text(
-                                "${priceFormat(widget.GiaTien - (widget.GiaTien * widget.KhuyenMai) ~/ 100)} ",
-                                style: TColros.red_18_w500,
-                              )
-                            : Text(
-                                "${priceFormat(controller.price)} ",
-                                style: TColros.red_18_w500,
-                              ),
+                        Obx(() {
+                          return Text(
+                            ((controller.currentPrice.value)),
+                            style: TColros.red_18_w500,
+                          );
+                        }),
                         Text(
                           "${priceFormat(widget.GiaTien)} ",
                           style: const TextStyle(
@@ -175,26 +157,32 @@ class _ShowCustomModalBottomSheetState extends State<ShowCustomModalBottomSheet>
           padding: EdgeInsets.only(top: 10.h, bottom: 5.h),
           child: const Text("Màu sắc", style: TColros.black_13_w500),
         ),
-        Wrap(
-          spacing: 8,
-          children: controller.colors.map((color) {
-            return ChoiceChip(
-              checkmarkColor: Colors.redAccent,
-              shape: ContinuousRectangleBorder(
-                side: const BorderSide(color: Colors.black, width: .2),
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              color: const MaterialStatePropertyAll(Colors.transparent),
-              label: Text(color),
-              selected: controller.selectedColor1 == color,
-              onSelected: (selected) {
-                setState(() {
-                  controller.selectedColor1 = color;
-                  controller.updatePrice();
-                });
-              },
-            );
-          }).toList(),
+        Obx(
+          () => Wrap(
+            spacing: 8,
+            children: widget.sample.mauSac.asMap().entries.map((entry) {
+              int index = entry.key;
+              String color = entry.value;
+              return Column(
+                children: [
+                  ChoiceChip(
+                    checkmarkColor: Colors.redAccent,
+                    shape: ContinuousRectangleBorder(
+                      side: const BorderSide(color: Colors.black, width: .2),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    color: const MaterialStatePropertyAll(Colors.transparent),
+                    label: Text(color),
+                    selected: controller.selectedColorIndex.value == index,
+                    onSelected: (selected) {
+                      controller.selectedColorIndex.value = index;
+                      controller.checkPrice(widget.sample, priceFormat((widget.GiaTien - widget.GiaTien * widget.KhuyenMai ~/ 100)));
+                    },
+                  ),
+                ],
+              );
+            }).toList(),
+          ),
         )
       ],
     );
@@ -205,29 +193,33 @@ class _ShowCustomModalBottomSheetState extends State<ShowCustomModalBottomSheet>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.only(top: 25.h, bottom: 9.h),
+          padding: EdgeInsets.only(top: 20.h, bottom: 5.h),
           child: const Text("Loại", style: TColros.black_14_w500),
         ),
-        Wrap(
-          spacing: 8,
-          children: controller.storages.map((storage) {
-            return ChoiceChip(
-              checkmarkColor: Colors.redAccent,
-              shape: ContinuousRectangleBorder(
-                side: const BorderSide(color: Colors.black, width: .2),
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              color: const MaterialStatePropertyAll(Colors.transparent),
-              label: Text(storage),
-              selected: controller.selectedStorage == storage,
-              onSelected: (selected) {
-                setState(() {
-                  controller.selectedStorage = storage;
-                  controller.updatePrice();
-                });
-              },
-            );
-          }).toList(),
+        Obx(
+          () => Wrap(
+            spacing: 8,
+            children: widget.sample.cauHinh.asMap().entries.map((entry) {
+              int index = entry.key;
+              String config = entry.value;
+              return config.isNotEmpty
+                  ? ChoiceChip(
+                      checkmarkColor: Colors.redAccent,
+                      shape: ContinuousRectangleBorder(
+                        side: const BorderSide(color: Colors.black, width: .2),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      color: const MaterialStatePropertyAll(Colors.transparent),
+                      label: Text(config),
+                      selected: controller.selectedConfigIndex.value == index,
+                      onSelected: (selected) {
+                        controller.selectedConfigIndex.value = index;
+                        controller.checkPrice(widget.sample, priceFormat((widget.GiaTien - widget.GiaTien * widget.KhuyenMai ~/ 100)));
+                      },
+                    )
+                  : Container();
+            }).toList(),
+          ),
         )
       ],
     );
@@ -240,14 +232,17 @@ class _ShowCustomModalBottomSheetState extends State<ShowCustomModalBottomSheet>
       children: [
         const Text("Số lượng", style: TColros.black_14_w500),
         Container(
-          margin: const EdgeInsets.only(right: 15, top: 10),
+          margin: const EdgeInsets.only(right: 15, top: 15),
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), border: Border.all(width: .4)),
           child: Row(
             children: [
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    controller.quantity--;
+                    if (quantity > 1) {
+                      quantity--;
+                    }
+                    return;
                   });
                 },
                 child: Container(
@@ -267,13 +262,13 @@ class _ShowCustomModalBottomSheetState extends State<ShowCustomModalBottomSheet>
                   alignment: Alignment.center,
                   height: 20,
                   width: 25,
-                  child: Text("${controller.quantity}"),
+                  child: Text("$quantity"),
                 ),
               ),
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    controller.quantity++;
+                    quantity++;
                   });
                 },
                 child: Container(
@@ -293,21 +288,25 @@ class _ShowCustomModalBottomSheetState extends State<ShowCustomModalBottomSheet>
   Widget buildAddToCartButton(BuildContext context, CartModel item) {
     final CartController controller = Get.put(CartController());
     ProductSampleController controllerSample = Get.put(ProductSampleController());
-
     return ScreenUtilInit(
       builder: (context, child) => GestureDetector(
         onTap: () {
           controllerSample.selectedColor1 = controllerSample.selectedColor1;
           controllerSample.selectedStorage = controllerSample.selectedStorage;
-          item.maSanPham['mauSac'] = controllerSample.selectedColor1;
-          item.maSanPham['cauHinh'] = controllerSample.selectedStorage;
-          item.soLuong = controllerSample.quantity.value;
+
+          String selectedColor = widget.sample.mauSac.isNotEmpty ? widget.sample.mauSac[controllerSample.selectedColorIndex.value] : "";
+          String selectedConfig = widget.sample.cauHinh.isNotEmpty ? widget.sample.cauHinh[controllerSample.selectedConfigIndex.value] : "";
+
+          item.maSanPham['mauSac'] = selectedColor;
+          item.maSanPham['cauHinh'] = selectedConfig;
+          item.soLuong = quantity;
+
           controller.updateCartItem(item);
           Navigator.pop(context);
         },
         child: Center(
           child: Container(
-            margin: const EdgeInsets.only(right: 35, top: 20),
+            margin: EdgeInsets.only(bottom: 8.h, top: 20, right: 35.w),
             alignment: Alignment.center,
             width: 270.w,
             height: 35.h,

@@ -20,6 +20,7 @@ class _DeleteItemState extends State<DeleteItem> {
     return SlidableAction(
       onPressed: (context) {
         controller.removeItemFromCart(widget.item);
+        controller.isEditMode.value = false;
       },
       backgroundColor: const Color(0xFFFE4A49),
       foregroundColor: Colors.white,

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:etechstore/module/cart/controller/cart_controller.dart';
 import 'package:etechstore/module/cart/model/cart_model.dart';
 import 'package:etechstore/module/home/views/home_screen.dart';
+import 'package:etechstore/module/product_detail/controller/product_sample_controller.dart';
 import 'package:etechstore/module/product_detail/model/product_model.dart';
 import 'package:etechstore/module/product_detail/model/product_sample_model.dart';
 import 'package:etechstore/utlis/connection/network_manager.dart';
@@ -31,83 +32,17 @@ class SampleBottomSheet extends StatefulWidget {
 }
 
 class _SampleBottomSheetState extends State<SampleBottomSheet> {
-  late String selectedColor;
-  late String selectedConfig;
   final NetworkManager network = Get.put(NetworkManager());
 
+  ProductSampleController controller = Get.put(ProductSampleController());
+
   int quantity = 1;
-  String selectedColor1 = '';
-  String selectedStorage = '';
+
   int price = 0;
-  List<String> colors = [];
-  List<String> storages = [];
-  Map<String, int> priceMap = {};
-
-  @override
-  void initState() {
-    super.initState();
-    selectedColor = widget.sample.mauSac.first;
-    selectedConfig = widget.sample.cauHinh.first;
-    super.initState();
-    fetchProductAttributes(widget.id).then((product) {
-      setState(() {
-        colors = product!.mauSac;
-        storages = product.cauHinh;
-        priceMap = product.giaTien;
-        if (colors.isNotEmpty) {
-          selectedColor1 = colors.first;
-        }
-        if (storages.isNotEmpty) {
-          selectedStorage = storages.first;
-        }
-        updatePrice();
-      });
-    });
-  }
-
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  void updatePrice() {
-    if (selectedColor1.isNotEmpty && selectedStorage.isNotEmpty) {
-      String key = '$selectedColor1-$selectedStorage';
-      setState(() {
-        price = priceMap[key] ?? 0;
-      });
-    } else if (selectedColor1.isNotEmpty && selectedStorage.isEmpty) {
-      String key = '$selectedColor1-';
-      setState(() {
-        price = priceMap[key] ?? 0;
-      });
-    } else if (selectedStorage.isNotEmpty && selectedColor1.isEmpty) {
-      String key = '$selectedStorage-';
-      setState(() {
-        price = priceMap[key] ?? 0;
-      });
-    } else {
-      return;
-    }
-  }
-
-  var productSamples = <ProductSampleModel>[];
-  Future<ProductSampleModel?> fetchProductAttributes(String productId) async {
-    ProductSampleModel? productSample;
-
-    try {
-      QuerySnapshot<Map<String, dynamic>> snapshot =
-          await _firestore.collection('MauSanPham').where('MaSanPham', isEqualTo: productId).limit(1).get();
-
-      if (snapshot.docs.isNotEmpty) {
-        productSample = ProductSampleModel.fromFirestore(snapshot.docs.first);
-      }
-    } catch (e) {
-      print('Lỗi khi lấy dữ liệu product sample: $e');
-    }
-
-    return productSample;
-  }
 
   @override
   Widget build(BuildContext context) {
+ 
     return Container(
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.only(
@@ -118,15 +53,15 @@ class _SampleBottomSheetState extends State<SampleBottomSheet> {
       ),
       padding: EdgeInsets.only(left: 25.w, top: 5.h),
       width: double.infinity,
-      height: selectedStorage.isEmpty || selectedColor1.isEmpty ? 280.h : 450.h,
+      height: widget.sample.cauHinh.isEmpty || widget.sample.mauSac.isEmpty ? 280.h : 450.h,
       alignment: Alignment.topCenter,
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             buildHeader(context),
-            selectedColor1.isNotEmpty ? buildColorOptions() : Container(),
-            selectedStorage.isNotEmpty ? buildConfigOptions() : Container(),
+            widget.sample.mauSac.isNotEmpty ? buildColorOptions() : Container(),
+            widget.sample.cauHinh.isNotEmpty ? buildConfigOptions() : Container(),
             buildQuantitySelector(),
             buildAddToCartButton(context),
             const Padding(padding: EdgeInsets.only(bottom: 5))
@@ -184,15 +119,12 @@ class _SampleBottomSheetState extends State<SampleBottomSheet> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        price == 0
-                            ? Text(
-                                "${priceFormat(widget.GiaTien - (widget.GiaTien * widget.KhuyenMai) ~/ 100)} ",
-                                style: TColros.red_18_w500,
-                              )
-                            : Text(
-                                "${priceFormat(price)} ",
-                                style: TColros.red_18_w500,
-                              ),
+                        Obx(() {
+                          return Text(
+                            ((controller.currentPrice.value)),
+                            style: TColros.red_18_w500,
+                          );
+                        }),
                         Text(
                           "${priceFormat(widget.GiaTien)} ",
                           style: const TextStyle(
@@ -221,30 +153,32 @@ class _SampleBottomSheetState extends State<SampleBottomSheet> {
           padding: EdgeInsets.only(top: 10.h, bottom: 5.h),
           child: const Text("Màu sắc", style: TColros.black_13_w500),
         ),
-        Wrap(
-          spacing: 8,
-          children: colors.map((color) {
-            return Column(
-              children: [
-                ChoiceChip(
-                  checkmarkColor: Colors.redAccent,
-                  shape: ContinuousRectangleBorder(
-                    side: const BorderSide(color: Colors.black, width: .2),
-                    borderRadius: BorderRadius.circular(8.0),
+        Obx(
+          () => Wrap(
+            spacing: 8,
+            children: widget.sample.mauSac.asMap().entries.map((entry) {
+              int index = entry.key;
+              String color = entry.value;
+              return Column(
+                children: [
+                  ChoiceChip(
+                    checkmarkColor: Colors.redAccent,
+                    shape: ContinuousRectangleBorder(
+                      side: const BorderSide(color: Colors.black, width: .2),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    color: const MaterialStatePropertyAll(Colors.transparent),
+                    label: Text(color),
+                    selected: controller.selectedColorIndex.value == index,
+                    onSelected: (selected) {
+                      controller.selectedColorIndex.value = index;
+                      controller.checkPrice(widget.sample, priceFormat((widget.GiaTien - widget.GiaTien * widget.KhuyenMai ~/ 100)));
+                    },
                   ),
-                  color: const MaterialStatePropertyAll(Colors.transparent),
-                  label: Text(color),
-                  selected: selectedColor1 == color,
-                  onSelected: (selected) {
-                    setState(() {
-                      selectedColor1 = color;
-                      updatePrice();
-                    });
-                  },
-                ),
-              ],
-            );
-          }).toList(),
+                ],
+              );
+            }).toList(),
+          ),
         )
       ],
     );
@@ -258,28 +192,30 @@ class _SampleBottomSheetState extends State<SampleBottomSheet> {
           padding: EdgeInsets.only(top: 20.h, bottom: 5.h),
           child: const Text("Loại", style: TColros.black_14_w500),
         ),
-        Wrap(
-          spacing: 8,
-          children: storages.map((storage) {
-            return storage.isNotEmpty
-                ? ChoiceChip(
-                    checkmarkColor: Colors.redAccent,
-                    shape: ContinuousRectangleBorder(
-                      side: const BorderSide(color: Colors.black, width: .2),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    color: const MaterialStatePropertyAll(Colors.transparent),
-                    label: Text(storage),
-                    selected: selectedStorage == storage,
-                    onSelected: (selected) {
-                      setState(() {
-                        selectedStorage = storage;
-                        updatePrice();
-                      });
-                    },
-                  )
-                : Container();
-          }).toList(),
+        Obx(
+          () => Wrap(
+            spacing: 8,
+            children: widget.sample.cauHinh.asMap().entries.map((entry) {
+              int index = entry.key;
+              String config = entry.value;
+              return config.isNotEmpty
+                  ? ChoiceChip(
+                      checkmarkColor: Colors.redAccent,
+                      shape: ContinuousRectangleBorder(
+                        side: const BorderSide(color: Colors.black, width: .2),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      color: const MaterialStatePropertyAll(Colors.transparent),
+                      label: Text(config),
+                      selected: controller.selectedConfigIndex.value == index,
+                      onSelected: (selected) {
+                        controller.selectedConfigIndex.value = index;
+                        controller.checkPrice(widget.sample, priceFormat((widget.GiaTien - widget.GiaTien * widget.KhuyenMai ~/ 100)));
+                      },
+                    )
+                  : Container();
+            }).toList(),
+          ),
         )
       ],
     );
@@ -351,6 +287,13 @@ class _SampleBottomSheetState extends State<SampleBottomSheet> {
     return ScreenUtilInit(
       builder: (context, child) => GestureDetector(
         onTap: () {
+          String selectedColor =
+              controller.selectedColorIndex.value < widget.sample.mauSac.length ? widget.sample.mauSac[controller.selectedColorIndex.value] : '';
+
+          String selectedConfig =
+              controller.selectedConfigIndex.value < widget.sample.cauHinh.length ? widget.sample.cauHinh[controller.selectedConfigIndex.value] : '';
+
+          var maSanPham = {'maSanPham': widget.sample.MaSanPham, 'mauSac': selectedColor, 'cauHinh': selectedConfig};
           final FirebaseAuth auth = FirebaseAuth.instance;
           User? user = auth.currentUser;
           var cartItem = CartModel(
@@ -358,13 +301,15 @@ class _SampleBottomSheetState extends State<SampleBottomSheet> {
             maKhachHang: user!.uid,
             soLuong: quantity,
             trangThai: 0,
-            maSanPham: {
-              'maSanPham': widget.sample.MaSanPham,
-              'mauSac': selectedColor1,
-              'cauHinh': selectedStorage,
-            },
+            maSanPham: maSanPham,
           );
+          /*          var colorIndex = controller.selectedColorIndex.value;
+          var configIndex = controller.selectedConfigIndex.value;
+
+          final index = colorIndex * widget.sample.cauHinh.length + configIndex;
+          cartController.addPriceToCartItem(cartItem.id, widget.sample.giaTien[index].toString()); */
           cartController.addItemToCart(cartItem);
+
           Navigator.pop(context);
         },
         child: Center(
@@ -416,6 +361,7 @@ class _BuySampleSingleState extends State<BuySampleSingle> {
   late String selectedColor;
   late String selectedConfig;
   int quantity = 1;
+  
   @override
   Widget build(BuildContext context) {
     return Container(

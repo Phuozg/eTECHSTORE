@@ -2,7 +2,9 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:etechstore/module/cart/model/cart_model.dart';
+import 'package:etechstore/module/product_detail/controller/product_sample_controller.dart';
 import 'package:etechstore/module/product_detail/model/product_model.dart';
+import 'package:etechstore/module/product_detail/model/product_sample_model.dart';
 import 'package:etechstore/module/profile/model/local_storage_service.dart';
 import 'package:etechstore/utlis/connection/network_manager.dart';
 import 'package:etechstore/utlis/constants/image_key.dart';
@@ -27,6 +29,7 @@ class CartController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final LocalStorageService localStorageService = LocalStorageService();
+  ProductSampleController productSample = Get.put(ProductSampleController());
 
   var cartItems = <CartModel>[].obs;
   var products = <String, ProductModel>{}.obs;
@@ -38,102 +41,100 @@ class CartController extends GetxController {
   RxInt quantity = 0.obs;
   var selectedItemCount = 0.obs;
   RxMap priceMap = {}.obs;
+  var itemPrices = <String, String>{}.obs; // Lưu giá tiền theo id của CartModel
 
   @override
   void onInit() {
     super.onInit();
     fetchCartItems();
     setTotalPriceAndCheckAll();
+    fetchCartItemsLocally();
+    fetchCartsLocally();
+    total();
   }
 
   void setSelectedItem({required String id, required bool value}) {
     selectedItems[id] = value;
   }
 
-  void total() {
-    double total = 0.0;
-
-    for (var item in cartItems) {
-      var productId = item.maSanPham['maSanPham'];
-      var color = item.maSanPham['mauSac'] ?? '';
-      var storage = item.maSanPham['cauHinh'] ?? '';
-
-      var key = '$color-$storage';
-
-      int price;
-      if (selectedItems[item.id] == true) {
-        if (priceMap.containsKey(productId) && priceMap[productId]!.containsKey(key)) {
-          price = priceMap[productId]![key]!;
-        } else if (products.containsKey(productId)) {
-          price = products[productId]!.giaTien - (products[productId]!.giaTien * products[productId]!.KhuyenMai) ~/ 100;
-        } else {
-          price = 0;
-        }
-        total += price * item.soLuong;
-      }
-    }
-
-    totalPrice.value = total;
+  void addItemSampleToCart(CartModel item) {
+    cartItems.add(item);
   }
 
-  Future<void> fetchPriceMap(String productId) async {
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('MauSanPham').get();
-    Map<String, Map<String, int>> prices = {};
-
-    for (var doc in querySnapshot.docs) {
-      Map data = doc.data() as Map<String, dynamic>;
-      productId = data['MaSanPham'];
-      Map<String, int> priceData = Map<String, int>.from(data['GiaTien']);
-      prices[productId] = priceData;
-    }
-
-    priceMap.value = prices;
+  void addPriceToCartItem(String itemId, String price) {
+    itemPrices[itemId] = price;
   }
 
-  int calculatePrice(CartModel cartItem) {
-    String productId = cartItem.maSanPham['maSanPham'];
-    String color = cartItem.maSanPham['mauSac'] ?? '';
-    String storage = cartItem.maSanPham['cauHinh'] ?? '';
-    String key = '$color-$storage';
-    String keyColor = '$color-';
-    String keyStorage = '$storage-';
+int calculatePrice(ProductSampleModel productSample, ProductModel product, String selectedColor, String selectedConfig) {
+  int colorIndex = productSample.mauSac.indexOf(selectedColor);
+  int configIndex = productSample.cauHinh.indexOf(selectedConfig);
 
-    if (priceMap.containsKey(productId)) {
-      if (priceMap[productId]!.containsKey(key)) {
-        return priceMap[productId]![key]!;
-      } else if (priceMap[productId]!.containsKey(keyColor)) {
-        return priceMap[productId]![keyColor]!;
-      } else if (priceMap[productId]!.containsKey(keyStorage)) {
-        return priceMap[productId]![keyStorage]!;
-      }
-    }
+  // Nếu không tìm thấy màu sắc hoặc cấu hình, sử dụng giá trị mặc định
+  if (colorIndex == -1) colorIndex = 0;
+  if (configIndex == -1) configIndex = 0;
 
-    if (products.containsKey(productId)) {
-      return products[productId]!.giaTien - (products[productId]!.giaTien * products[productId]!.KhuyenMai) ~/ 100;
-    } else {
-      return 0;
+  final priceIndex = colorIndex * productSample.cauHinh.length + configIndex;
+
+  // Nếu không có giá tiền trong ProductSampleModel, lấy giá từ ProductModel
+  if (priceIndex >= productSample.giaTien.length) {
+    return product.giaTien - (product.giaTien * product.KhuyenMai) ~/ 100;
+  }
+
+  return int.parse(productSample.giaTien[priceIndex].toString());
+}
+
+
+int getCartItemPrice(CartModel cartItem, List<ProductSampleModel> productSamples, List<ProductModel> products) {
+  var productSample = productSamples.firstWhere(
+    (p) => p.MaSanPham == cartItem.maSanPham['maSanPham'],
+    orElse: () => ProductSampleModel(id: '', MaSanPham: '', soLuong: 0, mauSac: [], cauHinh: [], giaTien: []),
+  );
+
+  var product = products.firstWhere(
+    (p) => p.id == cartItem.maSanPham['maSanPham'],
+    orElse: () => ProductModel(id: '', KhuyenMai: 0, moTa: '', ten: '', trangThai: false, giaTien: 0, maDanhMuc: 0, hinhAnh: [], thumbnail: '', NgayNhap: Timestamp.now(), isPopular: false),
+  );
+
+  if (productSample.id.isEmpty) {
+    return 0; // Không tìm thấy sản phẩm
+  }
+
+  return calculatePrice(productSample, product, cartItem.maSanPham['mauSac'], cartItem.maSanPham['cauHinh']);
+}
+
+
+void total() async {
+  
+  double total = 0.0;
+
+  for (var item in cartItems) {
+    if (selectedItems[item.id] == true) {
+      int price = getCartItemPrice(item, productSample.productSamples,productSample. products);
+      total += price * item.soLuong;
     }
   }
+
+  totalPrice.value = total;
+}
 
   Future<void> setTotalPriceAndCheckAll() async {
     totalPrice.value = 0;
     isSelectAll.value = false;
 
-    final checkitem = _firestore.collection('GioHang').where('maKhachHang', isEqualTo: FirebaseAuth.instance.currentUser!.uid).get();
+    final checkitem = await _firestore.collection('GioHang').where('maKhachHang', isEqualTo: FirebaseAuth.instance.currentUser!.uid).get();
 
-    checkitem.then((querySnapshot) {
-      for (var docSnapshot in querySnapshot.docs) {
-        for (var cart in cartItems) {
-          if (cart.maKhachHang == docSnapshot.data()['maKhachHang'] &&
-              cart.maSanPham['cauHinh'] == docSnapshot.data()['mauSanPham']['cauHinh'] &&
-              cart.maSanPham['mauSac'] == docSnapshot.data()['mauSanPham']['mauSac']) {
-            _firestore.collection('GioHang').doc(docSnapshot.id).update({'trangThai': isSelectAll.value ? 1 : 0 ?? 1}).then((value) {
-              setSelectedItem(id: cart.id, value: false);
-            });
-          }
+    for (var docSnapshot in checkitem.docs) {
+      for (var cart in cartItems) {
+        if (cart.maKhachHang == docSnapshot.data()['maKhachHang'] &&
+            cart.maSanPham['cauHinh'] == docSnapshot.data()['mauSanPham']['cauHinh'] &&
+            cart.maSanPham['mauSac'] == docSnapshot.data()['mauSanPham']['mauSac']) {
+          await _firestore.collection('GioHang').doc(docSnapshot.id).update({
+            'trangThai': isSelectAll.value ? 1 : 0,
+          });
+          setSelectedItem(id: cart.id, value: false);
         }
       }
-    });
+    }
   }
 
   void toggleEditMode() {
@@ -159,11 +160,11 @@ class CartController extends GetxController {
             products[item.maSanPham['maSanPham']] = ProductModel.fromFirestore(productDoc.data() as Map<String, dynamic>);
             // total();
             updateSelectedItemCount();
-            fetchPriceMap(item.maSanPham['maSanPham']);
           }
         }
         localStorageService.saveCartItems(cartItems);
         localStorageService.saveProducts(productList);
+        await localStorageService.saveItemPrices(itemPrices);
       });
     }
   }
@@ -171,57 +172,58 @@ class CartController extends GetxController {
   void fetchCartItemsLocally() async {
     List<CartModel> localCartItems = await localStorageService.getCartItems();
     List<ProductModel> localProducts = await localStorageService.getProducts();
+    Map<String, String> itemPricesLocal = await localStorageService.getItemPrices();
 
     cartItems.assignAll(localCartItems);
+    itemPrices.assignAll(itemPricesLocal);
     productList.assignAll(localProducts);
   }
 
   void fetchCartsLocally() async {
     List<CartModel> localCarts = await localStorageService.getCartItems();
+    Map<String, String> itemPricesLocal = await localStorageService.getItemPrices();
+    itemPrices.assignAll(itemPricesLocal);
     cartItems.assignAll(localCarts);
   }
 
   Future<void> toggleSelectedItem(String itemId, bool value) async {
-    final checkitem = _firestore.collection('GioHang').where('maKhachHang', isEqualTo: FirebaseAuth.instance.currentUser!.uid).get();
+    final checkitem = await _firestore.collection('GioHang').where('maKhachHang', isEqualTo: FirebaseAuth.instance.currentUser!.uid).get();
 
-    checkitem.then((querySnapshot) {
-      for (var docSnapshot in querySnapshot.docs) {
-        for (var cart in cartItems) {
-          if (cart.id == itemId) {
-            if (cart.maKhachHang == docSnapshot.data()['maKhachHang'] &&
-                cart.maSanPham['cauHinh'] == docSnapshot.data()['mauSanPham']['cauHinh'] &&
-                cart.maSanPham['mauSac'] == docSnapshot.data()['mauSanPham']['mauSac']) {
-              _firestore.collection('GioHang').doc(docSnapshot.id).update({'trangThai': value == false ? 0 : 1 ?? 0}).then((snapShot) {
-                setSelectedItem(id: itemId, value: value);
-
-                total();
-                updateSelectedItemCount();
-              });
-            }
+    for (var docSnapshot in checkitem.docs) {
+      for (var cart in cartItems) {
+        if (cart.id == itemId) {
+          if (cart.maKhachHang == docSnapshot.data()['maKhachHang'] &&
+              cart.maSanPham['cauHinh'] == docSnapshot.data()['mauSanPham']['cauHinh'] &&
+              cart.maSanPham['mauSac'] == docSnapshot.data()['mauSanPham']['mauSac']) {
+            await _firestore.collection('GioHang').doc(docSnapshot.id).update({
+              'trangThai': value ? 1 : 0,
+            });
+            setSelectedItem(id: itemId, value: value);
+            total();
+            updateSelectedItemCount();
           }
         }
       }
-    });
+    }
   }
 
   Future<void> toggleSelectAll() async {
     isSelectAll.value = !isSelectAll.value;
 
-    final checkitem = _firestore.collection('GioHang').where('maKhachHang', isEqualTo: FirebaseAuth.instance.currentUser!.uid).get();
+    final checkitem = await _firestore.collection('GioHang').where('maKhachHang', isEqualTo: FirebaseAuth.instance.currentUser!.uid).get();
 
-    checkitem.then((querySnapshot) {
-      for (var docSnapshot in querySnapshot.docs) {
-        for (var cart in cartItems) {
-          if (cart.maKhachHang == docSnapshot.data()['maKhachHang'] &&
-              cart.maSanPham['cauHinh'] == docSnapshot.data()['mauSanPham']['cauHinh'] &&
-              cart.maSanPham['mauSac'] == docSnapshot.data()['mauSanPham']['mauSac']) {
-            _firestore.collection('GioHang').doc(docSnapshot.id).update({'trangThai': isSelectAll.value ? 1 : 0 ?? 1}).then((value) {
-              setSelectedItem(id: cart.id, value: isSelectAll.value);
-            });
-          }
+    for (var docSnapshot in checkitem.docs) {
+      for (var cart in cartItems) {
+        if (cart.maKhachHang == docSnapshot.data()['maKhachHang'] &&
+            cart.maSanPham['cauHinh'] == docSnapshot.data()['mauSanPham']['cauHinh'] &&
+            cart.maSanPham['mauSac'] == docSnapshot.data()['mauSanPham']['mauSac']) {
+          await _firestore.collection('GioHang').doc(docSnapshot.id).update({
+            'trangThai': isSelectAll.value ? 1 : 0,
+          });
+          setSelectedItem(id: cart.id, value: isSelectAll.value);
         }
       }
-    });
+    }
 
     updateSelectedItemCount();
   }
@@ -255,6 +257,7 @@ class CartController extends GetxController {
         if (existingItem.maSanPham['cauHinh'] != newItem.maSanPham['cauHinh'] ||
             existingItem.maSanPham['mauSac'] != newItem.maSanPham['mauSac'] ||
             existingItem.maSanPham['maSanPham'] != newItem.maSanPham['maSanPham']) {
+          addItemSampleToCart(newItem);
           cartItems.add(newItem);
           TLoaders.successSnackBar(title: "Thông báo", message: "Thêm thành công!");
           await saveCartItemToFirestore(newItem);

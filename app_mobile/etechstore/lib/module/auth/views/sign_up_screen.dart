@@ -113,7 +113,7 @@ class SignUpScreen extends GetView<SignUpController> {
                             borderSide: const BorderSide(width: 1, color: Colors.grey),
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          hintText: TTexts.nhapEmail, 
+                          hintText: TTexts.nhapEmail,
                           hintStyle: const TextStyle(color: Colors.grey),
                           errorBorder: OutlineInputBorder(
                             borderSide: const BorderSide(width: 1, color: Colors.grey),
@@ -210,21 +210,27 @@ class SignUpScreen extends GetView<SignUpController> {
                     ],
                   ),
                 ),
-                SizedBox(
-                  height: 20.h,
-                ),
-                Center(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(horizontal: 130.w, vertical: 13.h), backgroundColor: TColros.purple_line),
-                    onPressed: () {
-                      if (formKey.currentState?.validate() == true) {
-                        controller.signUp();
-                      }
-                    },
-                    child: Text(
-                      TTexts.singUp,
-                      style: TextStyle(fontSize: ScreenUtil().setSp(15), color: Colors.white),
+                Obx(() {
+                  return controller.isCodeSent.value
+                      ? TextField(
+                          controller: controller.verificationController,
+                          decoration: const InputDecoration(labelText: "Mã xác thực"),
+                        )
+                      : Container();
+                }),
+                const SizedBox(height: 20),
+                Obx(
+                  () => Center(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(horizontal: 130.w, vertical: 13.h), backgroundColor: TColros.purple_line),
+                      onPressed: controller.isCodeSent.value
+                          ? () => controller.verifyCode
+                          : () => formKey.currentState?.validate() == true ? controller.signUp() : null,
+                      child: Text(
+                        controller.isCodeSent.value ? "Xác thực" : TTexts.singUp,
+                        style: TextStyle(fontSize: ScreenUtil().setSp(15), color: Colors.white),
+                      ),
                     ),
                   ),
                 ),

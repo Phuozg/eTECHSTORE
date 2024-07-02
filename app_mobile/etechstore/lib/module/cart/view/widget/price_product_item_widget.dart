@@ -9,7 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class PriceProductItemWidget extends StatefulWidget {
   PriceProductItemWidget({super.key, required this.product, required this.pirce});
   ProductModel product;
-  int pirce;
+  String pirce;
 
   @override
   State<PriceProductItemWidget> createState() => _PriceProductItemWidgetState();
@@ -50,7 +50,7 @@ class _PriceProductItemWidgetState extends State<PriceProductItemWidget> {
                 children: [
                   widget.product.giaTien != null || widget.product.KhuyenMai != null
                       ? Text(
-                          "${priceFormat(widget.pirce)} ",
+                          "${((widget.pirce))} ",
                           style: TextStyle(color: const Color(0xFFEB4335), fontSize: 16.sp),
                         )
                       : const Text("Loading..."),
