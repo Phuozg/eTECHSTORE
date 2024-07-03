@@ -55,7 +55,7 @@ class AuthServices extends GetxController {
     }
   }
 
-   Future<bool> _isUserAllowedToSignIn(String email) async {
+  Future<bool> _isUserAllowedToSignIn(String email) async {
     try {
       QuerySnapshot snapshot = await firestore.collection('Users').where('email', isEqualTo: email).where('TrangThai', isEqualTo: 1).get();
 
@@ -81,32 +81,50 @@ class AuthServices extends GetxController {
   }
 
   //Mail Verification
-  Future<void> sendEmailVerification() async {
+  Future<void> sendEmailVerification(String email, String password, String hoten) async {
     try {
-      await _auth.currentUser?.sendEmailVerification();
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      // Gửi email xác nhận
+      await userCredential.user!.sendEmailVerification();
+      User? user = _auth.currentUser;
+
+      await user?.reload();
+      Get.snackbar("Thông báo", "Vui lòng kiểm tra email để xác nhận.");
     } on FirebaseAuthException catch (e) {
       TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.daXayRaLoi);
     }
   }
 
-  //SignUp
-  Future<UserCredential?> signUpWithEmailPassword(String email, String password, String hoten) async {
-    UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    firestore.collection('Users').doc(userCredential.user!.uid).set({
-      'HoTen': hoten,
-      'email': email,
+  Future<void> checkEmailVerification(String email, String password, String hoten, BuildContext context) async {
+    User? user = _auth.currentUser;
+    await user?.reload();
+    if (user != null && user.emailVerified) {
+      await signUpWithEmailPassword(user, hoten, password);
+      TLoaders.successSnackBar(title: 'Đăng ký tài khoản thành công', message: 'Hãy sử dụng tài khoản đã đăng ký để tiếp tục.');
+       Get.offNamed('/SignInScreen');
+    } else {
+      Get.snackbar("Thông báo", "Nhập lại thông tin");
+    }
+  }
+
+  // SignUp
+  Future<void> signUpWithEmailPassword(User user, String hoten, String password) async {
+    await user.reload();
+    await firestore.collection('Users').doc(user.uid).set({
       'password': password,
-      'uid': userCredential.user!.uid,
+      'HoTen': hoten,
+      'email': user.email,
+      'uid': user.uid,
       'HinhDaiDien': 'https://th.bing.com/th/id/R.3268de3daaeef4cdc5cd0bbc5d0e8d20?rik=RgusFJOHX7X%2fCg&pid=ImgRaw&r=0',
       'TrangThai': 1,
       'Quyen': true,
       'SoDienThoai': 0,
       'DiaChi': ''
     });
-    return userCredential;
   }
 
   //SignOut

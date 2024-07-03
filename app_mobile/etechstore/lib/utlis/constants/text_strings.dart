@@ -1,12 +1,13 @@
 class TTexts {
-   static String singUp = "Đăng ký";
+  static String singUp = "Đăng ký";
   static String etechStore = "e T E C H S T O R E";
-  static String dangNhap = "Đăng nhập";  static String dangNhapThatBai = "Đăng nhập thất bại";
+  static String dangNhap = "Đăng nhập";
+  static String dangNhapThatBai = "Đăng nhập thất bại";
   static String daXayRaLoi = "Đã xãy ra lỗi. Hãy thử lại sau";
   static String dangNhapBangTaiKhoanDaDangKy = "Đăng nhập với tài khoản đã đăng ký";
-  static String emailHoacSoDienThoai = "Email hoặc số điện thoại";
-  static String emai = "Email";
-  static String nhapEmail = "Nhập email";
+  static String emailHoacSoDienThoai = "E-mail hoặc số điện thoại";
+  static String emai = "E-mail";
+  static String nhapEmail = "Nhập E-mail";
   static String matKhau = "Mật khẩu";
   static String nhapMatKhau = "Nhập mật khẩu";
   static String nhapLaiMatKhau = "Nhập lại mật khẩu";
@@ -31,8 +32,8 @@ class TTexts {
   static String thatBai = "Thất bại";
   static String thanhCong = "Thành công";
   static String chuaNhapDuThongTin = "Chưa nhập đủ thông tin";
-  static String chuaEmailHoacMatKhau = "Chưa nhập Email hoặc mật khẩu";
-  static String saiEmailHoacMatKhau = "Sai Email hoặc mật khẩu";
+  static String chuaEmailHoacMatKhau = "Chưa nhập E-mail hoặc mật khẩu";
+  static String saiEmailHoacMatKhau = "Sai E-mail hoặc mật khẩu";
   static String xacMinhSoDienThoai = "Xác minh số điện thoại";
   static String chinhSuaSoDienThoai = "Sửa số điện thoại?";
   static String banCanDangKySoDienThoai = "Bạn cần đăng ký số điện thoai để tiếp tục!";
@@ -48,7 +49,7 @@ class TTexts {
   static String thuGon = "Thu gọn";
   static String chiTietSanPham = "Chi tiết sản phẩm";
   static String xemThem = "Xem Thêm";
-  //  static String  = " ";
+  static String xacThucEmail = "Xác thực E-mail";
   //  static String  = " ";
   //  static String  = " ";
   //  static String  = " ";
