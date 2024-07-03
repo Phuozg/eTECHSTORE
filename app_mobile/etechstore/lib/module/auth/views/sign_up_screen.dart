@@ -223,12 +223,21 @@ class SignUpScreen extends GetView<SignUpController> {
                   () => Center(
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(horizontal: 130.w, vertical: 13.h), backgroundColor: TColros.purple_line),
-                      onPressed: controller.isCodeSent.value
-                          ? () => controller.verifyCode
-                          : () => formKey.currentState?.validate() == true ? controller.signUp() : null,
+                          padding: EdgeInsets.symmetric(horizontal: controller.isVerificationSent.value ? 130.w : 105.w, vertical: 13.h),
+                          backgroundColor: TColros.purple_line),
+                      onPressed: () {
+                        if (formKey.currentState?.validate() == true) {
+                          if (!controller.isVerificationSent.value) {
+                            controller.verifyEmail();
+                          } else {
+                            controller.signUp(context);
+                          }
+                        } else {
+                          return;
+                        }
+                      },
                       child: Text(
-                        controller.isCodeSent.value ? "Xác thực" : TTexts.singUp,
+                        controller.isVerificationSent.value ? TTexts.singUp : TTexts.xacThucEmail,
                         style: TextStyle(fontSize: ScreenUtil().setSp(15), color: Colors.white),
                       ),
                     ),

@@ -18,7 +18,7 @@ class SignInController extends GetxController {
   final AuthServices authServices = Get.put(AuthServices());
   final NetworkManager network = Get.put(NetworkManager());
 
-   //Variables
+  //Variables
   final hidePassword = true.obs;
   final fullName = TextEditingController();
   final email = TextEditingController();
@@ -33,6 +33,13 @@ class SignInController extends GetxController {
     email.dispose();
     password.dispose();
     super.dispose();
+  }
+
+  void clearPassword() {
+    email.clear();
+    password.clear();
+    conformPassword.clear();
+    fullName.clear();
   }
 
 //
@@ -55,6 +62,7 @@ class SignInController extends GetxController {
         FullScreenLoader.openLoadingDialog('Quá trình đang diễn ra...', ImageKey.loadingAnimation);
         await authServices.signInWithEmailPassword(email.text.trim(), password.text.trim());
         await authServices.updatePasswordInFirestore(email.text.trim(), password.text.trim());
+        clearPassword();
       }
     } catch (e) {
       if (email.text.isEmpty || password.text.isEmpty) {
@@ -97,6 +105,4 @@ class SignInController extends GetxController {
       ETAlertDialog.showSuccessDialog(context, TTexts.chuaEmailHoacMatKhau, TTexts.thongBao);
     }
   }
-
- 
 }

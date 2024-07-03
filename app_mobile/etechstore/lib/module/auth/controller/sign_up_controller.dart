@@ -32,18 +32,11 @@ class SignUpController extends GetxController {
   final conformPassword = TextEditingController();
   final newPassword = TextEditingController();
   final verificationController = TextEditingController();
-  final emailAuth = EmailAuth(sessionName: "Email Verification");
+  var isVerificationSent = false.obs;
 
   RxBool isCodeSent = false.obs;
 
   Rx<bool> checkEmail = false.obs;
-
-  @override
-  void onInit() {
-    super.onInit();
-    emailAuth.config(Config.remoteServerConfiguration  );
-  }
-
 
 //change Password
   var currentPasswordController = TextEditingController();
@@ -88,48 +81,39 @@ class SignUpController extends GetxController {
   }
 
   //SignUp
-  Future<void> signUp() async {
-    String emailController = email.text;
+  Future<void> signUp(BuildContext context) async {
     try {
       final isconnected = network.isConnectedToInternet.value;
       if (!isconnected) {
         TLoaders.errorSnackBar(title: TTexts.thongBao, message: "Không có kết nối internet");
         return;
       } else {
-        bool result = await emailAuth.sendOtp(recipientMail: emailController);
-        if (result) {
-          isCodeSent.value = true;
-          //loading
-          FullScreenLoader.openLoadingDialog('Quá trình đang diễn ra...', ImageKey.loadingAnimation);
+        //loading
+        FullScreenLoader.openLoadingDialog('Quá trình đang diễn ra...', ImageKey.loadingAnimation);
 
-          //check Internet connected
-          final isconnected = network.isConnectedToInternet.value;
-          if (!isconnected) {
-            //    FullScreenLoader.stopLoading();
-            return;
-          }
+        //check Internet connected
+        final isconnected = network.isConnectedToInternet.value;
+        if (!isconnected) {
+          //    FullScreenLoader.stopLoading();
+          return;
+        }
 
-          //Check Email
-          bool emailExists = await authServices.checkEmailExists(email.text.trim());
-          if (emailExists) {
-            TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.taiKhoanDaTonTai);
-            return;
+        //Check Email
+        bool emailExists = await authServices.checkEmailExists(email.text.trim());
+        if (emailExists) {
+          TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.taiKhoanDaTonTai);
+          return;
+        } else {
+          //SignUp
+          if (password.text == conformPassword.text) {
+            await authServices.checkEmailVerification(email.text.trim(), password.text.trim(), fullName.text.trim(), context);
+            //  Get.offNamed('/SignInScreen');
           } else {
-            //SignUp
-            if (password.text == conformPassword.text) {
-              await authServices.signUpWithEmailPassword(email.text.trim(), password.text.trim(), fullName.text.trim());
-
-              clearPassword();
-            } else {
-              TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.matKhauKhongTrungKhop);
-              return;
-            }
+            TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.matKhauKhongTrungKhop);
+            return;
           }
 
           //showSuccess
-          TLoaders.successSnackBar(title: 'Đăng ký tài khoản thành công', message: 'Hãy sử dụng tài khoản đã đăng ký để tiếp tục.');
-        } else {
-          Get.snackbar("Error", "Gửi mã xác thực thất bại");
         }
       }
 
@@ -142,63 +126,56 @@ class SignUpController extends GetxController {
     }
   }
 
+  Future<void> verifyEmail() async {
+    await authServices.sendEmailVerification(email.text, password.text, fullName.text);
+    isVerificationSent.value = true;
+  }
+
   void verifyCode() async {
-    String emailControleler = email.text;
-    String passwordController = password.text;
-    String verificationCode = verificationController.text;
+    try {
+      final isconnected = network.isConnectedToInternet.value;
+      if (!isconnected) {
+        TLoaders.errorSnackBar(title: TTexts.thongBao, message: "Không có kết nối internet");
+        return;
+      } else {
+        //loading
+        FullScreenLoader.openLoadingDialog('Quá trình đang diễn ra...', ImageKey.loadingAnimation);
 
-    bool isValid = emailAuth.validateOtp(
-      recipientMail: emailControleler,
-      userOtp: verificationCode,
-    );
-
-    if (isValid) {
-      try {
+        //check Internet connected
         final isconnected = network.isConnectedToInternet.value;
         if (!isconnected) {
-          TLoaders.errorSnackBar(title: TTexts.thongBao, message: "Không có kết nối internet");
+          //    FullScreenLoader.stopLoading();
           return;
-        } else {
-          //loading
-          FullScreenLoader.openLoadingDialog('Quá trình đang diễn ra...', ImageKey.loadingAnimation);
-
-          //check Internet connected
-          final isconnected = network.isConnectedToInternet.value;
-          if (!isconnected) {
-            //    FullScreenLoader.stopLoading();
-            return;
-          }
-
-          //Check Email
-          bool emailExists = await authServices.checkEmailExists(emailControleler.trim());
-          if (emailExists) {
-            TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.taiKhoanDaTonTai);
-            return;
-          } else {
-            //SignUp
-            if (password.text == conformPassword.text) {
-              await authServices.signUpWithEmailPassword(emailControleler.trim(), passwordController.trim(), fullName.text.trim());
-
-              clearPassword();
-            } else {
-              TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.matKhauKhongTrungKhop);
-              return;
-            }
-          }
-
-          //showSuccess
-          TLoaders.successSnackBar(title: 'Đăng ký tài khoản thành công', message: 'Hãy sử dụng tài khoản đã đăng ký để tiếp tục.');
         }
 
-        /*   //Move to LoginScreen
-      Get.offAll(const SignInScreen()); */
-      } catch (e) {
-        TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.chuaNhapDuThongTin);
-      } finally {
-        FullScreenLoader.stopLoading();
+        //Check Email
+        bool emailExists = await authServices.checkEmailExists(email.text.trim());
+        if (emailExists) {
+          TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.taiKhoanDaTonTai);
+          return;
+        } else {
+          //SignUp
+          if (password.text == conformPassword.text) {
+            User? user;
+            await authServices.signUpWithEmailPassword(user!, fullName.text.trim(), password.text.trim());
+
+            clearPassword();
+          } else {
+            TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.matKhauKhongTrungKhop);
+            return;
+          }
+        }
+
+        //showSuccess
+        TLoaders.successSnackBar(title: 'Đăng ký tài khoản thành công', message: 'Hãy sử dụng tài khoản đã đăng ký để tiếp tục.');
       }
-    } else {
-      Get.snackbar("Error", "Mã xác thực không hợp lệ");
+
+      /*   //Move to LoginScreen
+      Get.offAll(const SignInScreen()); */
+    } catch (e) {
+      TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.chuaNhapDuThongTin);
+    } finally {
+      FullScreenLoader.stopLoading();
     }
   }
 

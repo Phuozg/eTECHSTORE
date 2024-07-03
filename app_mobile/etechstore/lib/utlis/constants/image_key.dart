@@ -24,4 +24,5 @@ class ImageKey {
   static const String iconLogOut = 'assets/icons/icon_log_out_outline.png';
   static const String iconProfile = 'assets/icons/icon_profile.png';
   static const String iconUser = 'assets/icons/icon_user.png';
+  static const String messengerIcon = 'assets/icons/messenger_icon.png';
 }

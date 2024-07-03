@@ -5,6 +5,7 @@ import 'package:etechstore/module/home/views/category.dart';
 import 'package:etechstore/module/home/views/product.dart';
 import 'package:etechstore/module/home/views/search_bar.dart';
 import 'package:etechstore/module/home/views/slideshow_banner.dart';
+import 'package:etechstore/utlis/constants/image_key.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -16,8 +17,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final CartController cartController = Get.put(CartController());
-    final Uri facbook =
-        Uri.parse('https://www.facebook.com/messages/t/323929774140624');
+    final Uri facbook = Uri.parse('https://www.facebook.com/messages/t/323929774140624');
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -33,13 +33,11 @@ class HomeScreen extends StatelessWidget {
                   const Duration(milliseconds: 1),
                   () {
                     cartController.isEditMode.value = false;
-                    cartController.    fetchCartItems();
+                    cartController.fetchCartItems();
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const CartScreen(
-                         
-                          ),
+                          builder: (context) => const CartScreen(),
                         ));
                   },
                 );
@@ -47,24 +45,21 @@ class HomeScreen extends StatelessWidget {
             },
             child: Obx(
               () => Padding(
-                padding: const EdgeInsets.only(left: 5.0),
-                child: CartIconWithBadge(
-                    itemCount: cartController.cartItems.length),
+                padding: const EdgeInsets.only(left: 2.0, right: 5),
+                child: CartIconWithBadge(itemCount: cartController.cartItems.length),
               ),
             ),
           ),
-          ElevatedButton(
-              onPressed: () async {
-                //  auth.logout();
-                await launchUrl(facbook);
-              },
-              style: ElevatedButton.styleFrom(
-                  shape: const CircleBorder(),
-                  backgroundColor: const Color(0xFF383CA0)),
-              child: const Icon(
-                Icons.message,
-                color: Colors.white,
-              )),
+          GestureDetector(
+            onTap: () async {
+              //  auth.logout();
+              await launchUrl(facbook);
+            },
+            child: const Padding(
+              padding: EdgeInsets.only(bottom: 8, right: 15),
+              child: Image(image: AssetImage(ImageKey.messengerIcon), height: 25, width: 30),
+            ),
+          ),
         ],
       ),
       body: Container(
@@ -74,10 +69,7 @@ class HomeScreen extends StatelessWidget {
           shrinkWrap: true,
           children: [
             //Banner khuyến mãi
-            SizedBox(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height / 6,
-                child: const SlideShowBanner()),
+            SizedBox(width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height / 6, child: const SlideShowBanner()),
             const Divider(),
 
             //Danh mục sản phẩm
@@ -88,9 +80,7 @@ class HomeScreen extends StatelessWidget {
                   "Danh mục",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(
-                    height: MediaQuery.of(context).size.height / 15,
-                    child: const Categories()),
+                SizedBox(height: MediaQuery.of(context).size.height / 15, child: const Categories()),
               ],
             ),
             const Divider(),
