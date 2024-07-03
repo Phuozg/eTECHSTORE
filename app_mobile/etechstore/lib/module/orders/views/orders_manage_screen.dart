@@ -1,5 +1,6 @@
 import 'package:etechstore/module/cart/controller/cart_controller.dart';
 import 'package:etechstore/module/cart/view/cart_screen.dart';
+import 'package:etechstore/module/cart/view/widget/cart_icon_widget.dart';
 import 'package:etechstore/module/orders/controller/orders_controller.dart';
 import 'package:etechstore/module/orders/views/order_item_cancelled.dart';
 import 'package:etechstore/module/orders/views/order_item_completed.dart';
@@ -42,12 +43,18 @@ class OrderManageScreen extends StatelessWidget {
           title: const Text('Đơn hàng', style: TextStyle(color: Colors.white, fontSize: 18)),
           actions: [
             IconButton(
-                onPressed: () {
-                  Get.to(  CartScreen( ));
-                  controller.isEditMode.value = false;
-                  controller.setTotalPriceAndCheckAll();
-                },
-                icon: const Image(image: AssetImage(ImageKey.iconCart), color: Colors.white))
+              onPressed: () {
+                Get.to(const CartScreen());
+                controller.isEditMode.value = false;
+                controller.setTotalPriceAndCheckAll();
+              },
+              icon: Obx(
+                () => Padding(
+                  padding: const EdgeInsets.only(left: 5.0),
+                  child: CartIconWithBadge(itemCount: controller.cartItems.length),
+                ),
+              ),
+            )
           ],
         ),
         body: const TabBarView(

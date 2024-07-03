@@ -51,6 +51,8 @@ class CartController extends GetxController {
     fetchCartItemsLocally();
     fetchCartsLocally();
     total();
+    productSample.getSampleProduct();
+    productSample.fetchProducts();
   }
 
   void setSelectedItem({required String id, required bool value}) {
@@ -65,57 +67,73 @@ class CartController extends GetxController {
     itemPrices[itemId] = price;
   }
 
-int calculatePrice(ProductSampleModel productSample, ProductModel product, String selectedColor, String selectedConfig) {
-  int colorIndex = productSample.mauSac.indexOf(selectedColor);
-  int configIndex = productSample.cauHinh.indexOf(selectedConfig);
+  int calculatePrice(ProductSampleModel productSample, ProductModel product, String selectedColor, String selectedConfig) {
+    var colorIndex = productSample.mauSac.indexOf(selectedColor);
+    var configIndex = productSample.cauHinh.indexOf(selectedConfig);
 
-  // Nếu không tìm thấy màu sắc hoặc cấu hình, sử dụng giá trị mặc định
-  if (colorIndex == -1) colorIndex = 0;
-  if (configIndex == -1) configIndex = 0;
-
-  final priceIndex = colorIndex * productSample.cauHinh.length + configIndex;
-
-  // Nếu không có giá tiền trong ProductSampleModel, lấy giá từ ProductModel
-  if (priceIndex >= productSample.giaTien.length) {
-    return product.giaTien - (product.giaTien * product.KhuyenMai) ~/ 100;
-  }
-
-  return int.parse(productSample.giaTien[priceIndex].toString());
-}
-
-
-int getCartItemPrice(CartModel cartItem, List<ProductSampleModel> productSamples, List<ProductModel> products) {
-  var productSample = productSamples.firstWhere(
-    (p) => p.MaSanPham == cartItem.maSanPham['maSanPham'],
-    orElse: () => ProductSampleModel(id: '', MaSanPham: '', soLuong: 0, mauSac: [], cauHinh: [], giaTien: []),
-  );
-
-  var product = products.firstWhere(
-    (p) => p.id == cartItem.maSanPham['maSanPham'],
-    orElse: () => ProductModel(id: '', KhuyenMai: 0, moTa: '', ten: '', trangThai: false, giaTien: 0, maDanhMuc: 0, hinhAnh: [], thumbnail: '', NgayNhap: Timestamp.now(), isPopular: false),
-  );
-
-  if (productSample.id.isEmpty) {
-    return 0; // Không tìm thấy sản phẩm
-  }
-
-  return calculatePrice(productSample, product, cartItem.maSanPham['mauSac'], cartItem.maSanPham['cauHinh']);
-}
-
-
-void total() async {
-  
-  double total = 0.0;
-
-  for (var item in cartItems) {
-    if (selectedItems[item.id] == true) {
-      int price = getCartItemPrice(item, productSample.productSamples,productSample. products);
-      total += price * item.soLuong;
+    if (colorIndex == -1 && configIndex == -1) {
+      return product.giaTien; // Không tìm thấy màu sắc hoặc cấu hình trong MauSanPham, lấy giá tiền từ SanPham
+    } else {
+      if (colorIndex == -1) colorIndex = 0;
+      if (configIndex == -1) configIndex = 0;
     }
+
+    final priceIndex = colorIndex * productSample.cauHinh.length + configIndex;
+
+    if (priceIndex >= productSample.giaTien.length) {
+      return product.giaTien; // Giá tiền không tồn tại trong MauSanPham, lấy giá tiền từ SanPham
+    }
+
+    return int.parse(productSample.giaTien[priceIndex].toString());
   }
 
-  totalPrice.value = total;
-}
+  int getCartItemPrice(CartModel cartItem, List<ProductSampleModel> productSamples, List<ProductModel> products) {
+    var productSample = productSamples.firstWhere(
+      (p) => p.MaSanPham == cartItem.maSanPham['maSanPham'],
+      orElse: () => ProductSampleModel(id: '', MaSanPham: '', soLuong: 0, mauSac: [], cauHinh: [], giaTien: []),
+    );
+
+    var product = products.firstWhere(
+      (p) => p.id == cartItem.maSanPham['maSanPham'],
+      orElse: () => ProductModel(
+          id: '',
+          KhuyenMai: 0,
+          moTa: '',
+          ten: '',
+          trangThai: false,
+          giaTien: 0,
+          maDanhMuc: 0,
+          hinhAnh: [],
+          thumbnail: '',
+          NgayNhap: Timestamp.now(),
+          isPopular: false),
+    );
+
+    if (productSample.id.isEmpty) {
+      return 0; // Không tìm thấy sản phẩm
+    }
+
+    return calculatePrice(productSample, product, cartItem.maSanPham['mauSac'], cartItem.maSanPham['cauHinh']);
+  }
+
+  void total() {
+    double total = 0.0;
+
+    for (var item in cartItems) {
+      if (selectedItems[item.id] == true) {
+        final productSampl = productSample.productSamples.firstWhere(
+          (p) => p.MaSanPham == item.maSanPham['maSanPham'],
+          orElse: () => ProductSampleModel(id: '', MaSanPham: '', soLuong: 0, mauSac: [], cauHinh: [], giaTien: []),
+        );
+        final product = products[item.maSanPham['maSanPham']]!;
+
+        int price = calculatePrice(productSampl, product, item.maSanPham['mauSac'], item.maSanPham['cauHinh']);
+        total += price * item.soLuong;
+      }
+    }
+
+    totalPrice.value = total;
+  }
 
   Future<void> setTotalPriceAndCheckAll() async {
     totalPrice.value = 0;

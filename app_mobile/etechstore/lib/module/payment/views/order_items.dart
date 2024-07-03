@@ -64,7 +64,9 @@ class OrderItem extends StatelessWidget {
                         (p) => p.MaSanPham == item.maSanPham['maSanPham'],
                         orElse: () => ProductSampleModel(id: '', MaSanPham: '', soLuong: 0, mauSac: [], cauHinh: [], giaTien: []),
                       );
-                      final price = controller.calculatePrice(productSample, productController.products[index], selectedColor, selectedConfig);
+                      final product = controller.products[item.maSanPham['maSanPham']]!;
+
+                      final price = controller.calculatePrice(productSample, product, selectedColor, selectedConfig);
 
                       return Column(
                         children: [

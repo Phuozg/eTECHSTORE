@@ -134,14 +134,6 @@ class DetailOrderSreen extends StatelessWidget {
                                                       ),
                                                     ],
                                                   ),
-                                                  TextButton(
-                                                      onPressed: () {
-                                                        Get.to(EditProfileScreen());
-                                                      },
-                                                      child: const Text(
-                                                        "Sửa",
-                                                        style: TextStyle(color: TColros.purple_line),
-                                                      ))
                                                 ],
                                               ),
                                               Row(

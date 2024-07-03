@@ -1,6 +1,7 @@
 import 'package:etechstore/module/cart/controller/cart_controller.dart';
 import 'package:etechstore/module/cart/model/cart_model.dart';
 import 'package:etechstore/module/cart/view/cart_screen.dart';
+import 'package:etechstore/module/cart/view/widget/cart_icon_widget.dart';
 import 'package:etechstore/module/home/models/product_model_home.dart';
 import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/module/payment/views/buynow_screen.dart';
@@ -146,19 +147,22 @@ class DetailScreen extends GetView {
                               },
                               icon: const Icon(Icons.arrow_back_ios_new)),
                           IconButton(
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const CartScreen(),
-                                    ));
-                                cartController.isEditMode.value = false;
-                                cartController.setTotalPriceAndCheckAll();
-                              },
-                              icon: const Image(
-                                image: AssetImage(ImageKey.iconCart),
-                                color: Colors.black,
-                              )),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const CartScreen(),
+                                  ));
+                              cartController.isEditMode.value = false;
+                              cartController.setTotalPriceAndCheckAll();
+                            },
+                            icon: Obx(
+                              () => Padding(
+                                padding: const EdgeInsets.only(left: 2.0),
+                                child: CartIconWithBadge(itemCount: cartController.cartItems.length),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),

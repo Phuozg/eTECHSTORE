@@ -13,11 +13,11 @@ class CartIconWithBadge extends StatelessWidget {
       height: 40,
       child: Stack(
         children: [
-          const Image(image: AssetImage(ImageKey.iconCart), color: Colors.white, height: 40, width: 40),
+          const Icon(Icons.shopping_cart_outlined, color: Colors.black, size: 30),
           if (itemCount > 0)
             Positioned(
+              
               right: 2,
-              top: 3,
               child: Container(
                 padding: const EdgeInsets.all(1),
                 decoration: BoxDecoration(
