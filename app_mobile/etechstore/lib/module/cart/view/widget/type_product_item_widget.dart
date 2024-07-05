@@ -5,7 +5,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class TypeProductItemWidget extends StatefulWidget {
   String selectedColor;
   String selectedConfig;
-  TypeProductItemWidget({super.key, required this.selectedColor, required this.selectedConfig});
+  TypeProductItemWidget(
+      {super.key, required this.selectedColor, required this.selectedConfig});
 
   @override
   State<TypeProductItemWidget> createState() => _TypeProductItemWidgetState();
@@ -20,7 +21,10 @@ class _TypeProductItemWidgetState extends State<TypeProductItemWidget> {
           maxWidth: MediaQuery.of(context).size.width * 2.5,
         ),
         alignment: Alignment.center,
-        width: widget.selectedColor.isNotEmpty && widget.selectedConfig.isNotEmpty ? 163.w : 105.w,
+        width:
+            widget.selectedColor.isNotEmpty && widget.selectedConfig.isNotEmpty
+                ? 170.w
+                : 120.w,
         height: 18.h,
         color: const Color.fromARGB(58, 189, 189, 189),
         child: Row(
@@ -31,9 +35,13 @@ class _TypeProductItemWidgetState extends State<TypeProductItemWidget> {
               "Phân loại:",
               style: TextStyle(color: Colors.grey.shade400, fontSize: 12.sp),
             ),
-            Text('${widget.selectedColor} ', style: TextStyle(color: Colors.black, fontSize: 12.sp)),
-            widget.selectedConfig.isNotEmpty && widget.selectedColor.isNotEmpty ? const Text("-") : Container(),
-            Text(widget.selectedConfig, style: TextStyle(color: Colors.black, fontSize: 12.sp)),
+            Text('${widget.selectedColor} ',
+                style: TextStyle(color: Colors.black, fontSize: 12.sp)),
+            widget.selectedConfig.isNotEmpty && widget.selectedColor.isNotEmpty
+                ? const Text("-")
+                : Container(),
+            Text(widget.selectedConfig,
+                style: TextStyle(color: Colors.black, fontSize: 12.sp)),
             Container(
                 margin: EdgeInsets.only(bottom: 9.h),
                 child: const Icon(

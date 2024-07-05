@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:etechstore/module/cart/controller/cart_controller.dart';
 import 'package:etechstore/module/cart/model/cart_model.dart';
 import 'package:etechstore/module/home/views/home_screen.dart';
+import 'package:etechstore/module/payment/controllers/order_controller.dart';
 import 'package:etechstore/module/payment/controllers/order_items_controller.dart';
 import 'package:etechstore/module/product_detail/controller/product_sample_controller.dart';
 import 'package:etechstore/module/product_detail/model/product_sample_model.dart';
@@ -15,8 +16,11 @@ class OrderItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final orderItemController = Get.put(OrderItemsController());
+    final orderController = Get.put(OrderController());
+    orderController.listModel.clear();
     final CartController controller = Get.put(CartController());
-    final ProductSampleController productController = Get.put(ProductSampleController());
+    final ProductSampleController productController =
+        Get.put(ProductSampleController());
 
     return Obx(() {
       if (orderItemController.orderItem.isEmpty) {
@@ -39,7 +43,8 @@ class OrderItem extends StatelessWidget {
           child: StreamBuilder(
               stream: FirebaseFirestore.instance
                   .collection('GioHang')
-                  .where('maKhachHang', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+                  .where('maKhachHang',
+                      isEqualTo: FirebaseAuth.instance.currentUser!.uid)
                   .where('trangThai', isEqualTo: 1)
                   .snapshots(),
               builder: (context, snapshot) {
@@ -60,19 +65,28 @@ class OrderItem extends StatelessWidget {
                       String selectedColor = item.maSanPham['mauSac'];
                       String selectedConfig = item.maSanPham['cauHinh'];
                       int quantity = item.soLuong;
-                      final productSample = productController.productSamples.firstWhere(
+                      orderController.addListModel(selectedColor,
+                          selectedConfig, item.maSanPham['maSanPham']);
+                      final productSample =
+                          productController.productSamples.firstWhere(
                         (p) => p.MaSanPham == item.maSanPham['maSanPham'],
-                        orElse: () => ProductSampleModel(id: '', MaSanPham: '', soLuong: 0, mauSac: [], cauHinh: [], giaTien: []),
+                        orElse: () => ProductSampleModel(
+                            id: '',
+                            MaSanPham: '',
+                            soLuong: 0,
+                            mauSac: [],
+                            cauHinh: [],
+                            giaTien: []),
                       );
-                      final product = controller.products[item.maSanPham['maSanPham']]!;
-
-                      final price = controller.calculatePrice(productSample, product, selectedColor, selectedConfig);
 
                       return Column(
                         children: [
                           Row(
                             children: [
-                              SizedBox(height: MediaQuery.of(context).size.height / 7, child: Image.network(iteProductm.thumbnail)),
+                              SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height / 7,
+                                  child: Image.network(iteProductm.thumbnail)),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,13 +94,17 @@ class OrderItem extends StatelessWidget {
                                     Text(
                                       iteProductm.Ten,
                                       softWrap: true,
-                                      style: const TextStyle(fontWeight: FontWeight.bold),
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold),
                                     ),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
                                       children: [
-                                        Text(priceFormat((price).toInt())),
-                                        Text("SL: ${cart['soLuong'].toString()}"),
+                                        Text(priceFormat(
+                                            (iteProductm.GiaTien).toInt())),
+                                        Text(
+                                            "SL: ${cart['soLuong'].toString()}"),
                                       ],
                                     )
                                   ],

@@ -47,7 +47,7 @@ Widget address(String userID) {
                       Icon(Icons.settings)
                     ],
                   ),
-                  Text(document?["HoTen"] + " | ${document?["SoDienThoai"]}"),
+                  Text(document?["HoTen"] + " | 0${document?["SoDienThoai"]}"),
                   Text(document?["DiaChi"]),
                 ],
               ),

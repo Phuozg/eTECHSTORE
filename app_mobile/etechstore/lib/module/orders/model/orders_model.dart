@@ -5,7 +5,6 @@ class OrdersModel {
   final Timestamp ngayTaoDon;
   final String maKhachHang;
   final int tongTien;
-  final int tongDuocGiam;
   final bool isPaid;
   final bool isBeingShipped;
   final bool isShipped;
@@ -17,7 +16,6 @@ class OrdersModel {
     required this.ngayTaoDon,
     required this.maKhachHang,
     required this.tongTien,
-    required this.tongDuocGiam,
     required this.isPaid,
     required this.isBeingShipped,
     required this.isShipped,
@@ -31,7 +29,6 @@ class OrdersModel {
       ngayTaoDon: (json['NgayTaoDon']),
       maKhachHang: json['MaKhachHang'],
       tongTien: json['TongTien'],
-      tongDuocGiam: json['TongDuocGiam'],
       isPaid: json['isPaid'] ?? false,
       isBeingShipped: json['isBeingShipped'] ?? false,
       isShipped: json['isShipped'] ?? false,
@@ -46,7 +43,6 @@ class OrdersModel {
       'NgayTaoDon': ngayTaoDon,
       'MaKhachHang': maKhachHang,
       'TongTien': tongTien,
-      'TongDuocGiam': tongDuocGiam,
       'isPaid': isPaid,
       'isBeingShipped': isBeingShipped,
       'isShipped': isShipped,

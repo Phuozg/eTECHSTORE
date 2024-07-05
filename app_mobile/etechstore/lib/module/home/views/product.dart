@@ -39,7 +39,8 @@ class Product extends StatelessWidget {
                                   title: 'Khuyến mãi',
                                   query: FirebaseFirestore.instance
                                       .collection('SanPham')
-                                      .where('KhuyenMai', isGreaterThan: 0),
+                                      .where('KhuyenMai', isGreaterThan: 0)
+                                      .where('TrangThai', isEqualTo: true),
                                 )));
                   },
                   child: const Text("Xem tất cả"))
@@ -65,7 +66,8 @@ class Product extends StatelessWidget {
                                   title: 'Nổi bật',
                                   query: FirebaseFirestore.instance
                                       .collection('SanPham')
-                                      .where('isPopular', isEqualTo: true),
+                                      .where('isPopular', isEqualTo: true)
+                                      .where('TrangThai', isEqualTo: true),
                                 )));
                   },
                   child: const Text("Xem tất cả"))

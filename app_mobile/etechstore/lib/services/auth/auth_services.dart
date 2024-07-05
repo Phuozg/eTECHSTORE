@@ -37,7 +37,8 @@ class AuthServices extends GetxController {
   }
 
   //SignInWithFireStore
-  Future<UserCredential?> signInWithEmailPassword(String email, String password) async {
+  Future<UserCredential?> signInWithEmailPassword(
+      String email, String password) async {
     UserCredential userCredential = await _auth.signInWithEmailAndPassword(
       email: email,
       password: password,
@@ -49,7 +50,8 @@ class AuthServices extends GetxController {
       return userCredential;
     } else {
       await _auth.signOut();
-      TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.dangNhapThatBai);
+      TLoaders.errorSnackBar(
+          title: TTexts.thongBao, message: TTexts.dangNhapThatBai);
 
       return null;
     }
@@ -57,7 +59,11 @@ class AuthServices extends GetxController {
 
   Future<bool> _isUserAllowedToSignIn(String email) async {
     try {
-      QuerySnapshot snapshot = await firestore.collection('Users').where('email', isEqualTo: email).where('TrangThai', isEqualTo: 1).get();
+      QuerySnapshot snapshot = await firestore
+          .collection('Users')
+          .where('email', isEqualTo: email)
+          .where('TrangThai', isEqualTo: 1)
+          .get();
 
       if (snapshot.docs.isNotEmpty) {
         return true;
@@ -65,7 +71,8 @@ class AuthServices extends GetxController {
         return false;
       }
     } catch (e) {
-      TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.dangNhapThatBai);
+      TLoaders.errorSnackBar(
+          title: TTexts.thongBao, message: TTexts.dangNhapThatBai);
 
       return false;
     }
@@ -76,14 +83,17 @@ class AuthServices extends GetxController {
     try {
       await _auth.sendPasswordResetEmail(email: email);
     } on FirebaseAuthException catch (e) {
-      TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.dangNhapThatBai);
+      TLoaders.errorSnackBar(
+          title: TTexts.thongBao, message: TTexts.dangNhapThatBai);
     }
   }
 
   //Mail Verification
-  Future<void> sendEmailVerification(String email, String password, String hoten) async {
+  Future<void> sendEmailVerification(
+      String email, String password, String hoten) async {
     try {
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -95,31 +105,37 @@ class AuthServices extends GetxController {
       await user?.reload();
       Get.snackbar("Thông báo", "Vui lòng kiểm tra email để xác nhận.");
     } on FirebaseAuthException catch (e) {
-      TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.daXayRaLoi);
+      TLoaders.errorSnackBar(
+          title: TTexts.thongBao, message: TTexts.daXayRaLoi);
     }
   }
 
-  Future<void> checkEmailVerification(String email, String password, String hoten, BuildContext context) async {
+  Future<void> checkEmailVerification(
+      String email, String password, String hoten, BuildContext context) async {
     User? user = _auth.currentUser;
     await user?.reload();
     if (user != null && user.emailVerified) {
       await signUpWithEmailPassword(user, hoten, password);
-      TLoaders.successSnackBar(title: 'Đăng ký tài khoản thành công', message: 'Hãy sử dụng tài khoản đã đăng ký để tiếp tục.');
-       Get.offNamed('/SignInScreen');
+      TLoaders.successSnackBar(
+          title: 'Đăng ký tài khoản thành công',
+          message: 'Hãy sử dụng tài khoản đã đăng ký để tiếp tục.');
+      Get.offNamed('/SignInScreen');
     } else {
       Get.snackbar("Thông báo", "Nhập lại thông tin");
     }
   }
 
   // SignUp
-  Future<void> signUpWithEmailPassword(User user, String hoten, String password) async {
+  Future<void> signUpWithEmailPassword(
+      User user, String hoten, String password) async {
     await user.reload();
     await firestore.collection('Users').doc(user.uid).set({
       'password': password,
       'HoTen': hoten,
       'email': user.email,
       'uid': user.uid,
-      'HinhDaiDien': 'https://th.bing.com/th/id/R.3268de3daaeef4cdc5cd0bbc5d0e8d20?rik=RgusFJOHX7X%2fCg&pid=ImgRaw&r=0',
+      'HinhDaiDien':
+          'https://th.bing.com/th/id/R.3268de3daaeef4cdc5cd0bbc5d0e8d20?rik=RgusFJOHX7X%2fCg&pid=ImgRaw&r=0',
       'TrangThai': 1,
       'Quyen': true,
       'SoDienThoai': 0,
@@ -142,9 +158,12 @@ class AuthServices extends GetxController {
       if (userAccount == null) {
         return null;
       }
-      final GoogleSignInAuthentication googleAuth = await userAccount.authentication;
-      final credentials = GoogleAuthProvider.credential(accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
-      UserCredential userCredential = await _auth.signInWithCredential(credentials);
+      final GoogleSignInAuthentication googleAuth =
+          await userAccount.authentication;
+      final credentials = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
+      UserCredential userCredential =
+          await _auth.signInWithCredential(credentials);
 
       if (userCredential.user != null) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -156,7 +175,8 @@ class AuthServices extends GetxController {
           'email': userAccount.email,
           'password': 'Trống',
           'uid': userCredential.user!.uid,
-          'HinhDaiDien': 'https://th.bing.com/th/id/R.3268de3daaeef4cdc5cd0bbc5d0e8d20?rik=RgusFJOHX7X%2fCg&pid=ImgRaw&r=0',
+          'HinhDaiDien':
+              'https://th.bing.com/th/id/R.3268de3daaeef4cdc5cd0bbc5d0e8d20?rik=RgusFJOHX7X%2fCg&pid=ImgRaw&r=0',
           'TrangThai': 1,
           'Quyen': true,
           'SoDienThoai': 0,
@@ -166,19 +186,25 @@ class AuthServices extends GetxController {
         return userCredential;
       }
     } catch (e) {
-      TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.dangNhapThatBai);
+      TLoaders.errorSnackBar(
+          title: TTexts.thongBao, message: TTexts.dangNhapThatBai);
     }
     return null;
   }
 
   // check if the email exists
   Future<bool> checkEmailExists(String email) async {
-    final QuerySnapshot result = await firestore.collection('Users').where('email', isEqualTo: email).limit(1).get();
+    final QuerySnapshot result = await firestore
+        .collection('Users')
+        .where('email', isEqualTo: email)
+        .limit(1)
+        .get();
     final List<DocumentSnapshot> documents = result.docs;
     return documents.isNotEmpty;
   }
 
-  Future<bool> changePassword(String currentPassword, String newPassword) async {
+  Future<bool> changePassword(
+      String currentPassword, String newPassword) async {
     User? user = FirebaseAuth.instance.currentUser;
 
     if (user == null) {
@@ -186,7 +212,8 @@ class AuthServices extends GetxController {
     }
 
     try {
-      bool isCurrentPasswordCorrect = await _isCurrentPasswordCorrect(currentPassword, user);
+      bool isCurrentPasswordCorrect =
+          await _isCurrentPasswordCorrect(currentPassword, user);
       if (!isCurrentPasswordCorrect) {
         return false;
       }
@@ -201,9 +228,13 @@ class AuthServices extends GetxController {
     }
   }
 
-  Future<bool> _isCurrentPasswordCorrect(String currentPassword, User user) async {
+  Future<bool> _isCurrentPasswordCorrect(
+      String currentPassword, User user) async {
     try {
-      final querySnapshot = await FirebaseFirestore.instance.collection('Users').where('uid', isEqualTo: user.uid).get();
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('Users')
+          .where('uid', isEqualTo: user.uid)
+          .get();
 
       if (querySnapshot.docs.isNotEmpty) {
         final storedPassword = querySnapshot.docs.first.data()['password'];
@@ -212,21 +243,26 @@ class AuthServices extends GetxController {
         return false;
       }
     } catch (e) {
-      TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.daXayRaLoi);
+      TLoaders.errorSnackBar(
+          title: TTexts.thongBao, message: TTexts.daXayRaLoi);
 
       return false;
     }
   }
 
   Future<void> _updatePasswordInFirestore(User user, String newPassword) async {
-    final querySnapshot = await FirebaseFirestore.instance.collection('Users').where('uid', isEqualTo: user.uid).get();
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('Users')
+        .where('uid', isEqualTo: user.uid)
+        .get();
 
     for (final doc in querySnapshot.docs) {
       await doc.reference.update({'password': newPassword});
     }
   }
 
-  Future<UserCredential> updatePasswordInFirestore(String email, String newPassword) async {
+  Future<UserCredential> updatePasswordInFirestore(
+      String email, String newPassword) async {
     User? user = FirebaseAuth.instance.currentUser;
 
     UserCredential userCredential = await _auth.signInWithEmailAndPassword(
@@ -234,7 +270,8 @@ class AuthServices extends GetxController {
       password: newPassword,
     );
 
-    final querySnapshot = await FirebaseFirestore.instance.collection('Users').get();
+    final querySnapshot =
+        await FirebaseFirestore.instance.collection('Users').get();
     for (final doc in querySnapshot.docs) {
       if (doc.data()['uid'] == user!.uid) {
         await doc.reference.update({'password': newPassword});

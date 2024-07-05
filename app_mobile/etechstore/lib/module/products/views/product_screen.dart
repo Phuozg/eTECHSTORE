@@ -17,7 +17,7 @@ class ProductScreen extends StatelessWidget {
     final productController = Get.put(ProductControllerr());
     return Scaffold(
         appBar: AppBar(
-          leading: BackButton(
+          leading: const BackButton(
             color: Colors.white,
           ),
           centerTitle: true,
@@ -39,8 +39,8 @@ class ProductScreen extends StatelessWidget {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const CircularProgressIndicator();
                 }
-                final products = snapshot.data!;
-                return SortableProducts(products: products);
+                final products = snapshot.data;
+                return SortableProducts(products: products!);
               },
             ),
           ),

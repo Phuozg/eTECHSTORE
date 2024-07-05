@@ -17,7 +17,7 @@ dependencies:
     sdk: flutter
   get: ^4.6.6
   google_sign_in: ^6.2.1
-  intl: ^0.19.0
+  intl: ^0.17.0
   lottie: ^3.1.0
   pinput: ^4.0.0
   firebase_database: ^10.5.4
@@ -36,6 +36,10 @@ dependencies:
   url_launcher: ^6.3.0
   internet_connection_checker_plus: ^2.3.0
   email_auth: ^2.0.0
+  network_info_plus: ^5.0.3
+  firebase_dynamic_links: ^5.5.7
+  crypto: ^3.0.3
+  flutter_webview_plugin: ^0.4.0
 
 email_auth:
   smtp:
@@ -43,6 +47,7 @@ email_auth:
     port: 587
     username: 'vuhuy1262@gmail.com'
     password: 'Librathienbinh'
+  
 
 dev_dependencies:
   flutter_test:

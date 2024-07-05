@@ -4,21 +4,24 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class PaymentTile extends StatelessWidget {
-  const PaymentTile({super.key,required this.paymentMethod});
+  const PaymentTile({super.key, required this.paymentMethod});
   final PaymentModel paymentMethod;
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(PaymentController());
     return ListTile(
       contentPadding: const EdgeInsets.all(0),
-      onTap: (){
+      onTap: () {
         controller.selectedPaymentMethod.value = paymentMethod;
-        Get.back();
+        Navigator.pop(context);
       },
       leading: SizedBox(
         width: 60,
         height: 40,
-        child: Image(image: AssetImage(paymentMethod.icon),fit: BoxFit.contain,),
+        child: Image(
+          image: AssetImage(paymentMethod.icon),
+          fit: BoxFit.contain,
+        ),
       ),
       title: Text(paymentMethod.ten),
       trailing: const Icon(Icons.arrow_forward_ios),

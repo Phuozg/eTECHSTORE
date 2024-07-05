@@ -3,12 +3,14 @@ import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/module/payment/controllers/order_controller.dart';
 import 'package:etechstore/module/payment/controllers/payment_controller.dart';
 import 'package:etechstore/module/payment/controllers/order_items_controller.dart';
+import 'package:etechstore/module/payment/controllers/vnpay_payment_controller.dart';
 import 'package:etechstore/module/payment/views/address_user.dart';
 import 'package:etechstore/module/payment/views/order_items.dart';
 import 'package:etechstore/module/payment/views/payment.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class OrderScreen extends StatelessWidget {
   const OrderScreen({super.key});
@@ -19,6 +21,8 @@ class OrderScreen extends StatelessWidget {
     final orderItemsController = Get.put(OrderItemsController());
     final paymentController = Get.put(PaymentController());
     final orderController = Get.put(OrderController());
+    final vnPay = Get.put(VNPAYPaymnent());
+    RxString response = ''.obs;
     return Scaffold(
       appBar: AppBar(
         flexibleSpace: Container(
@@ -48,7 +52,8 @@ class OrderScreen extends StatelessWidget {
               child: const Column(
                 children: [Payment()],
               ),
-            )
+            ),
+            Obx(() => Text(response.value))
           ],
         ),
       ),
@@ -56,12 +61,20 @@ class OrderScreen extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         child: ElevatedButton(
             onPressed: () {
-              if (paymentController.selectedPaymentMethod.value.ten == 'VNPay') {
+              if (paymentController.selectedPaymentMethod.value.ten ==
+                  'VNPay') {
+                final now = DateTime.now();
+                final formatter = DateFormat('yyyyMMddHHmmss');
+                final formattedTime = formatter.format(now);
+                // vnPay.paymentVNPay(1000 * 10, formattedTime, 'XCV123');
+                vnPay.paymentVNPay(response, context);
               } else {
-                orderController.processOrder(userID, orderItemsController.totalPrice.toInt(), orderItemsController.totalDiscount.toInt());
+                orderController.processOrder(
+                    userID, CartController().instance.totalPrice.value.toInt());
               }
             },
-            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF383CA0)),
+            style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF383CA0)),
             child: Obx(() {
               return Text(
                 'Đặt hàng \n ${priceFormat(CartController().instance.totalPrice.value.toInt())}',

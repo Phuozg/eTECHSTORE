@@ -3,7 +3,7 @@ import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/module/product_detail/view/product_detail_screen.dart';
 import 'package:flutter/material.dart';
 
-Widget productHorizontalListTile(BuildContext context, ProductModel product) {
+Widget productByNowSample(BuildContext context, ProductModel product) {
   return GestureDetector(
     onTap: () {
       Navigator.push(

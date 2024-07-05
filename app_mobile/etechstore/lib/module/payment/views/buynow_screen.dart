@@ -1,9 +1,9 @@
-import 'package:etechstore/module/home/models/product_model_home.dart' ;
+import 'package:etechstore/module/home/models/product_model_home.dart';
 import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/module/payment/controllers/order_controller.dart';
 import 'package:etechstore/module/payment/controllers/payment_controller.dart';
 import 'package:etechstore/module/payment/views/address_user.dart';
- import 'package:etechstore/module/sample/product_horizontal_listtile.dart';
+import 'package:etechstore/module/sample/product_horizontal_listtile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -32,7 +32,9 @@ class BuyNowScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             address(userID),
-            SizedBox(width: MediaQuery.of(context).size.width, child: productHorizontalListTile(context, product )),
+            SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: productHorizontalListTile(context, product)),
             Container(
               margin: const EdgeInsets.all(8),
               decoration: BoxDecoration(
@@ -53,27 +55,33 @@ class BuyNowScreen extends StatelessWidget {
                           child: Column(
                             children: [
                               const Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     "Phương thức thanh toán",
-                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18),
                                   ),
                                   Text("Thay đổi")
                                 ],
                               ),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Image(
                                     image: AssetImage(
-                                      paymentController.selectedPaymentMethod.value.icon,
+                                      paymentController
+                                          .selectedPaymentMethod.value.icon,
                                     ),
                                     fit: BoxFit.contain,
                                     height: 60,
                                   ),
                                   const VerticalDivider(),
-                                  Text(paymentController.selectedPaymentMethod.value.ten),
+                                  Text(paymentController
+                                      .selectedPaymentMethod.value.ten),
                                 ],
                               ),
                             ],
@@ -82,7 +90,8 @@ class BuyNowScreen extends StatelessWidget {
                         const Divider(),
                         Text(
                           "Tổng tiền: ${priceFormat((product.GiaTien - (product.GiaTien * product.KhuyenMai / 100)).toInt())}",
-                          style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                          style: const TextStyle(
+                              color: Colors.red, fontWeight: FontWeight.bold),
                         )
                       ],
                     )),
@@ -94,13 +103,19 @@ class BuyNowScreen extends StatelessWidget {
           padding: const EdgeInsets.all(10),
           child: ElevatedButton(
               onPressed: () {
-                if (paymentController.selectedPaymentMethod.value.ten == 'VNPay') {
+                if (paymentController.selectedPaymentMethod.value.ten ==
+                    'VNPay') {
                 } else {
-                  orderController.processOrderBuyNow(userID, (product.GiaTien - (product.GiaTien * product.KhuyenMai / 100)).toInt(),
-                      (product.GiaTien * product.KhuyenMai ~/ 100).toInt(), product );
+                  orderController.processOrderBuyNow(
+                      userID,
+                      (product.GiaTien -
+                              (product.GiaTien * product.KhuyenMai / 100))
+                          .toInt(),
+                      product);
                 }
               },
-              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF383CA0)),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF383CA0)),
               child: Text(
                 'Đặt hàng \n ${priceFormat((product.GiaTien - (product.GiaTien * product.KhuyenMai / 100)).toInt())}',
                 style: const TextStyle(color: Colors.white, fontSize: 15),

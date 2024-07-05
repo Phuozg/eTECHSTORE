@@ -11,13 +11,13 @@ Widget productVerticalSample(
   return Flexible(
       child: GridView.builder(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2, childAspectRatio: 0.8),
+              crossAxisCount: 2, childAspectRatio: 0.7),
           shrinkWrap: true,
           itemCount: products.length,
           itemBuilder: (_, index) {
             final product = products[index];
             return SizedBox(
-              height: MediaQuery.of(context).size.height / 3,
+              height: MediaQuery.of(context).size.height / 2.5,
               child: GestureDetector(
                 onTap: () {
                   Navigator.push(
@@ -47,7 +47,9 @@ Widget productVerticalSample(
                         Stack(
                           children: [
                             SizedBox(
-                                height: MediaQuery.of(context).size.height / 7,
+                                height:
+                                    MediaQuery.of(context).size.height / 6.5,
+                                width: MediaQuery.of(context).size.width / 3,
                                 child: Image.network(
                                   product.thumbnail,
                                   fit: BoxFit.cover,
@@ -82,35 +84,12 @@ Widget productVerticalSample(
                                 return const Text("");
                               },
                             ),
-                            Positioned(
-                                top: -10,
-                                left: -10,
-                                child: Obx(() {
-                                  return IconButton(
-                                      onPressed: () {
-                                        if (!wishListController
-                                            .isWish(product.id)) {
-                                          wishListController
-                                              .addWish(product.id);
-                                        } else {
-                                          wishListController
-                                              .removeWish(product.id);
-                                        }
-                                      },
-                                      icon: Icon(
-                                        Icons.favorite,
-                                        color: wishListController
-                                                .isWish(product.id)
-                                            ? Colors.red
-                                            : Colors.black,
-                                      ));
-                                }))
                           ],
                         ),
                         Text(
-                          product.Ten.length < 50
+                          product.Ten.length < 30
                               ? product.Ten
-                              : '${product.Ten.substring(0, 50)}...',
+                              : '${product.Ten.substring(0, 30)}...',
                           style: const TextStyle(fontWeight: FontWeight.bold),
                           textAlign: TextAlign.center,
                         ),
@@ -138,6 +117,30 @@ Widget productVerticalSample(
                             return Text(priceFormat(product.GiaTien),
                                 style: const TextStyle(color: Colors.red));
                           },
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Obx(() {
+                              return IconButton(
+                                  onPressed: () {
+                                    if (!wishListController
+                                        .isWish(product.id)) {
+                                      wishListController.addWish(product.id);
+                                    } else {
+                                      wishListController.removeWish(product.id);
+                                    }
+                                  },
+                                  icon: Icon(
+                                    Icons.favorite,
+                                    color: wishListController.isWish(product.id)
+                                        ? Colors.red
+                                        : Colors.black,
+                                  ));
+                            }),
+                            IconButton(
+                                onPressed: () {}, icon: const Icon(Icons.add))
+                          ],
                         )
                       ],
                     ),

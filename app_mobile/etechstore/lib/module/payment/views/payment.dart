@@ -10,36 +10,49 @@ class Payment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(PaymentController());
-    return Obx(()=> Column(
-      children: [
-        GestureDetector(
-          onTap: (){
-          controller.selectPaymentMethod(context);
-        },
-          child: Column(
-            children: [
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Obx(() => Column(
+          children: [
+            GestureDetector(
+              onTap: () {
+                controller.selectPaymentMethod(context);
+              },
+              child: Column(
                 children: [
-                  Text("Phương thức thanh toán",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
-                  Text("Thay đổi")
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Phương thức thanh toán",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 18),
+                      ),
+                      Text("Thay đổi")
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Image(
+                        image: AssetImage(
+                          controller.selectedPaymentMethod.value.icon,
+                        ),
+                        fit: BoxFit.contain,
+                        height: 60,
+                      ),
+                      const VerticalDivider(),
+                      Text(controller.selectedPaymentMethod.value.ten),
+                    ],
+                  ),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Image(image: AssetImage(controller.selectedPaymentMethod.value.icon,),fit: BoxFit.contain,height: 60,),
-                  const VerticalDivider(),
-                  Text(controller.selectedPaymentMethod.value.ten),
-                ],
-              ),
-            ],
-          ),
-        ),
-        const Divider(),
-        Text("Tổng tiền: ${priceFormat(CartController().instance.totalPrice.value.toInt())}",style: const TextStyle(color: Colors.red,fontWeight: FontWeight.bold),)
-      ],
-    )
-    );
+            ),
+            const Divider(),
+            Text(
+              "Tổng tiền: ${priceFormat(CartController().instance.totalPrice.value.toInt())}",
+              style: const TextStyle(
+                  color: Colors.red, fontWeight: FontWeight.bold),
+            )
+          ],
+        ));
   }
 }
