@@ -30,6 +30,7 @@ class CartController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final LocalStorageService localStorageService = LocalStorageService();
   ProductSampleController productSample = Get.put(ProductSampleController());
+  
 
   var cartItems = <CartModel>[].obs;
   var products = <String, ProductModel>{}.obs;
@@ -38,10 +39,10 @@ class CartController extends GetxController {
   var selectedItems = <String, bool>{}.obs;
   var isEditMode = false.obs;
   var productList = <ProductModel>[].obs;
-  RxInt quantity = 0.obs;
+  RxInt quantity = 1.obs;
   var selectedItemCount = 0.obs;
   RxMap priceMap = {}.obs;
-  var itemPrices = <String, String>{}.obs; // Lưu giá tiền theo id của CartModel
+  var itemPrices = <String, String>{}.obs;
 
   @override
   void onInit() {
@@ -53,6 +54,10 @@ class CartController extends GetxController {
     total();
     productSample.getSampleProduct();
     productSample.fetchProducts();
+  }
+
+  void resetQuantity() {
+    quantity.value = 1;
   }
 
   void setSelectedItem({required String id, required bool value}) {
@@ -110,10 +115,18 @@ class CartController extends GetxController {
     );
 
     if (productSample.id.isEmpty) {
-      return 0; // Không tìm thấy sản phẩm
+      return 0; 
     }
 
     return calculatePrice(productSample, product, cartItem.maSanPham['mauSac'], cartItem.maSanPham['cauHinh']);
+  }
+
+  Stream<List<CartModel>> getCarts() {    String? userId = _auth.currentUser?.uid;
+
+    return FirebaseFirestore.instance
+        .collection('GioHang').where("maKhachHang",isEqualTo: userId)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((doc) => CartModel.fromMap(doc.data())).toList());
   }
 
   void total() {
@@ -210,14 +223,12 @@ class CartController extends GetxController {
     for (var docSnapshot in checkitem.docs) {
       for (var cart in cartItems) {
         if (cart.id == itemId) {
-          if (cart.maKhachHang == docSnapshot.data()['maKhachHang'] &&
-              cart.maSanPham['cauHinh'] == docSnapshot.data()['mauSanPham']['cauHinh'] &&
-              cart.maSanPham['mauSac'] == docSnapshot.data()['mauSanPham']['mauSac']) {
+          if (cart.maKhachHang == docSnapshot.data()['maKhachHang'] && cart.id == docSnapshot.data()['id']) {
             await _firestore.collection('GioHang').doc(docSnapshot.id).update({
               'trangThai': value ? 1 : 0,
             });
             setSelectedItem(id: itemId, value: value);
-            total();
+
             updateSelectedItemCount();
           }
         }
@@ -232,9 +243,7 @@ class CartController extends GetxController {
 
     for (var docSnapshot in checkitem.docs) {
       for (var cart in cartItems) {
-        if (cart.maKhachHang == docSnapshot.data()['maKhachHang'] &&
-            cart.maSanPham['cauHinh'] == docSnapshot.data()['mauSanPham']['cauHinh'] &&
-            cart.maSanPham['mauSac'] == docSnapshot.data()['mauSanPham']['mauSac']) {
+        if (cart.maKhachHang == docSnapshot.data()['maKhachHang'] && cart.id == docSnapshot.data()['id']) {
           await _firestore.collection('GioHang').doc(docSnapshot.id).update({
             'trangThai': isSelectAll.value ? 1 : 0,
           });
@@ -246,6 +255,7 @@ class CartController extends GetxController {
     updateSelectedItemCount();
   }
 
+ 
   void updateSelectedItemCount() {
     total();
     selectedItemCount.value = selectedItems.values.where((value) => value).length;
@@ -277,6 +287,7 @@ class CartController extends GetxController {
             existingItem.maSanPham['maSanPham'] != newItem.maSanPham['maSanPham']) {
           addItemSampleToCart(newItem);
           cartItems.add(newItem);
+          resetQuantity();
           TLoaders.successSnackBar(title: "Thông báo", message: "Thêm thành công!");
           await saveCartItemToFirestore(newItem);
         } else if (existingItem.id != newItem.id) {
@@ -325,6 +336,7 @@ class CartController extends GetxController {
     }
   }
 
+  var quantities = <String, int>{}.obs; // This will store the quantities for each cart item
   Future<void> updateCartItem(CartModel item) async {
     final isconnected = network.isConnectedToInternet.value;
     if (!isconnected) {
@@ -344,6 +356,30 @@ class CartController extends GetxController {
     var doc = await _firestore.collection('GioHang').where('id', isEqualTo: item.id).where('maKhachHang', isEqualTo: item.maKhachHang).get();
     if (doc.docs.isNotEmpty) {
       await _firestore.collection('GioHang').doc(doc.docs.first.id).update(item.toMap());
+    }
+  }
+
+  void increaseQuantity(String itemId) {
+    if (quantities.containsKey(itemId)) {
+      quantities[itemId] = quantities[itemId]! + 1;
+      CartModel item = cartItems.firstWhere((element) => element.id == itemId);
+      item.soLuong = quantities[itemId]!;
+      updateCartItem(item);
+    }
+  }
+
+  void decreaseQuantity(String itemId) {
+    if (quantities.containsKey(itemId) && quantities[itemId]! > 1) {
+      quantities[itemId] = quantities[itemId]! - 1;
+      CartModel item = cartItems.firstWhere((element) => element.id == itemId);
+      item.soLuong = quantities[itemId]!;
+      updateCartItem(item);
+    }
+  }
+
+  void initializeQuantity(CartModel item) {
+    if (!quantities.containsKey(item.id)) {
+      quantities[item.id] = item.soLuong;
     }
   }
 

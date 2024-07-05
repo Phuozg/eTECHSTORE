@@ -30,6 +30,7 @@ Widget buildProductSamples(
     required Timestamp NgayNhap,
     required bool isPopular}) {
   final ProductSampleController productSampleController = Get.put(ProductSampleController());
+  final CartController controller = Get.put(CartController());
 
   return ScreenUtilInit(
     builder: (context, child) => SizedBox(
@@ -62,6 +63,7 @@ Widget buildProductSamples(
                                 showModalBottomSheet(
                                   context: context,
                                   builder: (ctx) {
+                                    controller.resetQuantity();
                                     productSampleController.setSelectedColorIndex(0, sample);
                                     productSampleController.setSelectedConfigIndex(0, sample);
                                     productSampleController.checkPrice(sample, GiaTien.toString());
@@ -135,6 +137,8 @@ Widget buildProductSamples(
                           showModalBottomSheet(
                             context: context,
                             builder: (ctx) {
+                              controller.resetQuantity();
+
                               productSampleController.setSelectedColorIndex(0, sample);
                               productSampleController.setSelectedConfigIndex(0, sample);
                               productSampleController.checkPrice(sample, GiaTien.toString());

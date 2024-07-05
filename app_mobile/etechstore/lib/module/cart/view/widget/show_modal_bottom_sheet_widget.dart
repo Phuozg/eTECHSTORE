@@ -39,7 +39,7 @@ class ShowCustomModalBottomSheet extends StatefulWidget {
 
 class _ShowCustomModalBottomSheetState extends State<ShowCustomModalBottomSheet> {
   final NetworkManager network = Get.put(NetworkManager());
-
+  CartController cartController = Get.put(CartController());
   ProductSampleController controller = Get.put(ProductSampleController());
   int quantity = 1;
 
@@ -238,12 +238,7 @@ class _ShowCustomModalBottomSheetState extends State<ShowCustomModalBottomSheet>
             children: [
               GestureDetector(
                 onTap: () {
-                  setState(() {
-                    if (quantity > 1) {
-                      quantity--;
-                    }
-                    return;
-                  });
+                  cartController.decreaseQuantity(widget.cart.id);
                 },
                 child: Container(
                   alignment: Alignment.center,
@@ -255,21 +250,20 @@ class _ShowCustomModalBottomSheetState extends State<ShowCustomModalBottomSheet>
                   ),
                 ),
               ),
-              GestureDetector(
-                onTap: () {},
-                child: Container(
+              Obx(
+                () => Container(
                   decoration: const BoxDecoration(border: Border(left: BorderSide(width: .4), right: BorderSide(width: .4))),
                   alignment: Alignment.center,
                   height: 20,
                   width: 25,
-                  child: Text("$quantity"),
+                  child: Text(
+                    '${cartController.quantities[widget.cart.id] ?? widget.cart.soLuong}',
+                  ),
                 ),
               ),
               GestureDetector(
                 onTap: () {
-                  setState(() {
-                    quantity++;
-                  });
+                  cartController.increaseQuantity(widget.cart.id);
                 },
                 child: Container(
                   alignment: Alignment.center,
