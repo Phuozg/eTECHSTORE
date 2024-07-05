@@ -7,7 +7,7 @@ import 'package:etechstore/module/orders/views/detail_order_screen.dart';
 import 'package:etechstore/module/payment/views/buynow_screen.dart';
 
 import 'package:etechstore/module/previews/controllers/preview_controller.dart';
- import 'package:etechstore/utlis/constants/colors.dart';
+import 'package:etechstore/utlis/constants/colors.dart';
 import 'package:etechstore/utlis/constants/image_key.dart';
 import 'package:etechstore/utlis/helpers/line/line_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -100,21 +100,25 @@ class OrderdetailWdiet extends StatelessWidget {
                                 )
                               : const Text("Loading..."),
                           SizedBox(height: 5.h),
-                          Row(
-                            children: [
-                              const Text("Loại:", style: TextStyle(color: Colors.blueGrey)),
-                              detail.maMauSanPham['MauSac'] != null
-                                  ? Text(" ${detail.maMauSanPham['MauSac']}", style: const TextStyle(fontWeight: FontWeight.w400))
-                                  : const Text("Loading..."),
-                              Text(
-                                " | ",
-                                style: TextStyle(fontSize: 12.sp, color: Colors.blueGrey),
-                              ),
-                              detail.maMauSanPham['CauHinh'] != null
-                                  ? Text(" ${detail.maMauSanPham['CauHinh']}", style: const TextStyle(fontWeight: FontWeight.w400))
-                                  : const Text("Loading..."),
-                            ],
-                          ),
+                          detail.maMauSanPham['MauSac'] != "" && detail.maMauSanPham['CauHinh'] != "" ||
+                                  detail.maMauSanPham['MauSac'] != "" ||
+                                  detail.maMauSanPham['CauHinh'] != ""
+                              ? Row(
+                                  children: [
+                                    const Text("Loại:", style: TextStyle(color: Colors.blueGrey)),
+                                    detail.maMauSanPham['MauSac'] != null
+                                        ? Text(" ${detail.maMauSanPham['MauSac']}", style: const TextStyle(fontWeight: FontWeight.w400))
+                                        : const Text("Loading..."),
+                                    Text(
+                                      " | ",
+                                      style: TextStyle(fontSize: 12.sp, color: Colors.blueGrey),
+                                    ),
+                                    detail.maMauSanPham['CauHinh'] != null
+                                        ? Text(" ${detail.maMauSanPham['CauHinh']}", style: const TextStyle(fontWeight: FontWeight.w400))
+                                        : const Text("Loading..."),
+                                  ],
+                                )
+                              : Container(),
                           Row(
                             children: [
                               const Text("Số lượng: ", style: TextStyle(fontWeight: FontWeight.w400, color: Colors.blueGrey)),
@@ -185,7 +189,7 @@ class OrderdetailWdiet extends StatelessWidget {
                     ),
                     SizedBox(width: 5.w),
                     Text(
-                      priceFormat(((product.GiaTien - (product.GiaTien * product.KhuyenMai / 100)) * detail.soLuong).toInt()),
+                      priceFormat((detail.giaTien!).toInt()),
                       style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Colors.redAccent),
                     ),
                   ],

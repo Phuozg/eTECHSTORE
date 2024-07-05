@@ -18,6 +18,7 @@ class ProductSampleController extends GetxController {
 
   final lstProduct = <DetailOrders>[].obs;
   final RxBool _isProductsLoaded = false.obs;
+  final discount = <ProductModel>[].obs;
 
   int price = 0;
   List<String> colors = <String>[].obs;
@@ -40,6 +41,22 @@ class ProductSampleController extends GetxController {
     super.onInit();
     fetchProductSamples();
     getSampleProduct();
+    getCarts();
+    getProduct();
+  }
+
+  Stream<List<CartModel>> getCarts() {
+    return FirebaseFirestore.instance
+        .collection('GioHang')
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((doc) => CartModel.fromMap(doc.data())).toList());
+  }
+
+  Stream<List<ProductModel>> getProduct() {
+    return FirebaseFirestore.instance.collection('SanPham').snapshots().map((event) {
+      discount.value = event.docs.map((e) => ProductModel.fromFirestore(e.data())).toList();
+      return discount;
+    });
   }
 
   void setSelectedColorIndex(int index, ProductSampleModel sample) {
@@ -107,7 +124,7 @@ class ProductSampleController extends GetxController {
   }
 
   Stream<List<ProductSampleModel>> getSampleProduct() {
-     return _firestore.collection("MauSanPham").snapshots().map((event) {
+    return _firestore.collection("MauSanPham").snapshots().map((event) {
       var item = event.docs.map((e) => ProductSampleModel.fromMap(e.data())).toList();
       productSamples.value = item;
       print(item.length);
@@ -127,7 +144,7 @@ class ProductSampleController extends GetxController {
     }
   }
 
-  void fetchProducts() async {
+  Future<void> fetchProducts() async {
     products.clear();
     for (var sample in productSamples) {
       QuerySnapshot snapshot = await _firestore.collection('SanPham').where('id', isEqualTo: sample.MaSanPham).get();
@@ -180,7 +197,7 @@ class ProductSampleController extends GetxController {
     }
   }
 
-  Future<void> checkPrice(ProductSampleModel sample , String price) async {
+  Future<void> checkPrice(ProductSampleModel sample, String price) async {
     final index = selectedColorIndex.value * sample.cauHinh.length + selectedConfigIndex.value;
     if (index < sample.giaTien.length) {
       currentPrice.value = sample.giaTien[index].toString();
@@ -194,7 +211,7 @@ class ProductSampleController extends GetxController {
       productSamples.value = samples;
       // Call checkPrice for the first sample (or the relevant sample)
       if (samples.isNotEmpty) {
-        checkPrice(samples.first,'' ); // Update this as per your logic
+        checkPrice(samples.first, ''); // Update this as per your logic
       }
     });
   }

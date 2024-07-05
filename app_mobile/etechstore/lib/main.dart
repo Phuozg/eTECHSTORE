@@ -26,8 +26,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  final wishListController = Get.put(WishListController());
-  wishListController.createWishList(FirebaseAuth.instance.currentUser!.uid);
+
 
   runApp(
     AdaptiveTheme(
@@ -49,13 +48,11 @@ void main() async {
               theme: light,
               darkTheme: dark,
               debugShowCheckedModeBanner: false,
-              home: AuthGate(),
+              home: const AuthGate(),
               getPages: [
-                GetPage(
-                    name: '/successPayment', page: () => const SuccessScreen()),
+                GetPage(name: '/successPayment', page: () => const SuccessScreen()),
                 GetPage(name: '/navMenu', page: () => const NavMenu()),
-                GetPage(
-                    name: '/SignInScreen', page: () => const SignInScreen()),
+                GetPage(name: '/SignInScreen', page: () => const SignInScreen()),
               ],
             )),
   );

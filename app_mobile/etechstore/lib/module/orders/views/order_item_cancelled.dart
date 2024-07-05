@@ -27,31 +27,14 @@ class OrderCancelled extends StatelessWidget {
         stream: controller.getOrder(),
         builder: (context, snapshotDonHang) {
           if (!snapshotDonHang.hasData) {
-            return const Center(child: CircularProgressIndicator());
+            return const OrderIsEmpty();
           }
 
           String userId = auth.currentUser?.uid ?? '';
           List<OrdersModel> donHangs = snapshotDonHang.data!;
           List<OrdersModel> fillterOrder = donHangs.where((order) => order.maKhachHang == userId && order.isCancelled).toList();
           if (fillterOrder.isEmpty) {
-            return Container(
-              child: Column(
-                children: [
-                  SizedBox(height: 50.h),
-                  Image.asset(
-                    ImageKey.cartEmpty,
-                    width: 100.w,
-                    height: 100.h,
-                  ),
-                  SizedBox(height: 20.h),
-                  Center(
-                      child: Text(
-                    "Chưa có đơn hàng nào",
-                    style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w300),
-                  )),
-                ],
-              ),
-            );
+            return const OrderIsEmpty();
           }
 
           return StreamBuilder<List<DetailOrders>>(
@@ -307,7 +290,7 @@ class OrderCancelled extends StatelessWidget {
                                 ],
                               ),
                             )
-                          : OrderIsEmpty();
+                          : const OrderIsEmpty();
                     },
                   );
                 }

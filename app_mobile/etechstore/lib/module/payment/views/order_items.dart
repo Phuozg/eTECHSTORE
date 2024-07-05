@@ -5,6 +5,7 @@ import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/module/payment/controllers/order_controller.dart';
 import 'package:etechstore/module/payment/controllers/order_items_controller.dart';
 import 'package:etechstore/module/product_detail/controller/product_sample_controller.dart';
+import 'package:etechstore/module/product_detail/model/product_model.dart';
 import 'package:etechstore/module/product_detail/model/product_sample_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -19,8 +20,11 @@ class OrderItem extends StatelessWidget {
     final orderController = Get.put(OrderController());
     orderController.listModel.clear();
     final CartController controller = Get.put(CartController());
-    final ProductSampleController productController =
-        Get.put(ProductSampleController());
+    final ProductSampleController productController = Get.put(ProductSampleController());
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    orderController.listModel.clear();
+
+    String userId = auth.currentUser?.uid ?? '';
 
     return Obx(() {
       if (orderItemController.orderItem.isEmpty) {
@@ -40,83 +44,75 @@ class OrderItem extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(8),
           height: MediaQuery.of(context).size.height / 2.5,
-          child: StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection('GioHang')
-                  .where('maKhachHang',
-                      isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-                  .where('trangThai', isEqualTo: 1)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return const CircularProgressIndicator();
-                }
-                final carts = snapshot.data!.docs;
-                if (carts.isEmpty) {
-                  return const CircularProgressIndicator();
-                }
-                return ListView.builder(
-                    itemCount: carts.length,
-                    itemBuilder: (context, index) {
-                      CartModel item = controller.cartItems[index];
+          child: StreamBuilder<List<ProductModel>>(
+            stream: productController.getProduct(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return const CircularProgressIndicator();
+              }
+              List<ProductModel> data = snapshot.data!;
+              List<ProductModel> lstProduct = data.toList();
+              return StreamBuilder<List<CartModel>>(
+                  stream: productController.getCarts(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const CircularProgressIndicator();
+                    }
+                    List<CartModel> carts = snapshot.data!;
+                    List<CartModel> lstCart = carts.toList();
+                    if (carts.isEmpty) {
+                      return const CircularProgressIndicator();
+                    }
+                    List<CartModel> listcart = lstCart
+                        .where((cart) =>
+                            lstProduct.any((product) => product.id == cart.maSanPham['maSanPham']) &&
+                            cart.trangThai == 1 &&
+                            cart.maKhachHang == userId)
+                        .toList();
 
-                      final cart = carts[index];
-                      final iteProductm = orderItemController.orderItem[index];
-                      String selectedColor = item.maSanPham['mauSac'];
-                      String selectedConfig = item.maSanPham['cauHinh'];
-                      int quantity = item.soLuong;
-                      orderController.addListModel(selectedColor,
-                          selectedConfig, item.maSanPham['maSanPham']);
-                      final productSample =
-                          productController.productSamples.firstWhere(
-                        (p) => p.MaSanPham == item.maSanPham['maSanPham'],
-                        orElse: () => ProductSampleModel(
-                            id: '',
-                            MaSanPham: '',
-                            soLuong: 0,
-                            mauSac: [],
-                            cauHinh: [],
-                            giaTien: []),
-                      );
-
-                      return Column(
-                        children: [
-                          Row(
+                    return ListView.builder(
+                        itemCount: listcart.length,
+                        itemBuilder: (value, index) {
+                          CartModel item = listcart[index];
+                          ProductModel product = lstProduct.firstWhere((element) => element.id == item.maSanPham['maSanPham']);
+                          String selectedColor = item.maSanPham['mauSac'];
+                          String selectedConfig = item.maSanPham['cauHinh'];
+                          final productSample = productController.productSamples.firstWhere((p) => p.MaSanPham == item.maSanPham['maSanPham']);
+                          final price = controller.calculatePrice(productSample, product, selectedColor, selectedConfig);
+                          orderController.addListModel(selectedColor, selectedConfig, item.maSanPham['maSanPham']);
+                          return Column(
                             children: [
-                              SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height / 7,
-                                  child: Image.network(iteProductm.thumbnail)),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      iteProductm.Ten,
-                                      softWrap: true,
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
+                              Row(
+                                children: [
+                                  SizedBox(height: MediaQuery.of(context).size.height / 7, child: Image.network(product.thumbnail)),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(priceFormat(
-                                            (iteProductm.GiaTien).toInt())),
                                         Text(
-                                            "SL: ${cart['soLuong'].toString()}"),
+                                          product.ten,
+                                          softWrap: true,
+                                          style: const TextStyle(fontWeight: FontWeight.bold),
+                                        ),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Text(priceFormat((price).toInt())),
+                                            Text("SL: ${item.soLuong.toString()}"),
+                                          ],
+                                        )
                                       ],
-                                    )
-                                  ],
-                                ),
-                              )
+                                    ),
+                                  )
+                                ],
+                              ),
+                              const Divider()
                             ],
-                          ),
-                          const Divider()
-                        ],
-                      );
-                    });
-              }),
+                          );
+                        });
+                  });
+            },
+          ),
         ),
       );
     });

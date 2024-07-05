@@ -1,9 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:etechstore/module/profile/controller/profile_controller.dart';
 import 'package:etechstore/module/profile/views/edit_views/profile_edit_screen.dart';
+import 'package:etechstore/module/profile/views/edit_views/widget/edit_profile_widget.dart';
+import 'package:etechstore/module/profile/views/edit_views/widget/profile_edit_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 Widget address(String userID) {
+  final ProfileController profileController = Get.put(ProfileController());
+
   return Container(
     margin: const EdgeInsets.all(8),
     decoration: BoxDecoration(
@@ -16,10 +21,7 @@ Widget address(String userID) {
     child: Padding(
       padding: const EdgeInsets.all(8.0),
       child: StreamBuilder(
-          stream: FirebaseFirestore.instance
-              .collection('Users')
-              .doc(userID)
-              .snapshots(),
+          stream: FirebaseFirestore.instance.collection('Users').doc(userID).snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return const CircularProgressIndicator();
@@ -27,7 +29,14 @@ Widget address(String userID) {
             var document = snapshot.data;
             return GestureDetector(
               onTap: () {
-                Get.to(EditProfileScreen());
+                Get.to(EditScreen(
+                  controller: profileController.DressController,
+                  title: "Sửa địa chỉ",
+                  text: document?["DiaChi"] == '' ? "Thêm địa chỉ" : document?["DiaChi"],
+                  func: () {
+                    profileController.editProfile(2);
+                  },
+                ));
               },
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

@@ -27,30 +27,13 @@ class OrderCompleted extends StatelessWidget {
           stream: controller.getOrder(),
           builder: (context, snapshotDonHang) {
             if (!snapshotDonHang.hasData) {
-              return const Center(child: CircularProgressIndicator());
+              return const OrderIsEmpty();
             }
             String userId = auth.currentUser?.uid ?? '';
             List<OrdersModel> donHangs = snapshotDonHang.data!;
             List<OrdersModel> fillterOrder = donHangs.where((order) => order.maKhachHang == userId && order.isCompleted).toList();
             if (fillterOrder.isEmpty) {
-              return Container(
-                child: Column(
-                  children: [
-                    SizedBox(height: 50.h),
-                    Image.asset(
-                      ImageKey.cartEmpty,
-                      width: 100.w,
-                      height: 100.h,
-                    ),
-                    SizedBox(height: 20.h),
-                    Center(
-                        child: Text(
-                      "Chưa có đơn hàng nào",
-                      style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w300),
-                    )),
-                  ],
-                ),
-              );
+              return const OrderIsEmpty();
             }
             return StreamBuilder<List<DetailOrders>>(
               stream: controller.fetchData(),
@@ -83,9 +66,7 @@ class OrderCompleted extends StatelessWidget {
                         var product = controller.products[item.maMauSanPham['MaSanPham']];
                         OrdersModel? order = fillterOrder.firstWhereOrNull((order) => order.id == item.maDonHang);
                         if (order == null) {
-                          return Container(
-                            child: Text('Order not found for detail order ${item.maDonHang}.'),
-                          );
+                          return const OrderIsEmpty();
                         }
                         return order.isCompleted == true
                             ? OrderdetailWdiet(

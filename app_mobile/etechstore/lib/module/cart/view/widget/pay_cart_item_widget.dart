@@ -2,6 +2,7 @@ import 'package:etechstore/module/cart/controller/cart_controller.dart';
 import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/module/home/views/product.dart';
 import 'package:etechstore/module/payment/views/order_screen.dart';
+import 'package:etechstore/module/product_detail/controller/product_sample_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -13,7 +14,7 @@ class PayCartItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final CartController controller = Get.put(CartController());
-
+    ProductSampleController sampleCOntroller = Get.put(ProductSampleController());
     return ScreenUtilInit(builder: (context, child) {
       return Row(
         children: [
@@ -35,6 +36,8 @@ class PayCartItem extends StatelessWidget {
             () => GestureDetector(
               onTap: controller.selectedItemCount.value >= 1
                   ? () {
+                      sampleCOntroller.getProduct();
+                      sampleCOntroller.getCarts();
                       Navigator.push(context, MaterialPageRoute(builder: (context) => const OrderScreen()));
                     }
                   : null,

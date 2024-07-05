@@ -62,13 +62,13 @@ class ProfileScreen extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(70),
                                   child: FadeInImage.assetNetwork(
                                     imageErrorBuilder: (context, error, stackTrace) {
-                                      return Image.asset(
-                                        ImageKey.iconUser,
+                                      return Container(
                                         width: 100.w,
                                         height: 100.h,
+                                        color: Colors.white,
                                       );
                                     },
-                                    placeholder: ImageKey.iconProfile,
+                                    placeholder: ImageKey.iconUser,
                                     width: 100.w,
                                     height: 100.h,
                                     image: profile.HinhDaiDien,
@@ -120,7 +120,6 @@ class ProfileScreen extends StatelessWidget {
                         text: "Sửa hồ sơ",
                       ),
                     ),
-                    
                     GestureDetector(
                         onTap: () {
                           Get.to(const SettingScreen());

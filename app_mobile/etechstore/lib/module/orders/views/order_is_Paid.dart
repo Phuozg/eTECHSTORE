@@ -25,38 +25,21 @@ class OrderIsPaid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final OrdersController controller = Get.put(OrdersController());
-        final FirebaseAuth auth = FirebaseAuth.instance;
- 
+    final FirebaseAuth auth = FirebaseAuth.instance;
+
     return ScreenUtilInit(
       builder: (context, child) => StreamBuilder<List<OrdersModel>>(
           stream: controller.getOrder(),
           builder: (context, snapshotDonHang) {
             if (!snapshotDonHang.hasData) {
-              return const Center(child: CircularProgressIndicator());
+              return const OrderIsEmpty();
             }
 
             String userId = auth.currentUser?.uid ?? '';
             List<OrdersModel> donHangs = snapshotDonHang.data!;
             List<OrdersModel> fillterOrder = donHangs.where((order) => order.maKhachHang == userId && order.isPaid).toList();
             if (fillterOrder.isEmpty) {
-              return Container(
-                child: Column(
-                  children: [
-                    SizedBox(height: 50.h),
-                    Image.asset(
-                      ImageKey.cartEmpty,
-                      width: 100.w,
-                      height: 100.h,
-                    ),
-                    SizedBox(height: 20.h),
-                    Center(
-                        child: Text(
-                      "Chưa có đơn hàng nào",
-                      style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w300),
-                    )),
-                  ],
-                ),
-              );
+              return const OrderIsEmpty();
             }
 
             return StreamBuilder<List<DetailOrders>>(
@@ -81,7 +64,6 @@ class OrderIsPaid extends StatelessWidget {
                   }).toList();
                   return Obx(
                     () => ListView.builder(
-                      shrinkWrap: true,
                       itemCount:
                           (controller.itemsToShow.value >= filteredCTDonHangs.length) ? filteredCTDonHangs.length : controller.itemsToShow.value + 1,
                       itemBuilder: (context, index) {
@@ -90,7 +72,7 @@ class OrderIsPaid extends StatelessWidget {
                         OrdersModel? order = fillterOrder.firstWhereOrNull((order) => order.id == item.maDonHang);
                         if (order == null) {
                           return Container(
-                            child: Text('Order not found for detail order ${item.maDonHang}.'),
+                            child: const CircularProgressIndicator(),
                           );
                         }
 
@@ -102,7 +84,7 @@ class OrderIsPaid extends StatelessWidget {
                                 status: "Chờ xác nhận",
                                 color: TColros.purple_line,
                               )
-                            : OrderIsEmpty();
+                            : const OrderIsEmpty();
                       },
                     ),
                   );

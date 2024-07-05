@@ -211,7 +211,7 @@ class DetailOrderSreen extends StatelessWidget {
                                                     crossAxisAlignment: CrossAxisAlignment.end,
                                                     children: [
                                                       Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        mainAxisAlignment: MainAxisAlignment.start,
                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                         children: [
                                                           Row(
@@ -256,24 +256,39 @@ class DetailOrderSreen extends StatelessWidget {
                                                                           ),
                                                                         )
                                                                       : const Text("Loading..."),
-                                                                  SizedBox(height: 5.h),
-                                                                  Row(
-                                                                    children: [
-                                                                      const Text("Loại:", style: TextStyle(color: Colors.grey)),
-                                                                      ctDonHang.maMauSanPham['MauSac'] != null
-                                                                          ? Text(" ${ctDonHang.maMauSanPham['MauSac']}",
-                                                                              style: const TextStyle(fontWeight: FontWeight.w400))
-                                                                          : const Text("Loading..."),
-                                                                      Text(
-                                                                        " | ",
-                                                                        style: TextStyle(fontSize: 12.sp, color: Colors.grey),
-                                                                      ),
-                                                                      ctDonHang.maMauSanPham['CauHinh'] != null
-                                                                          ? Text(" ${ctDonHang.maMauSanPham['CauHinh']}",
-                                                                              style: const TextStyle(fontWeight: FontWeight.w400))
-                                                                          : const Text("Loading..."),
-                                                                    ],
-                                                                  ),
+                                                                  //   SizedBox(height: 35.h),
+                                                                  ctDonHang.maMauSanPham['MauSac'] != "" && ctDonHang.maMauSanPham['CauHinh'] != "" ||
+                                                                          ctDonHang.maMauSanPham['MauSac'] != "" ||
+                                                                          ctDonHang.maMauSanPham['CauHinh'] != ""
+                                                                      ? Row(
+                                                                          children: [
+                                                                            ctDonHang.maMauSanPham['MauSac'] == null
+                                                                                ? const Text("Loại:", style: TextStyle(color: Colors.grey))
+                                                                                : Container(),
+                                                                            ctDonHang.maMauSanPham['MauSac'] != null
+                                                                                ? Text("${ctDonHang.maMauSanPham['MauSac']}",
+                                                                                    style: const TextStyle(fontWeight: FontWeight.w400))
+                                                                                : const Text("Loading..."),
+                                                                            Row(
+                                                                              children: [
+                                                                                ctDonHang.maMauSanPham['MauSac'] != "" &&
+                                                                                            ctDonHang.maMauSanPham['CauHinh'] != "" ||
+                                                                                        ctDonHang.maMauSanPham['MauSac'] != "" ||
+                                                                                        ctDonHang.maMauSanPham['CauHinh'] != ""
+                                                                                    ? Text(
+                                                                                        " | ",
+                                                                                        style: TextStyle(fontSize: 12.sp, color: Colors.grey),
+                                                                                      )
+                                                                                    : Container(),
+                                                                                ctDonHang.maMauSanPham['CauHinh'] != null
+                                                                                    ? Text("${ctDonHang.maMauSanPham['CauHinh']}",
+                                                                                        style: const TextStyle(fontWeight: FontWeight.w400))
+                                                                                    : const Text("Loading..."),
+                                                                              ],
+                                                                            ),
+                                                                          ],
+                                                                        )
+                                                                      : Container(),
                                                                   Row(
                                                                     children: [
                                                                       const Text("Số lượng: ",
@@ -303,7 +318,7 @@ class DetailOrderSreen extends StatelessWidget {
                                                             ),
                                                             SizedBox(width: 10.w),
                                                             Text(
-                                                              priceFormat((product.GiaTien - (product.GiaTien * product.KhuyenMai / 100)).toInt()),
+                                                              priceFormat((ctDonHang.giaTien!).toInt()),
                                                               style: const TextStyle(fontWeight: FontWeight.w500),
                                                             ),
                                                           ],
@@ -329,9 +344,7 @@ class DetailOrderSreen extends StatelessWidget {
                                                               ),
                                                               SizedBox(width: 5.w),
                                                               Text(
-                                                                priceFormat(((product.GiaTien - (product.GiaTien * product.KhuyenMai / 100)) *
-                                                                        ctDonHang.soLuong)
-                                                                    .toInt()),
+                                                                priceFormat((ctDonHang.giaTien! * ctDonHang.soLuong).toInt()),
                                                                 style:
                                                                     TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Colors.redAccent),
                                                               ),
