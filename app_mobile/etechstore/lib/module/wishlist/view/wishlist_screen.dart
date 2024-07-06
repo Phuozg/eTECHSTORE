@@ -1,4 +1,4 @@
-import 'package:etechstore/module/products/views/sortable_products.dart';
+import 'package:etechstore/module/sample/product_vertical_sample.dart';
 import 'package:etechstore/module/wishlist/controller/wishlist_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -25,19 +25,19 @@ class _WishListScreenState extends State<WishListScreen> {
         ),
         centerTitle: true,
       ),
-      body: Padding(
+      body: Container(
           padding: const EdgeInsets.all(8.0),
-          child: SingleChildScrollView(
-            child: Obx(() {
+          child: Column(children: [
+            Obx(() {
               if (wishlistController.listProductWishList.isEmpty) {
                 return const Center(
                   child: Text('Bạn chưa có sản phẩm yêu thích nào'),
                 );
               }
-              return SortableProducts(
-                  products: wishlistController.listProductWishList);
+              return productVerticalSample(
+                  context, wishlistController.listProductWishList);
             }),
-          )),
+          ])),
     );
   }
 }
