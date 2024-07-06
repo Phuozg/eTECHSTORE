@@ -46,15 +46,18 @@ class ProductSampleController extends GetxController {
   }
 
   Stream<List<CartModel>> getCarts() {
-    return FirebaseFirestore.instance
-        .collection('GioHang')
-        .snapshots()
-        .map((snapshot) => snapshot.docs.map((doc) => CartModel.fromMap(doc.data())).toList());
+    return FirebaseFirestore.instance.collection('GioHang').snapshots().map(
+        (snapshot) =>
+            snapshot.docs.map((doc) => CartModel.fromMap(doc.data())).toList());
   }
 
   Stream<List<ProductModel>> getProduct() {
-    return FirebaseFirestore.instance.collection('SanPham').snapshots().map((event) {
-      discount.value = event.docs.map((e) => ProductModel.fromFirestore(e.data())).toList();
+    return FirebaseFirestore.instance
+        .collection('SanPham')
+        .snapshots()
+        .map((event) {
+      discount.value =
+          event.docs.map((e) => ProductModel.fromFirestore(e.data())).toList();
       return discount;
     });
   }
@@ -88,7 +91,9 @@ class ProductSampleController extends GetxController {
       } else {
         fetchProductSamplesLocally();
         _firestore.collection('MauSanPham').snapshots().listen((event) async {
-          productSamples.value = event.docs.map((doc) => ProductSampleModel.fromFirestore(doc)).toList();
+          productSamples.value = event.docs
+              .map((doc) => ProductSampleModel.fromFirestore(doc))
+              .toList();
         });
 
         _localStorageService.saveProductSamples(productSamples);
@@ -103,8 +108,11 @@ class ProductSampleController extends GetxController {
     ProductSampleModel? productSample;
 
     try {
-      QuerySnapshot<Map<String, dynamic>> snapshot =
-          await _firestore.collection('MauSanPham').where('MaSanPham', isEqualTo: productId).limit(1).get();
+      QuerySnapshot<Map<String, dynamic>> snapshot = await _firestore
+          .collection('MauSanPham')
+          .where('MaSanPham', isEqualTo: productId)
+          .limit(1)
+          .get();
 
       if (snapshot.docs.isNotEmpty) {
         productSample = ProductSampleModel.fromFirestore(snapshot.docs.first);
@@ -117,7 +125,8 @@ class ProductSampleController extends GetxController {
   }
 
   void fetchProductSamplesLocally() async {
-    List<ProductSampleModel> localProductSamples = await _localStorageService.getProductSamples();
+    List<ProductSampleModel> localProductSamples =
+        await _localStorageService.getProductSamples();
     productSamples.assignAll(localProductSamples);
 
     fetchProductsLocally();
@@ -125,7 +134,8 @@ class ProductSampleController extends GetxController {
 
   Stream<List<ProductSampleModel>> getSampleProduct() {
     return _firestore.collection("MauSanPham").snapshots().map((event) {
-      var item = event.docs.map((e) => ProductSampleModel.fromMap(e.data())).toList();
+      var item =
+          event.docs.map((e) => ProductSampleModel.fromMap(e.data())).toList();
       productSamples.value = item;
       print(item.length);
       return item;
@@ -147,8 +157,14 @@ class ProductSampleController extends GetxController {
   Future<void> fetchProducts() async {
     products.clear();
     for (var sample in productSamples) {
-      QuerySnapshot snapshot = await _firestore.collection('SanPham').where('id', isEqualTo: sample.MaSanPham).get();
-      products.addAll(snapshot.docs.map((doc) => ProductModel.fromFirestore(doc.data() as Map<String, dynamic>)).toList());
+      QuerySnapshot snapshot = await _firestore
+          .collection('SanPham')
+          .where('id', isEqualTo: sample.MaSanPham)
+          .get();
+      products.addAll(snapshot.docs
+          .map((doc) =>
+              ProductModel.fromFirestore(doc.data() as Map<String, dynamic>))
+          .toList());
     }
 
     _localStorageService.saveProducts(products);
@@ -188,17 +204,20 @@ class ProductSampleController extends GetxController {
 
     // Tính chỉ số của giá tiền dựa trên chỉ số màu sắc và cấu hình
     final index = colorIndex * sample.cauHinh.length + configIndex;
-    print('Color Index: $colorIndex, Config Index: $configIndex, Calculated Index: $index'); // Debugging line
+    print(
+        'Color Index: $colorIndex, Config Index: $configIndex, Calculated Index: $index'); // Debugging line
 
     if (index >= 0 && index < sample.giaTien.length) {
       displayedPrice.value = sample.giaTien[index];
     } else {
-      displayedPrice.value = 0; // Thêm thông báo nếu không có giá cho sự kết hợp này
+      displayedPrice.value =
+          0; // Thêm thông báo nếu không có giá cho sự kết hợp này
     }
   }
 
   Future<void> checkPrice(ProductSampleModel sample, String price) async {
-    final index = selectedColorIndex.value * sample.cauHinh.length + selectedConfigIndex.value;
+    final index = selectedColorIndex.value * sample.cauHinh.length +
+        selectedConfigIndex.value;
     if (index < sample.giaTien.length) {
       currentPrice.value = sample.giaTien[index].toString();
     } else {
