@@ -63,7 +63,6 @@ Widget buildProductSamples(
                                 showModalBottomSheet(
                                   context: context,
                                   builder: (ctx) {
-                                    controller.resetQuantity();
                                     productSampleController.setSelectedColorIndex(0, sample);
                                     productSampleController.setSelectedConfigIndex(0, sample);
                                     productSampleController.checkPrice(sample, GiaTien.toString());
@@ -137,8 +136,6 @@ Widget buildProductSamples(
                           showModalBottomSheet(
                             context: context,
                             builder: (ctx) {
-                              controller.resetQuantity();
-
                               productSampleController.setSelectedColorIndex(0, sample);
                               productSampleController.setSelectedConfigIndex(0, sample);
                               productSampleController.checkPrice(sample, GiaTien.toString());

@@ -5,15 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-class ChangeQuantityItemWidget extends StatelessWidget {
-  final CartModel item;
+class ChangeQuantityItemWidget extends StatefulWidget {
+  ChangeQuantityItemWidget({super.key, required this.quantity, required this.item});
+  int quantity;
+  CartModel item;
+  @override
+  State<ChangeQuantityItemWidget> createState() => _ChangeQuantityItemWidgetState();
+}
 
-  const ChangeQuantityItemWidget({super.key, required this.item});
-
+class _ChangeQuantityItemWidgetState extends State<ChangeQuantityItemWidget> {
   @override
   Widget build(BuildContext context) {
     final CartController controller = Get.put(CartController());
-    controller.initializeQuantity(item);
 
     return ScreenUtilInit(
       builder: (context, child) => Container(
@@ -31,7 +34,13 @@ class ChangeQuantityItemWidget extends StatelessWidget {
             GestureDetector(
               child: Container(alignment: Alignment.center, child: const Icon(Icons.remove, size: 18)),
               onTap: () {
-                controller.decreaseQuantity(item.id);
+                setState(() {
+                  if (widget.quantity > 1) {
+                    widget.quantity--;
+                    widget.item.soLuong = widget.quantity;
+                    controller.updateCartItem(widget.item);
+                  }
+                });
               },
             ),
             Container(
@@ -43,7 +52,7 @@ class ChangeQuantityItemWidget extends StatelessWidget {
               padding: EdgeInsets.only(left: 3.0.w, right: 4.w),
               alignment: Alignment.topCenter,
               child: Text(
-                '${item.soLuong}',
+                '${widget.quantity}',
                 style: TextStyle(fontSize: 13.sp),
               ),
             ),
@@ -55,7 +64,12 @@ class ChangeQuantityItemWidget extends StatelessWidget {
             GestureDetector(
               child: Container(height: 15.h, alignment: Alignment.topCenter, child: Icon(Icons.add, size: 17.sp)),
               onTap: () {
-                controller.increaseQuantity(item.id);
+                //     controller.toggleItemSelection(item.id);
+                setState(() {
+                  widget.quantity++;
+                  widget.item.soLuong = widget.quantity;
+                  controller.updateCartItem(widget.item);
+                });
               },
             ),
           ],

@@ -16,7 +16,7 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class SampleBottomSheet extends StatelessWidget {
+class SampleBottomSheet extends StatefulWidget {
   final ProductSampleModel sample;
 
   final String thumbnail;
@@ -24,13 +24,17 @@ class SampleBottomSheet extends StatelessWidget {
   final int GiaTien;
   final int KhuyenMai;
 
-  SampleBottomSheet({super.key, required this.sample, required this.thumbnail, required this.GiaTien, required this.id, required this.KhuyenMai});
+  const SampleBottomSheet(
+      {super.key, required this.sample, required this.thumbnail, required this.GiaTien, required this.id, required this.KhuyenMai});
 
+  @override
+  _SampleBottomSheetState createState() => _SampleBottomSheetState();
+}
+
+class _SampleBottomSheetState extends State<SampleBottomSheet> {
   final NetworkManager network = Get.put(NetworkManager());
 
   ProductSampleController controller = Get.put(ProductSampleController());
-
-  CartController cartController = Get.put(CartController());
 
   int quantity = 1;
 
@@ -38,6 +42,7 @@ class SampleBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+ 
     return Container(
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.only(
@@ -48,15 +53,15 @@ class SampleBottomSheet extends StatelessWidget {
       ),
       padding: EdgeInsets.only(left: 25.w, top: 5.h),
       width: double.infinity,
-      height: sample.cauHinh.isEmpty || sample.mauSac.isEmpty ? 280.h : 450.h,
+      height: widget.sample.cauHinh.isEmpty || widget.sample.mauSac.isEmpty ? 280.h : 450.h,
       alignment: Alignment.topCenter,
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             buildHeader(context),
-            sample.mauSac.isNotEmpty ? buildColorOptions() : Container(),
-            sample.cauHinh.isNotEmpty ? buildConfigOptions() : Container(),
+            widget.sample.mauSac.isNotEmpty ? buildColorOptions() : Container(),
+            widget.sample.cauHinh.isNotEmpty ? buildConfigOptions() : Container(),
             buildQuantitySelector(),
             buildAddToCartButton(context),
             const Padding(padding: EdgeInsets.only(bottom: 5))
@@ -89,7 +94,7 @@ class SampleBottomSheet extends StatelessWidget {
                 width: 90.w,
                 height: 80.h,
                 child: Image.network(
-                  thumbnail,
+                  widget.thumbnail,
                   fit: BoxFit.fill,
                 )),
             SizedBox(width: 13.w),
@@ -121,7 +126,7 @@ class SampleBottomSheet extends StatelessWidget {
                           );
                         }),
                         Text(
-                          "${priceFormat(GiaTien)} ",
+                          "${priceFormat(widget.GiaTien)} ",
                           style: const TextStyle(
                             decoration: TextDecoration.lineThrough,
                             fontSize: 14,
@@ -151,7 +156,7 @@ class SampleBottomSheet extends StatelessWidget {
         Obx(
           () => Wrap(
             spacing: 8,
-            children: sample.mauSac.asMap().entries.map((entry) {
+            children: widget.sample.mauSac.asMap().entries.map((entry) {
               int index = entry.key;
               String color = entry.value;
               return Column(
@@ -167,7 +172,7 @@ class SampleBottomSheet extends StatelessWidget {
                     selected: controller.selectedColorIndex.value == index,
                     onSelected: (selected) {
                       controller.selectedColorIndex.value = index;
-                      controller.checkPrice(sample, priceFormat((GiaTien - GiaTien * KhuyenMai ~/ 100)));
+                      controller.checkPrice(widget.sample, priceFormat((widget.GiaTien - widget.GiaTien * widget.KhuyenMai ~/ 100)));
                     },
                   ),
                 ],
@@ -190,7 +195,7 @@ class SampleBottomSheet extends StatelessWidget {
         Obx(
           () => Wrap(
             spacing: 8,
-            children: sample.cauHinh.asMap().entries.map((entry) {
+            children: widget.sample.cauHinh.asMap().entries.map((entry) {
               int index = entry.key;
               String config = entry.value;
               return config.isNotEmpty
@@ -205,7 +210,7 @@ class SampleBottomSheet extends StatelessWidget {
                       selected: controller.selectedConfigIndex.value == index,
                       onSelected: (selected) {
                         controller.selectedConfigIndex.value = index;
-                        controller.checkPrice(sample, priceFormat((GiaTien - GiaTien * KhuyenMai ~/ 100)));
+                        controller.checkPrice(widget.sample, priceFormat((widget.GiaTien - widget.GiaTien * widget.KhuyenMai ~/ 100)));
                       },
                     )
                   : Container();
@@ -229,7 +234,12 @@ class SampleBottomSheet extends StatelessWidget {
             children: [
               GestureDetector(
                 onTap: () {
-                  cartController.quantity.value--;
+                  setState(() {
+                    if (quantity > 1) {
+                      quantity--;
+                    }
+                    return;
+                  });
                 },
                 child: Container(
                   alignment: Alignment.center,
@@ -241,16 +251,21 @@ class SampleBottomSheet extends StatelessWidget {
                   ),
                 ),
               ),
-              Obx(() => Container(
-                    decoration: const BoxDecoration(border: Border(left: BorderSide(width: .4), right: BorderSide(width: .4))),
-                    alignment: Alignment.center,
-                    height: 20,
-                    width: 25,
-                    child: Text("${cartController.quantity.value}"),
-                  )),
+              GestureDetector(
+                onTap: () {},
+                child: Container(
+                  decoration: const BoxDecoration(border: Border(left: BorderSide(width: .4), right: BorderSide(width: .4))),
+                  alignment: Alignment.center,
+                  height: 20,
+                  width: 25,
+                  child: Text("$quantity"),
+                ),
+              ),
               GestureDetector(
                 onTap: () {
-                  cartController.quantity.value++;
+                  setState(() {
+                    quantity++;
+                  });
                 },
                 child: Container(
                   alignment: Alignment.center,
@@ -272,22 +287,27 @@ class SampleBottomSheet extends StatelessWidget {
     return ScreenUtilInit(
       builder: (context, child) => GestureDetector(
         onTap: () {
-          String selectedColor = controller.selectedColorIndex.value < sample.mauSac.length ? sample.mauSac[controller.selectedColorIndex.value] : '';
+          String selectedColor =
+              controller.selectedColorIndex.value < widget.sample.mauSac.length ? widget.sample.mauSac[controller.selectedColorIndex.value] : '';
 
           String selectedConfig =
-              controller.selectedConfigIndex.value < sample.cauHinh.length ? sample.cauHinh[controller.selectedConfigIndex.value] : '';
+              controller.selectedConfigIndex.value < widget.sample.cauHinh.length ? widget.sample.cauHinh[controller.selectedConfigIndex.value] : '';
 
-          var maSanPham = {'maSanPham': sample.MaSanPham, 'mauSac': selectedColor, 'cauHinh': selectedConfig};
+          var maSanPham = {'maSanPham': widget.sample.MaSanPham, 'mauSac': selectedColor, 'cauHinh': selectedConfig};
           final FirebaseAuth auth = FirebaseAuth.instance;
           User? user = auth.currentUser;
           var cartItem = CartModel(
             id: cartController.generateRandomString(20),
             maKhachHang: user!.uid,
-            soLuong: cartController.quantity.value,
+            soLuong: quantity,
             trangThai: 0,
             maSanPham: maSanPham,
           );
+          /*          var colorIndex = controller.selectedColorIndex.value;
+          var configIndex = controller.selectedConfigIndex.value;
 
+          final index = colorIndex * widget.sample.cauHinh.length + configIndex;
+          cartController.addPriceToCartItem(cartItem.id, widget.sample.giaTien[index].toString()); */
           cartController.addItemToCart(cartItem);
 
           Navigator.pop(context);
@@ -341,8 +361,7 @@ class _BuySampleSingleState extends State<BuySampleSingle> {
   late String selectedColor;
   late String selectedConfig;
   int quantity = 1;
-  CartController controller = Get.put(CartController());
-
+  
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -455,7 +474,12 @@ class _BuySampleSingleState extends State<BuySampleSingle> {
             children: [
               GestureDetector(
                 onTap: () {
-                  controller.quantity.value--;
+                  setState(() {
+                    if (quantity > 1) {
+                      quantity--;
+                    }
+                    return;
+                  });
                 },
                 child: Container(
                   alignment: Alignment.center,
@@ -467,16 +491,21 @@ class _BuySampleSingleState extends State<BuySampleSingle> {
                   ),
                 ),
               ),
-              Obx(() => Container(
-                    decoration: const BoxDecoration(border: Border(left: BorderSide(width: .4), right: BorderSide(width: .4))),
-                    alignment: Alignment.center,
-                    height: 20,
-                    width: 25,
-                    child: Text("${controller.quantity.value}"),
-                  )),
+              GestureDetector(
+                onTap: () {},
+                child: Container(
+                  decoration: const BoxDecoration(border: Border(left: BorderSide(width: .4), right: BorderSide(width: .4))),
+                  alignment: Alignment.center,
+                  height: 20,
+                  width: 25,
+                  child: Text("$quantity"),
+                ),
+              ),
               GestureDetector(
                 onTap: () {
-                  controller.quantity.value++;
+                  setState(() {
+                    quantity++;
+                  });
                 },
                 child: Container(
                   alignment: Alignment.center,
@@ -503,7 +532,7 @@ class _BuySampleSingleState extends State<BuySampleSingle> {
           var cartItem = CartModel(
             id: cartController.generateRandomString(20),
             maKhachHang: user!.uid,
-            soLuong: cartController.quantity.value,
+            soLuong: quantity,
             trangThai: 0,
             maSanPham: {
               'maSanPham': widget.sample.MaSanPham,
