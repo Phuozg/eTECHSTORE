@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:etechstore/module/home/controllers/product_controller.dart';
+import 'package:etechstore/module/product_detail/controller/product_sample_controller.dart';
 import 'package:etechstore/module/products/views/product_screen.dart';
 import 'package:etechstore/module/sample/product_horizontal_sample.dart';
 import 'package:flutter/material.dart';
@@ -10,8 +11,10 @@ class Product extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final productController = Get.put(ProductControllerr());
+    final ProductSampleController productSampleController = Get.put(ProductSampleController());
 
+    final productController = Get.put(ProductControllerr());
+    productSampleController.getSampleProduct();
     return Obx(() {
       if (productController.discountProducts.isEmpty) {
         return const Center(
@@ -25,10 +28,7 @@ class Product extends StatelessWidget {
             children: [
               const Text(
                 "DEAL CỰC CĂNG",
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.red),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
               ),
               TextButton(
                   onPressed: () {
@@ -52,10 +52,7 @@ class Product extends StatelessWidget {
             children: [
               const Text(
                 "Xu hướng mua sắm",
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF383CA0)),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF383CA0)),
               ),
               TextButton(
                   onPressed: () {
@@ -82,8 +79,7 @@ class Product extends StatelessWidget {
                   MaterialPageRoute(
                       builder: (builder) => ProductScreen(
                             title: 'Tất cả sản phẩm',
-                            futureMethod:
-                                productController.getProductsForCate(catId: 0),
+                            futureMethod: productController.getProductsForCate(catId: 0),
                           )));
             },
             child: const Text("Xem tất cả sản phẩm"),

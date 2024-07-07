@@ -12,14 +12,12 @@ import 'package:get/get.dart';
 import '../../orders/model/detail_orders.dart';
 
 class ProductController extends GetxController {
-  final firestore = FirebaseFirestore.instance;
-  ProductController get instance => Get.find();
+   ProductController get instance => Get.find();
   final CartController cartController = Get.put(CartController());
   OrderController ordersController = Get.put(OrderController());
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  var productSamples = <ProductSampleModel>[].obs;
-  var products = <ProductModel>[].obs;
+   var products = <ProductModel>[].obs;
   var currentIndex = 1.obs;
   var allDiscount = <DiscountModel>[].obs;
   final discount = <DiscountModel>[].obs;
@@ -33,7 +31,7 @@ class ProductController extends GetxController {
   }
 
   Stream<List<DiscountModel>> getDiscount() {
-    return firestore.collection('KhuyenMai').orderBy('NgayBD', descending: true).snapshots().map((query) {
+    return _firestore.collection('KhuyenMai').orderBy('NgayBD', descending: true).snapshots().map((query) {
       discount.value = query.docs.map((doc) => DiscountModel.fromJson(doc.data())).toList();
       allDiscount.value = discount;
       return discount;
