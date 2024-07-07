@@ -14,6 +14,8 @@ class OrderItemsController extends GetxController {
   final allCartsDetail = <CartModel>[].obs;
   RxInt totalPrice = 0.obs;
   RxInt totalDiscount = 0.obs;
+
+  CartController cartController = Get.put(CartController());
   @override
   void onInit() {
     fetchOrderItem();
@@ -21,35 +23,19 @@ class OrderItemsController extends GetxController {
   }
 
   Future<void> fetchOrderItem() async {
-    db
-        .collection('GioHang')
-        .where('maKhachHang', isEqualTo: userID)
-        .where('trangThai', isEqualTo: 1)
-        .snapshots()
-        .listen((snapshot) async {
-      var allCartsDetail =
-          snapshot.docs.map((doc) => CartModel.fromSnapshot(doc)).toList();
-      var products = await db
-          .collection('SanPham')
-          .where('TrangThai', isEqualTo: true)
-          .get();
-      var items = products.docs
-          .map((document) => ProductModel.fromSnapshot(document))
-          .toList();
+    db.collection('GioHang').where('maKhachHang', isEqualTo: userID).where('trangThai', isEqualTo: 1).snapshots().listen((snapshot) async {
+      var allCartsDetail = snapshot.docs.map((doc) => CartModel.fromSnapshot(doc)).toList();
+      var products = await db.collection('SanPham').where('TrangThai', isEqualTo: true).get();
+      var items = products.docs.map((document) => ProductModel.fromSnapshot(document)).toList();
       allItems.assignAll(items);
 
       orderItem.clear();
       for (var cartDetail in allCartsDetail) {
         for (var item in allItems) {
           if (item.id == cartDetail.maSanPham) {
-            if (totalPrice <= CartController().instance.totalPrice.value) {
-              totalPrice +=
-                  ((item.GiaTien - (item.GiaTien * item.KhuyenMai / 100)) *
-                          cartDetail.soLuong)
-                      .toInt();
-              totalDiscount +=
-                  ((item.GiaTien * item.KhuyenMai / 100) * cartDetail.soLuong)
-                      .toInt();
+            if (totalPrice <= cartController.totalPrice.value) {
+              totalPrice += ((item.GiaTien - (item.GiaTien * item.KhuyenMai / 100)) * cartDetail.soLuong).toInt();
+              totalDiscount += ((item.GiaTien * item.KhuyenMai / 100) * cartDetail.soLuong).toInt();
             }
             orderItem.add(item);
           }

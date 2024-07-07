@@ -16,7 +16,7 @@ class NavMenu extends StatelessWidget {
 
     List<Widget> buildScreens() {
       return [
-        const HomeScreen(),
+          HomeScreen(),
         const OrderManageScreen(),
         const WishListScreen(),
         ProfileScreen(),

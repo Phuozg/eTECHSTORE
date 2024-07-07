@@ -137,8 +137,7 @@ class ProductSampleController extends GetxController {
       var item =
           event.docs.map((e) => ProductSampleModel.fromMap(e.data())).toList();
       productSamples.value = item;
-      print(item.length);
-      return item;
+       return item;
     });
   }
 

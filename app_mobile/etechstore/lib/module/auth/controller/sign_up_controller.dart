@@ -94,8 +94,7 @@ class SignUpController extends GetxController {
         //check Internet connected
         final isconnected = network.isConnectedToInternet.value;
         if (!isconnected) {
-          //    FullScreenLoader.stopLoading();
-          return;
+           return;
         }
 
         //Check Email
@@ -107,8 +106,7 @@ class SignUpController extends GetxController {
           //SignUp
           if (password.text == conformPassword.text) {
             await authServices.checkEmailVerification(email.text.trim(), password.text.trim(), fullName.text.trim(), context);
-            //  Get.offNamed('/SignInScreen');
-          } else {
+           } else {
             TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.matKhauKhongTrungKhop);
             return;
           }

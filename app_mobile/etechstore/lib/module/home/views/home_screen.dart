@@ -5,6 +5,7 @@ import 'package:etechstore/module/home/views/category.dart';
 import 'package:etechstore/module/home/views/product.dart';
 import 'package:etechstore/module/home/views/search_bar.dart';
 import 'package:etechstore/module/home/views/slideshow_banner.dart';
+import 'package:etechstore/module/product_detail/controller/product_sample_controller.dart';
 import 'package:etechstore/module/wishlist/controller/wishlist_controller.dart';
 import 'package:etechstore/utlis/constants/image_key.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,14 +15,16 @@ import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
+    HomeScreen({super.key});
+    ProductSampleController productSampleController = Get.put(ProductSampleController());
   @override
   Widget build(BuildContext context) {
     final CartController cartController = Get.put(CartController());
     final Uri facbook = Uri.parse('https://www.facebook.com/messages/t/323929774140624');
     final wishListController = Get.put(WishListController());
     wishListController.createWishList(FirebaseAuth.instance.currentUser!.uid);
+      productSampleController.getSampleProduct();
+ 
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(

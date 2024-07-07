@@ -72,7 +72,8 @@ class CartController extends GetxController {
     var configIndex = productSample.cauHinh.indexOf(selectedConfig);
 
     if (colorIndex == -1 && configIndex == -1) {
-      return product.giaTien; // Không tìm thấy màu sắc hoặc cấu hình trong MauSanPham, lấy giá tiền từ SanPham
+      return (product.giaTien -
+          product.giaTien * product.KhuyenMai ~/ 100); // Không tìm thấy màu sắc hoặc cấu hình trong MauSanPham, lấy giá tiền từ SanPham
     } else {
       if (colorIndex == -1) colorIndex = 0;
       if (configIndex == -1) configIndex = 0;
@@ -81,7 +82,7 @@ class CartController extends GetxController {
     final priceIndex = colorIndex * productSample.cauHinh.length + configIndex;
 
     if (priceIndex >= productSample.giaTien.length) {
-      return product.giaTien; // Giá tiền không tồn tại trong MauSanPham, lấy giá tiền từ SanPham
+      return (product.giaTien - product.giaTien * product.KhuyenMai ~/ 100); // Giá tiền không tồn tại trong MauSanPham, lấy giá tiền từ SanPham
     }
 
     return int.parse(productSample.giaTien[priceIndex].toString());

@@ -87,7 +87,33 @@ Widget buildProductSamples(
                             SizedBox(width: 15.w),
                             GestureDetector(
                               onTap: () {
-                                Navigator.push(
+                                sample.mauSac.isNotEmpty && sample.cauHinh.isNotEmpty
+                                    ? showModalBottomSheet(
+                                        context: context,
+                                        builder: (ctx) {
+                                          productSampleController.setSelectedColorIndex(0, sample);
+                                          productSampleController.setSelectedConfigIndex(0, sample);
+                                          productSampleController.checkPrice(sample, GiaTien.toString());
+                                          return SampleBottomSheet(
+                                            KhuyenMai: KhuyenMai,
+                                            GiaTien: GiaTien,
+                                            sample: sample,
+                                            thumbnail: thumbnail,
+                                            id: id,
+                                          );
+                                        },
+                                      )
+                                    : showModalBottomSheet(
+                                        context: context,
+                                        builder: (ctx) {
+                                          productSampleController.setSelectedColorIndex(0, sample);
+                                          productSampleController.setSelectedConfigIndex(0, sample);
+                                          productSampleController.checkPrice(sample, GiaTien.toString());
+                                          return BuySampleSingle(GiaTien: GiaTien, KhuyenMai: KhuyenMai, sample: sample, thumbnail: thumbnail);
+                                        },
+                                      );
+
+                                /*  Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (builder) => BuyNowScreen(
@@ -102,7 +128,7 @@ Widget buildProductSamples(
                                                 id: id,
                                                 thumbnail: thumbnail,
                                                 NgayNhap: NgayNhap,
-                                                isPopular: isPopular))));
+                                                isPopular: isPopular)))); */
                               },
                               child: Container(
                                 alignment: Alignment.bottomCenter,
@@ -167,22 +193,49 @@ Widget buildProductSamples(
                             SizedBox(width: 15.w),
                             GestureDetector(
                               onTap: () {
-                                Navigator.push(
+                                sample.mauSac.isNotEmpty && sample.cauHinh.isNotEmpty
+                                    ? showModalBottomSheet(
+                                        context: context,
+                                        builder: (ctx) {
+                                          productSampleController.setSelectedColorIndex(0, sample);
+                                          productSampleController.setSelectedConfigIndex(0, sample);
+                                          productSampleController.checkPrice(sample, GiaTien.toString());
+                                          return SampleBottomSheet(
+                                            KhuyenMai: KhuyenMai,
+                                            GiaTien: GiaTien,
+                                            sample: sample,
+                                            thumbnail: thumbnail,
+                                            id: id,
+                                          );
+                                        },
+                                      )
+                                    : showModalBottomSheet(
+                                        context: context,
+                                        builder: (ctx) {
+                                          productSampleController.setSelectedColorIndex(0, sample);
+                                          productSampleController.setSelectedConfigIndex(0, sample);
+                                          productSampleController.checkPrice(sample, GiaTien.toString());
+                                          return BuySampleSingle(GiaTien: GiaTien, KhuyenMai: KhuyenMai, sample: sample, thumbnail: thumbnail);
+                                        },
+                                      );
+
+                                /*   Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (builder) => BuyNowScreen(
-                                            product: ProductModel(
-                                                GiaTien: GiaTien,
-                                                HinhAnh: HinhAnh,
-                                                KhuyenMai: KhuyenMai,
-                                                MaDanhMuc: MaDanhMuc,
-                                                MoTa: MoTa,
-                                                TrangThai: TrangThai,
-                                                Ten: Ten,
-                                                id: id,
-                                                thumbnail: thumbnail,
-                                                NgayNhap: NgayNhap,
-                                                isPopular: isPopular))));
+                                                product: ProductModel(
+                                              GiaTien: GiaTien,
+                                              HinhAnh: HinhAnh,
+                                              KhuyenMai: KhuyenMai,
+                                              MaDanhMuc: MaDanhMuc,
+                                              MoTa: MoTa,
+                                              TrangThai: TrangThai,
+                                              Ten: Ten,
+                                              id: id,
+                                              thumbnail: thumbnail,
+                                              NgayNhap: NgayNhap,
+                                              isPopular: isPopular,
+                                            )))); */
                               },
                               child: Container(
                                 alignment: Alignment.bottomCenter,

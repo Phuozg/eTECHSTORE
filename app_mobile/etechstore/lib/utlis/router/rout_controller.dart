@@ -17,6 +17,6 @@ class NavBarController {
   static List<GetPage> routes = [
     GetPage(page: () => const SplashScreen(), name: splash),
     GetPage(page: () => const SignInScreen(), name: login),
-    GetPage(page: () => const HomeScreen(), name: home),
+    GetPage(page: () =>   HomeScreen(), name: home),
   ];
 }
