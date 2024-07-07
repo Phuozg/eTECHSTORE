@@ -9,8 +9,7 @@ class OrdersModel {
   final bool isBeingShipped;
   final bool isShipped;
   final bool isCompleted;
-  final bool isCancelled;
-
+ 
   OrdersModel({
     required this.id,
     required this.ngayTaoDon,
@@ -20,8 +19,7 @@ class OrdersModel {
     required this.isBeingShipped,
     required this.isShipped,
     required this.isCompleted,
-    required this.isCancelled,
-  });
+   });
 
   factory OrdersModel.fromJson(Map<String, dynamic> json) {
     return OrdersModel(
@@ -33,8 +31,7 @@ class OrdersModel {
       isBeingShipped: json['isBeingShipped'] ?? false,
       isShipped: json['isShipped'] ?? false,
       isCompleted: json['isCompleted'] ?? false,
-      isCancelled: json['isCancelled'] ?? false,
-    );
+     );
   }
 
   Map<String, dynamic> toJson() {
@@ -47,7 +44,6 @@ class OrdersModel {
       'isBeingShipped': isBeingShipped,
       'isShipped': isShipped,
       'isCompleted': isCompleted,
-      'isCancelled': isCancelled,
-    };
+     };
   }
 }

@@ -47,7 +47,7 @@ class OrdersController extends GetxController {
           .map((doc) {
             return OrdersModel.fromJson(doc.data());
           })
-          .where((order) => order.isPaid || order.isBeingShipped || order.isShipped || order.isCompleted || order.isCancelled)
+          .where((order) => order.isPaid || order.isBeingShipped || order.isShipped || order.isCompleted  )
           .toList();
     });
   }

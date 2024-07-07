@@ -306,7 +306,7 @@ class DetailOrderSreen extends StatelessWidget {
                                                       ),
                                                       SizedBox(height: 10.h),
                                                       Padding(
-                                                        padding: EdgeInsets.only(left: 158.0.w),
+                                                        padding: EdgeInsets.only(left: 170.0.w),
                                                         child: Row(
                                                           children: [
                                                             Text(

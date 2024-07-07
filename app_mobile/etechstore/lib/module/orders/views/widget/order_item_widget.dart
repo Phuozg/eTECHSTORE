@@ -163,7 +163,7 @@ class OrderdetailWdiet extends StatelessWidget {
                       child: Align(
                         alignment: Alignment.bottomRight,
                         child: Text(
-                          priceFormat((product.GiaTien - (product.GiaTien * product.KhuyenMai / 100)).toInt()),
+                          priceFormat(detail.giaTien!),
                           style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.redAccent),
                         ),
                       ),
@@ -189,7 +189,7 @@ class OrderdetailWdiet extends StatelessWidget {
                     ),
                     SizedBox(width: 5.w),
                     Text(
-                      priceFormat((detail.giaTien!).toInt()),
+                      priceFormat((detail.giaTien! * detail.soLuong).toInt()),
                       style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Colors.redAccent),
                     ),
                   ],
