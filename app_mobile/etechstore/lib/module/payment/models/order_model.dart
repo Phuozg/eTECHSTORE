@@ -9,8 +9,7 @@ class OrderModel {
   bool isBeingShipped;
   bool isShipped;
   bool isCompleted;
-  bool isCancelled;
-
+ 
   OrderModel(
       {required this.id,
       required this.TongTien,
@@ -20,7 +19,7 @@ class OrderModel {
       required this.isBeingShipped,
       required this.isShipped,
       required this.isCompleted,
-      required this.isCancelled});
+      });
 
   //Empty orther
   static OrderModel empty() => OrderModel(
@@ -32,7 +31,7 @@ class OrderModel {
       isBeingShipped: false,
       isShipped: false,
       isCompleted: false,
-      isCancelled: false);
+  );
 
   Map<String, dynamic> toJson() {
     return {
@@ -44,7 +43,7 @@ class OrderModel {
       'isBeingShipped': isBeingShipped,
       'isShipped': isShipped,
       'isCompleted': isCompleted,
-      'isCancelled': isCancelled
+     
     };
   }
 
@@ -63,7 +62,7 @@ class OrderModel {
           isBeingShipped: data['isBeingShipped'] ?? false,
           isShipped: data['isShipped'] ?? false,
           isCompleted: data['isCompleted'] ?? false,
-          isCancelled: data['isCancelled'] ?? false);
+          );
     } else {
       return OrderModel.empty();
     }

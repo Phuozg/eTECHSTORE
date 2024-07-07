@@ -259,7 +259,7 @@ class CartScreen extends StatelessWidget {
                                                                   : priceFormat((product.giaTien - product.giaTien * product.KhuyenMai ~/ 100)),
                                                             ),
                                                             SizedBox(height: 3.h),
-                                                            ChangeQuantityItemWidget(item: item, quantity: quantity)
+                                                            ChangeQuantityItemWidget(item: item )
                                                           ],
                                                         ),
                                                       ],

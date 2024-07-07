@@ -88,35 +88,6 @@ class CartController extends GetxController {
     return int.parse(productSample.giaTien[priceIndex].toString());
   }
 
-  int getCartItemPrice(CartModel cartItem, List<ProductSampleModel> productSamples, List<ProductModel> products) {
-    var productSample = productSamples.firstWhere(
-      (p) => p.MaSanPham == cartItem.maSanPham['maSanPham'],
-      orElse: () => ProductSampleModel(id: '', MaSanPham: '', soLuong: 0, mauSac: [], cauHinh: [], giaTien: []),
-    );
-
-    var product = products.firstWhere(
-      (p) => p.id == cartItem.maSanPham['maSanPham'],
-      orElse: () => ProductModel(
-          id: '',
-          KhuyenMai: 0,
-          moTa: '',
-          ten: '',
-          trangThai: false,
-          giaTien: 0,
-          maDanhMuc: 0,
-          hinhAnh: [],
-          thumbnail: '',
-          NgayNhap: Timestamp.now(),
-          isPopular: false),
-    );
-
-    if (productSample.id.isEmpty) {
-      return 0; // Không tìm thấy sản phẩm
-    }
-
-    return calculatePrice(productSample, product, cartItem.maSanPham['mauSac'], cartItem.maSanPham['cauHinh']);
-  }
-
   void total() {
     double total = 0.0;
 
@@ -362,15 +333,5 @@ class CartController extends GetxController {
 
   Future<void> saveCartItemToFirestore(CartModel item) async {
     await _firestore.collection('GioHang').add(item.toMap());
-  }
-
-  Future<List<String>> getAvailableColors(String maSanPham) async {
-    DocumentSnapshot productDoc = await _firestore.collection('MauSanPham').doc(maSanPham).get();
-    return List<String>.from(productDoc.get('MauSac'));
-  }
-
-  Future<List<String>> getAvailableConfigs(String maSanPham) async {
-    DocumentSnapshot productDoc = await _firestore.collection('MauSanPham').doc(maSanPham).get();
-    return List<String>.from(productDoc.get('CauHinh'));
   }
 }

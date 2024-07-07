@@ -72,7 +72,7 @@ class _BottomCartWidgetState extends State<BottomCartWidget> {
               // Xóa các mục đã chọn khỏi giỏ hàng
               for (var item in itemsToRemove) {
                 controller.removeItemFromCart(
-                  item,
+                  item
                 );
               }
             },

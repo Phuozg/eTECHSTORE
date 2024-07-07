@@ -84,7 +84,7 @@ class OrderController extends GetxController {
           isBeingShipped: false,
           isShipped: false,
           isCompleted: false,
-          isCancelled: false);
+         );
       await saveOrder(order);
 
       await loopAddOrderDetail(id, userID);
@@ -113,7 +113,7 @@ class OrderController extends GetxController {
           isBeingShipped: false,
           isShipped: false,
           isCompleted: false,
-          isCancelled: false);
+          );
       await saveOrder(order);
 
       await saveOrderDetail(OrderDetail(

@@ -50,7 +50,7 @@ class TTexts {
   static String chiTietSanPham = "Chi tiết sản phẩm";
   static String xemThem = "Xem Thêm";
   static String xacThucEmail = "Xác thực E-mail";
-  //  static String  = " ";
+  static String taiKhoanDaBiKhoa = "Tài khoản đã bị khóa";
   //  static String  = " ";
   //  static String  = " ";
   //  static String  = " ";
