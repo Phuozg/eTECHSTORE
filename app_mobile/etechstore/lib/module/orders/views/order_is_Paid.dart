@@ -37,7 +37,8 @@ class OrderIsPaid extends StatelessWidget {
 
             String userId = auth.currentUser?.uid ?? '';
             List<OrdersModel> donHangs = snapshotDonHang.data!;
-            List<OrdersModel> fillterOrder = donHangs.where((order) => order.maKhachHang == userId && order.isPaid).toList();
+            List<OrdersModel> fillterOrder =
+                donHangs.where((order) => order.maKhachHang == userId && order.isCompleted && order.isBeingShipped && order.isShipped).toList();
             if (fillterOrder.isEmpty) {
               return const OrderIsEmpty();
             }
@@ -76,7 +77,7 @@ class OrderIsPaid extends StatelessWidget {
                           );
                         }
 
-                        return order.isPaid == true
+                        return order.isBeingShipped && order.isCompleted && order.isShipped == false
                             ? OrderdetailWdiet(
                                 detail: item,
                                 order: order,

@@ -394,7 +394,9 @@ class DetailOrderSreen extends StatelessWidget {
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
                                                       Text("Phương thức thanh toán", style: TextStyle(fontSize: 13.sp)),
-                                                      Text("Thanh toán qua ngân hàng", style: TextStyle(fontSize: 13.sp)),
+                                                      order.isPaid == true
+                                                          ? Text("Thanh toán qua ngân hàng", style: TextStyle(fontSize: 13.sp))
+                                                          : Text("Thanh toán khi nhận hàng", style: TextStyle(fontSize: 13.sp)),
                                                     ],
                                                   ),
                                                   SizedBox(height: 5.h),

@@ -22,7 +22,7 @@ class OrderdetailWdiet extends StatelessWidget {
   final OrdersModel order;
   final DetailOrders detail;
   final ProductModel product;
-  OrderdetailWdiet({super.key, required this.detail, required this.order, required this.product, required this.status, required this.color});
+    OrderdetailWdiet({super.key, required this.detail, required this.order, required this.product, required this.status, required this.color});
 
   @override
   Widget build(BuildContext context) {

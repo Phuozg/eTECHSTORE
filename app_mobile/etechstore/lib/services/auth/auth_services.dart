@@ -19,6 +19,8 @@ class AuthServices extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+
+
   //get current usre
   User? getCurrentUser() {
     return _auth.currentUser;
@@ -101,13 +103,13 @@ class AuthServices extends GetxController {
 
   Future<void> checkEmailVerification(String email, String password, String hoten, BuildContext context) async {
     User? user = _auth.currentUser;
-    await user?.reload();
-    if (user != null && user.emailVerified) {
+    await user!.reload();
+    if (user.emailVerified) {
       await signUpWithEmailPassword(user, hoten, password);
       TLoaders.successSnackBar(title: 'Đăng ký tài khoản thành công', message: 'Hãy sử dụng tài khoản đã đăng ký để tiếp tục.');
       Navigator.pop(Get.context!);
     } else {
-      Get.snackbar("Thông báo", "Vui lòng kiểm tra email để xác nhận.");
+      Future.delayed(const Duration(seconds: 2), () => Get.snackbar("Thông báo", "Hệ thống đang xử lý, Hãy thử lại"));
     }
   }
 
