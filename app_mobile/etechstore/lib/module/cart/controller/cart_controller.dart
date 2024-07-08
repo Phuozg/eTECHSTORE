@@ -131,11 +131,8 @@ class CartController extends GetxController {
 
     for (var docSnapshot in checkitem.docs) {
       for (var cart in cartItems) {
-        if (cart.maKhachHang == docSnapshot.data()['maKhachHang'] &&
-            cart.maSanPham['cauHinh'] ==
-                docSnapshot.data()['mauSanPham']['cauHinh'] &&
-            cart.maSanPham['mauSac'] ==
-                docSnapshot.data()['mauSanPham']['mauSac']) {
+        if (cart.maKhachHang == docSnapshot.data()['maKhachHang'] &&      cart.id==docSnapshot.data()['id']
+          ) {
           await _firestore.collection('GioHang').doc(docSnapshot.id).update({
             'trangThai': isSelectAll.value ? 1 : 0,
           });
