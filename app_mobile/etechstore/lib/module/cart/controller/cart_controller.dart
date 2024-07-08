@@ -67,13 +67,16 @@ class CartController extends GetxController {
     itemPrices[itemId] = price;
   }
 
-  int calculatePrice(ProductSampleModel productSample, ProductModel product, String selectedColor, String selectedConfig) {
+  int calculatePrice(ProductSampleModel productSample, ProductModel product,
+      String selectedColor, String selectedConfig) {
     var colorIndex = productSample.mauSac.indexOf(selectedColor);
     var configIndex = productSample.cauHinh.indexOf(selectedConfig);
 
     if (colorIndex == -1 && configIndex == -1) {
       return (product.giaTien -
-          product.giaTien * product.KhuyenMai ~/ 100); // Không tìm thấy màu sắc hoặc cấu hình trong MauSanPham, lấy giá tiền từ SanPham
+          product.giaTien *
+              product.KhuyenMai ~/
+              100); // Không tìm thấy màu sắc hoặc cấu hình trong MauSanPham, lấy giá tiền từ SanPham
     } else {
       if (colorIndex == -1) colorIndex = 0;
       if (configIndex == -1) configIndex = 0;
@@ -82,7 +85,10 @@ class CartController extends GetxController {
     final priceIndex = colorIndex * productSample.cauHinh.length + configIndex;
 
     if (priceIndex >= productSample.giaTien.length) {
-      return (product.giaTien - product.giaTien * product.KhuyenMai ~/ 100); // Giá tiền không tồn tại trong MauSanPham, lấy giá tiền từ SanPham
+      return (product.giaTien -
+          product.giaTien *
+              product.KhuyenMai ~/
+              100); // Giá tiền không tồn tại trong MauSanPham, lấy giá tiền từ SanPham
     }
 
     return int.parse(productSample.giaTien[priceIndex].toString());
@@ -95,11 +101,18 @@ class CartController extends GetxController {
       if (selectedItems[item.id] == true) {
         final productSampl = productSample.productSamples.firstWhere(
           (p) => p.MaSanPham == item.maSanPham['maSanPham'],
-          orElse: () => ProductSampleModel(id: '', MaSanPham: '', soLuong: 0, mauSac: [], cauHinh: [], giaTien: []),
+          orElse: () => ProductSampleModel(
+              id: '',
+              MaSanPham: '',
+              soLuong: 0,
+              mauSac: [],
+              cauHinh: [],
+              giaTien: []),
         );
         final product = products[item.maSanPham['maSanPham']]!;
 
-        int price = calculatePrice(productSampl, product, item.maSanPham['mauSac'], item.maSanPham['cauHinh']);
+        int price = calculatePrice(productSampl, product,
+            item.maSanPham['mauSac'], item.maSanPham['cauHinh']);
         total += price * item.soLuong;
       }
     }
@@ -111,13 +124,18 @@ class CartController extends GetxController {
     totalPrice.value = 0;
     isSelectAll.value = false;
 
-    final checkitem = await _firestore.collection('GioHang').where('maKhachHang', isEqualTo: FirebaseAuth.instance.currentUser!.uid).get();
+    final checkitem = await _firestore
+        .collection('GioHang')
+        .where('maKhachHang', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .get();
 
     for (var docSnapshot in checkitem.docs) {
       for (var cart in cartItems) {
         if (cart.maKhachHang == docSnapshot.data()['maKhachHang'] &&
-            cart.maSanPham['cauHinh'] == docSnapshot.data()['mauSanPham']['cauHinh'] &&
-            cart.maSanPham['mauSac'] == docSnapshot.data()['mauSanPham']['mauSac']) {
+            cart.maSanPham['cauHinh'] ==
+                docSnapshot.data()['mauSanPham']['cauHinh'] &&
+            cart.maSanPham['mauSac'] ==
+                docSnapshot.data()['mauSanPham']['mauSac']) {
           await _firestore.collection('GioHang').doc(docSnapshot.id).update({
             'trangThai': isSelectAll.value ? 1 : 0,
           });
@@ -140,14 +158,23 @@ class CartController extends GetxController {
     String? userId = _auth.currentUser?.uid;
     if (userId != null) {
       fetchCartItemsLocally();
-      _firestore.collection('GioHang').where('maKhachHang', isEqualTo: userId).snapshots().listen((snapshot) async {
-        var items = snapshot.docs.map((doc) => CartModel.fromMap(doc.data())).toList();
+      _firestore
+          .collection('GioHang')
+          .where('maKhachHang', isEqualTo: userId)
+          .snapshots()
+          .listen((snapshot) async {
+        var items =
+            snapshot.docs.map((doc) => CartModel.fromMap(doc.data())).toList();
         cartItems.value = items;
 
         for (var item in items) {
-          var productDoc = await _firestore.collection('SanPham').doc(item.maSanPham['maSanPham']).get();
+          var productDoc = await _firestore
+              .collection('SanPham')
+              .doc(item.maSanPham['maSanPham'])
+              .get();
           if (productDoc.exists) {
-            products[item.maSanPham['maSanPham']] = ProductModel.fromFirestore(productDoc.data() as Map<String, dynamic>);
+            products[item.maSanPham['maSanPham']] = ProductModel.fromFirestore(
+                productDoc.data() as Map<String, dynamic>);
             // total();
             updateSelectedItemCount();
           }
@@ -162,7 +189,8 @@ class CartController extends GetxController {
   void fetchCartItemsLocally() async {
     List<CartModel> localCartItems = await localStorageService.getCartItems();
     List<ProductModel> localProducts = await localStorageService.getProducts();
-    Map<String, String> itemPricesLocal = await localStorageService.getItemPrices();
+    Map<String, String> itemPricesLocal =
+        await localStorageService.getItemPrices();
 
     cartItems.assignAll(localCartItems);
     itemPrices.assignAll(itemPricesLocal);
@@ -171,20 +199,26 @@ class CartController extends GetxController {
 
   void fetchCartsLocally() async {
     List<CartModel> localCarts = await localStorageService.getCartItems();
-    Map<String, String> itemPricesLocal = await localStorageService.getItemPrices();
+    Map<String, String> itemPricesLocal =
+        await localStorageService.getItemPrices();
     itemPrices.assignAll(itemPricesLocal);
     cartItems.assignAll(localCarts);
   }
 
   Future<void> toggleSelectedItem(String itemId, bool value) async {
-    final checkitem = await _firestore.collection('GioHang').where('maKhachHang', isEqualTo: FirebaseAuth.instance.currentUser!.uid).get();
+    final checkitem = await _firestore
+        .collection('GioHang')
+        .where('maKhachHang', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .get();
 
     for (var docSnapshot in checkitem.docs) {
       for (var cart in cartItems) {
         if (cart.id == itemId) {
           if (cart.maKhachHang == docSnapshot.data()['maKhachHang'] &&
-              cart.maSanPham['cauHinh'] == docSnapshot.data()['mauSanPham']['cauHinh'] &&
-              cart.maSanPham['mauSac'] == docSnapshot.data()['mauSanPham']['mauSac']) {
+              cart.maSanPham['cauHinh'] ==
+                  docSnapshot.data()['mauSanPham']['cauHinh'] &&
+              cart.maSanPham['mauSac'] ==
+                  docSnapshot.data()['mauSanPham']['mauSac']) {
             await _firestore.collection('GioHang').doc(docSnapshot.id).update({
               'trangThai': value ? 1 : 0,
             });
@@ -200,13 +234,18 @@ class CartController extends GetxController {
   Future<void> toggleSelectAll() async {
     isSelectAll.value = !isSelectAll.value;
 
-    final checkitem = await _firestore.collection('GioHang').where('maKhachHang', isEqualTo: FirebaseAuth.instance.currentUser!.uid).get();
+    final checkitem = await _firestore
+        .collection('GioHang')
+        .where('maKhachHang', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .get();
 
     for (var docSnapshot in checkitem.docs) {
       for (var cart in cartItems) {
         if (cart.maKhachHang == docSnapshot.data()['maKhachHang'] &&
-            cart.maSanPham['cauHinh'] == docSnapshot.data()['mauSanPham']['cauHinh'] &&
-            cart.maSanPham['mauSac'] == docSnapshot.data()['mauSanPham']['mauSac']) {
+            cart.maSanPham['cauHinh'] ==
+                docSnapshot.data()['mauSanPham']['cauHinh'] &&
+            cart.maSanPham['mauSac'] ==
+                docSnapshot.data()['mauSanPham']['mauSac']) {
           await _firestore.collection('GioHang').doc(docSnapshot.id).update({
             'trangThai': isSelectAll.value ? 1 : 0,
           });
@@ -220,7 +259,8 @@ class CartController extends GetxController {
 
   void updateSelectedItemCount() {
     total();
-    selectedItemCount.value = selectedItems.values.where((value) => value).length;
+    selectedItemCount.value =
+        selectedItems.values.where((value) => value).length;
   }
 
   String generateRandomString(int length) {
@@ -235,50 +275,61 @@ class CartController extends GetxController {
   void addItemToCart(CartModel newItem) async {
     final isconnected = network.isConnectedToInternet.value;
     if (!isconnected) {
-      TLoaders.errorSnackBar(title: TTexts.thongBao, message: "Không có kết nối internet");
+      TLoaders.errorSnackBar(
+          title: TTexts.thongBao, message: "Không có kết nối internet");
       return;
     } else {
-      int index = cartItems
-          .indexWhere((item) => item.maSanPham['cauHinh'] == newItem.maSanPham['cauHinh'] && item.maSanPham['mauSac'] == newItem.maSanPham['mauSac']);
+      int index = cartItems.indexWhere((item) =>
+          item.maSanPham['cauHinh'] == newItem.maSanPham['cauHinh'] &&
+          item.maSanPham['mauSac'] == newItem.maSanPham['mauSac']);
 
       if (index != -1) {
         CartModel existingItem = cartItems[index];
 
         if (existingItem.maSanPham['cauHinh'] != newItem.maSanPham['cauHinh'] ||
             existingItem.maSanPham['mauSac'] != newItem.maSanPham['mauSac'] ||
-            existingItem.maSanPham['maSanPham'] != newItem.maSanPham['maSanPham']) {
+            existingItem.maSanPham['maSanPham'] !=
+                newItem.maSanPham['maSanPham']) {
           addItemSampleToCart(newItem);
           cartItems.add(newItem);
-          TLoaders.successSnackBar(title: "Thông báo", message: "Thêm thành công!");
+          TLoaders.successSnackBar(
+              title: "Thông báo", message: "Thêm thành công!");
           await saveCartItemToFirestore(newItem);
         } else if (existingItem.id != newItem.id) {
           existingItem.soLuong = newItem.soLuong;
           updateCartItem(existingItem);
-          TLoaders.successSnackBar(title: "Thông báo", message: "Thêm thành công!");
+          TLoaders.successSnackBar(
+              title: "Thông báo", message: "Thêm thành công!");
         }
       } else {
         cartItems.add(newItem);
         await saveCartItemToFirestore(newItem);
-        TLoaders.successSnackBar(title: "Thông báo", message: "Thêm thành công!");
+        TLoaders.successSnackBar(
+            title: "Thông báo", message: "Thêm thành công!");
       }
     }
   }
 
-  Future<void> removeItemsWithSameMauSacButDifferentCauHinh(String mauSac) async {
+  Future<void> removeItemsWithSameMauSacButDifferentCauHinh(
+      String mauSac) async {
     cartItems.removeWhere((item) => item.maSanPham['mauSac'] == mauSac);
   }
 
-  Future<void> removeItemsWithSameCauHinhButDifferentMauSac(String mauSac) async {
+  Future<void> removeItemsWithSameCauHinhButDifferentMauSac(
+      String mauSac) async {
     cartItems.removeWhere((item) => item.maSanPham['mauSac'] == mauSac);
   }
 
   void removeItemFromCart(CartModel item) async {
     final isconnected = network.isConnectedToInternet.value;
     if (!isconnected) {
-      TLoaders.errorSnackBar(title: TTexts.thongBao, message: "Không có kết nối internet");
+      TLoaders.errorSnackBar(
+          title: TTexts.thongBao, message: "Không có kết nối internet");
       return;
     } else {
-      cartItems.removeWhere((cartItem) => cartItem.id == item.id && cartItem.maSanPham['maSanPham'] == item.maSanPham['maSanPham']);
+      cartItems.removeWhere((cartItem) =>
+          cartItem.id == item.id &&
+          cartItem.maSanPham['maSanPham'] == item.maSanPham['maSanPham']);
       selectedItems.remove(item.id);
       removeItemsWithSameMauSacButDifferentCauHinh(item.maSanPham['mauSac']);
       removeItemsWithSameCauHinhButDifferentMauSac(item.maSanPham['cauHinh']);
@@ -291,7 +342,11 @@ class CartController extends GetxController {
   Future<void> removeCartItemFromFirestore(String itemId, String uid) async {
     FullScreenLoader.openWaitforchange('', ImageKey.waitforchangeAnimation);
 
-    var doc = await _firestore.collection('GioHang').where('id', isEqualTo: itemId).where('maKhachHang', isEqualTo: uid).get();
+    var doc = await _firestore
+        .collection('GioHang')
+        .where('id', isEqualTo: itemId)
+        .where('maKhachHang', isEqualTo: uid)
+        .get();
     if (doc.docs.isNotEmpty) {
       await _firestore.collection('GioHang').doc(doc.docs.first.id).delete();
     }
@@ -300,10 +355,12 @@ class CartController extends GetxController {
   Future<void> updateCartItem(CartModel item) async {
     final isconnected = network.isConnectedToInternet.value;
     if (!isconnected) {
-      TLoaders.errorSnackBar(title: TTexts.thongBao, message: "Không có kết nối internet");
+      TLoaders.errorSnackBar(
+          title: TTexts.thongBao, message: "Không có kết nối internet");
       return;
     } else {
-      int index = cartItems.indexWhere((element) => element.id == item.id && element.maKhachHang == item.maKhachHang);
+      int index = cartItems.indexWhere((element) =>
+          element.id == item.id && element.maKhachHang == item.maKhachHang);
       if (index != -1) {
         cartItems[index] = item;
         await updateCartItemInFirestore(item);
@@ -313,16 +370,24 @@ class CartController extends GetxController {
   }
 
   Future<void> updateCartItemInFirestore(CartModel item) async {
-    var doc = await _firestore.collection('GioHang').where('id', isEqualTo: item.id).where('maKhachHang', isEqualTo: item.maKhachHang).get();
+    var doc = await _firestore
+        .collection('GioHang')
+        .where('id', isEqualTo: item.id)
+        .where('maKhachHang', isEqualTo: item.maKhachHang)
+        .get();
     if (doc.docs.isNotEmpty) {
-      await _firestore.collection('GioHang').doc(doc.docs.first.id).update(item.toMap());
+      await _firestore
+          .collection('GioHang')
+          .doc(doc.docs.first.id)
+          .update(item.toMap());
     }
   }
 
   void clearCart() async {
     final isconnected = network.isConnectedToInternet.value;
     if (!isconnected) {
-      TLoaders.errorSnackBar(title: TTexts.thongBao, message: "Không có kết nối internet");
+      TLoaders.errorSnackBar(
+          title: TTexts.thongBao, message: "Không có kết nối internet");
       return;
     } else {
       cartItems.clear();

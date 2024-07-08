@@ -2,15 +2,14 @@ import 'package:etechstore/module/cart/controller/cart_controller.dart';
 import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/module/payment/controllers/order_controller.dart';
 import 'package:etechstore/module/payment/controllers/payment_controller.dart';
-import 'package:etechstore/module/payment/controllers/order_items_controller.dart';
 import 'package:etechstore/module/payment/controllers/vnpay_payment_controller.dart';
 import 'package:etechstore/module/payment/views/address_user.dart';
 import 'package:etechstore/module/payment/views/order_items.dart';
 import 'package:etechstore/module/payment/views/payment.dart';
+import 'package:etechstore/module/payment/views/vnpay_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 class OrderScreen extends StatelessWidget {
   const OrderScreen({super.key});
@@ -18,10 +17,9 @@ class OrderScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userID = FirebaseAuth.instance.currentUser!.uid;
-    final orderItemsController = Get.put(OrderItemsController());
     final paymentController = Get.put(PaymentController());
     final orderController = Get.put(OrderController());
-    final vnPay = Get.put(VNPAYPaymnent());
+    final vnpayController = Get.put(VNPAY());
     RxString response = ''.obs;
     return Scaffold(
       appBar: AppBar(
@@ -60,14 +58,15 @@ class OrderScreen extends StatelessWidget {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(10),
         child: ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               if (paymentController.selectedPaymentMethod.value.ten ==
                   'VNPay') {
-                final now = DateTime.now();
-                final formatter = DateFormat('yyyyMMddHHmmss');
-                final formattedTime = formatter.format(now);
-                // vnPay.paymentVNPay(1000 * 10, formattedTime, 'XCV123');
-                vnPay.paymentVNPay(response, context);
+                await vnpayController.getUrlPayment(10000);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            VNPAYScreen(url: vnpayController.urlVNPay.value)));
               } else {
                 orderController.processOrder(
                     userID, CartController().instance.totalPrice.value.toInt());
