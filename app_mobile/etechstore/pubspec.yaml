@@ -37,9 +37,9 @@ dependencies:
   internet_connection_checker_plus: ^2.3.0
   email_auth: ^2.0.0
   network_info_plus: ^5.0.3
-  firebase_dynamic_links: ^5.5.7
   crypto: ^3.0.3
-  flutter_webview_plugin: ^0.4.0
+  webview_flutter: ^4.8.0
+  webview_flutter_android: ^3.16.3
 
 email_auth:
   smtp:
