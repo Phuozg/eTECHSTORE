@@ -174,7 +174,7 @@ class OrderIsShipped extends StatelessWidget {
                                           children: [
                                             Text(
                                               "Đang vận chuyển",
-                                              style: TextStyle(color: Colors.lightBlue, fontSize: 12.sp),
+                                              style: TextStyle(color: Colors.orangeAccent, fontSize: 12.sp),
                                             ),
                                           ],
                                         )
