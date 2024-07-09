@@ -2,6 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:etechstore/module/cart/controller/cart_controller.dart';
 import 'package:etechstore/module/cart/model/cart_model.dart';
 import 'package:etechstore/module/home/views/home_screen.dart';
+import 'package:etechstore/module/payment/controllers/order_controller.dart';
+import 'package:etechstore/module/payment/models/model_product_model.dart';
+import 'package:etechstore/module/payment/views/buynow_screen.dart';
 import 'package:etechstore/module/product_detail/controller/product_sample_controller.dart';
 import 'package:etechstore/module/product_detail/model/product_model.dart';
 import 'package:etechstore/module/product_detail/model/product_sample_model.dart';
@@ -16,7 +19,7 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class SampleBottomSheet extends StatefulWidget {
+class SampleBottomSheetBuyNow extends StatefulWidget {
   final ProductSampleModel sample;
 
   final String thumbnail;
@@ -24,7 +27,7 @@ class SampleBottomSheet extends StatefulWidget {
   final int GiaTien;
   final int KhuyenMai;
 
-  const SampleBottomSheet(
+  const SampleBottomSheetBuyNow(
       {super.key,
       required this.sample,
       required this.thumbnail,
@@ -36,7 +39,7 @@ class SampleBottomSheet extends StatefulWidget {
   _SampleBottomSheetState createState() => _SampleBottomSheetState();
 }
 
-class _SampleBottomSheetState extends State<SampleBottomSheet> {
+class _SampleBottomSheetState extends State<SampleBottomSheetBuyNow> {
   final NetworkManager network = Get.put(NetworkManager());
 
   ProductSampleController controller = Get.put(ProductSampleController());
@@ -317,29 +320,16 @@ class _SampleBottomSheetState extends State<SampleBottomSheet> {
                   widget.sample.cauHinh.length
               ? widget.sample.cauHinh[controller.selectedConfigIndex.value]
               : '';
-
-          var maSanPham = {
-            'maSanPham': widget.sample.MaSanPham,
-            'mauSac': selectedColor,
-            'cauHinh': selectedConfig
-          };
-          final FirebaseAuth auth = FirebaseAuth.instance;
-          User? user = auth.currentUser;
-          var cartItem = CartModel(
-            id: cartController.generateRandomString(20),
-            maKhachHang: user!.uid,
-            soLuong: quantity,
-            trangThai: 0,
-            maSanPham: maSanPham,
-          );
-          /*          var colorIndex = controller.selectedColorIndex.value;
-          var configIndex = controller.selectedConfigIndex.value;
-
-          final index = colorIndex * widget.sample.cauHinh.length + configIndex;
-          cartController.addPriceToCartItem(cartItem.id, widget.sample.giaTien[index].toString()); */
-          cartController.addItemToCart(cartItem);
-
-          Navigator.pop(context);
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => BuyNowScreen(
+                        productID: widget.sample.MaSanPham,
+                        quantity: quantity,
+                        color: selectedColor,
+                        config: selectedConfig,
+                        price: controller.currentPrice.value,
+                      )));
         },
         child: Center(
           child: Container(
@@ -352,11 +342,11 @@ class _SampleBottomSheetState extends State<SampleBottomSheet> {
               border: Border.all(width: .5),
               borderRadius: BorderRadius.circular(30.r),
             ),
-            child: Column(
+            child: const Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Text(
-                  TTexts.themVaoGioHang,
+                  'Mua ngay',
                   style: TColros.white_14_w600,
                 ),
               ],
@@ -368,14 +358,14 @@ class _SampleBottomSheetState extends State<SampleBottomSheet> {
   }
 }
 
-class BuySampleSingle extends StatefulWidget {
+class BuySampleSingleBuyNow extends StatefulWidget {
   final ProductSampleModel sample;
 
   final String thumbnail;
   final int GiaTien;
   final int KhuyenMai;
 
-  const BuySampleSingle({
+  const BuySampleSingleBuyNow({
     super.key,
     required this.sample,
     required this.thumbnail,
@@ -383,10 +373,10 @@ class BuySampleSingle extends StatefulWidget {
     required this.KhuyenMai,
   });
   @override
-  State<BuySampleSingle> createState() => _BuySampleSingleState();
+  State<BuySampleSingleBuyNow> createState() => _BuySampleSingleState();
 }
 
-class _BuySampleSingleState extends State<BuySampleSingle> {
+class _BuySampleSingleState extends State<BuySampleSingleBuyNow> {
   late String selectedColor;
   late String selectedConfig;
   int quantity = 1;
@@ -558,26 +548,19 @@ class _BuySampleSingleState extends State<BuySampleSingle> {
   }
 
   Widget buildAddToCartButton(BuildContext context) {
-    final CartController cartController = Get.put(CartController());
-
     return ScreenUtilInit(
       builder: (context, child) => GestureDetector(
         onTap: () {
-          final FirebaseAuth auth = FirebaseAuth.instance;
-          User? user = auth.currentUser;
-          var cartItem = CartModel(
-            id: cartController.generateRandomString(20),
-            maKhachHang: user!.uid,
-            soLuong: quantity,
-            trangThai: 0,
-            maSanPham: {
-              'maSanPham': widget.sample.MaSanPham,
-              'mauSac': '',
-              'cauHinh': '',
-            },
-          );
-          cartController.addItemToCart(cartItem);
-          Navigator.pop(context);
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => BuyNowScreen(
+                        productID: widget.sample.MaSanPham,
+                        quantity: quantity,
+                        color: '',
+                        config: '',
+                        price: widget.GiaTien.toString(),
+                      )));
         },
         child: Container(
           margin: EdgeInsets.only(left: 18.w, bottom: 15.h, top: 20),
@@ -589,11 +572,11 @@ class _BuySampleSingleState extends State<BuySampleSingle> {
             border: Border.all(width: .5),
             borderRadius: BorderRadius.circular(30.r),
           ),
-          child: Column(
+          child: const Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Text(
-                TTexts.themVaoGioHang,
+                'Mua ngay',
                 style: TColros.white_14_w600,
               ),
             ],

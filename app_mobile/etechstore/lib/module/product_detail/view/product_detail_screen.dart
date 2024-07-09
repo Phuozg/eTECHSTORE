@@ -59,7 +59,8 @@ class DetailScreen extends GetView {
   @override
   Widget build(BuildContext context) {
     final CartController cartController = Get.put(CartController());
-    final ProductSampleController productSampleController = Get.put(ProductSampleController());
+    final ProductSampleController productSampleController =
+        Get.put(ProductSampleController());
     final wishListController = Get.put(WishListController());
     final previewsController = Get.put(PreviewsController());
     previewsController.fetchPreviews(id);
@@ -120,7 +121,8 @@ class DetailScreen extends GetView {
                         bottom: 70.h,
                         right: 10.r,
                         child: Container(
-                          padding: EdgeInsets.symmetric(vertical: 2.w, horizontal: 8.h),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 2.w, horizontal: 8.h),
                           decoration: BoxDecoration(
                             color: Colors.black.withOpacity(0.2),
                             borderRadius: BorderRadius.circular(10.r),
@@ -159,7 +161,8 @@ class DetailScreen extends GetView {
                             icon: Obx(
                               () => Padding(
                                 padding: const EdgeInsets.only(left: 2.0),
-                                child: CartIconWithBadge(itemCount: cartController.cartItems.length),
+                                child: CartIconWithBadge(
+                                    itemCount: cartController.cartItems.length),
                               ),
                             ),
                           ),
@@ -185,7 +188,9 @@ class DetailScreen extends GetView {
                                 return Row(
                                   children: [
                                     Text(
-                                      priceFormat((GiaTien - (GiaTien * KhuyenMai / 100)).round()),
+                                      priceFormat((GiaTien -
+                                              (GiaTien * KhuyenMai / 100))
+                                          .round()),
                                       style: const TextStyle(
                                         fontSize: 20,
                                         color: Colors.red,
@@ -224,7 +229,9 @@ class DetailScreen extends GetView {
                                   child: Text(
                                     '''$Ten''',
                                     textAlign: TextAlign.start,
-                                    style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                                    style: const TextStyle(
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ),
                                 Obx(() {
@@ -238,7 +245,9 @@ class DetailScreen extends GetView {
                                       },
                                       icon: Icon(
                                         Icons.favorite,
-                                        color: wishListController.isWish(id) ? Colors.red : Colors.black,
+                                        color: wishListController.isWish(id)
+                                            ? Colors.red
+                                            : Colors.black,
                                       ));
                                 })
                               ],
@@ -253,14 +262,24 @@ class DetailScreen extends GetView {
                                     size: 18,
                                   ),
                                   Text(
-                                    "${previewsController.getAverage()}/5",
-                                    style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w400, color: Colors.red),
+                                    "${previewsController.getAverage().toStringAsFixed(1)}/5",
+                                    style: TextStyle(
+                                        fontSize: 13.sp,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.red),
                                   ),
-                                  Text(" (${previewsController.previewsOfProduct.length} đánh giá)",
-                                      style: const TextStyle(fontWeight: FontWeight.w300)),
-                                  const Text(" | đã bán ", style: TextStyle(fontWeight: FontWeight.w300)),
-                                  Text("${productSampleController.lstProduct.length}",
-                                      style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                                  Text(
+                                      " (${previewsController.previewsOfProduct.length} đánh giá)",
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w300)),
+                                  const Text(" | đã bán ",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w300)),
+                                  Text(
+                                      "${productSampleController.lstProduct.length}",
+                                      style: const TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.bold)),
                                 ],
                               ),
                             ),
@@ -278,7 +297,8 @@ class DetailScreen extends GetView {
                 Container(
                   margin: EdgeInsets.only(left: 21.w),
                   padding: EdgeInsets.only(top: 8.h, bottom: 8.h),
-                  child: Text(TTexts.chiTietSanPham, style: TColros.black_13_w500),
+                  child:
+                      Text(TTexts.chiTietSanPham, style: TColros.black_13_w500),
                 ),
                 Container(
                   height: 1.h,
@@ -289,7 +309,8 @@ class DetailScreen extends GetView {
                   margin: EdgeInsets.only(left: 21.w),
                   padding: EdgeInsets.only(top: 8.h, bottom: 8.h, right: 20.w),
                   child: ExpandableText(
-                    style: TextStyle(fontSize: 14.sp, color: const Color(0xFF848484)),
+                    style: TextStyle(
+                        fontSize: 14.sp, color: const Color(0xFF848484)),
                     "$MoTa",
                     trimType: TrimType.lines,
                     trim: 5,
@@ -305,7 +326,8 @@ class DetailScreen extends GetView {
                 Container(
                   margin: EdgeInsets.only(left: 21.w),
                   padding: EdgeInsets.only(top: 8.h),
-                  child: Text(TTexts.danhGiaSanPham, style: TColros.black_13_w500),
+                  child:
+                      Text(TTexts.danhGiaSanPham, style: TColros.black_13_w500),
                 ),
                 Container(
                   margin: EdgeInsets.only(left: 19.w),
@@ -315,16 +337,24 @@ class DetailScreen extends GetView {
                     children: [
                       Row(
                         children: [
-                          for (var i = 0; i < previewsController.getAverage().toInt(); i++)
+                          for (var i = 0;
+                              i < previewsController.getAverage().toInt();
+                              i++)
                             const Icon(
                               Icons.star,
                               color: Colors.amber,
                             ),
                           Text(
-                            "${previewsController.getAverage()}/5",
-                            style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w400, color: Colors.red),
+                            "${previewsController.getAverage().toStringAsFixed(1)}/5",
+                            style: TextStyle(
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.red),
                           ),
-                          Text(" (${previewsController.previewsOfProduct.length} đánh giá)", style: const TextStyle(fontWeight: FontWeight.w300)),
+                          Text(
+                              " (${previewsController.previewsOfProduct.length} đánh giá)",
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.w300)),
                         ],
                       ),
                       GestureDetector(
@@ -335,7 +365,8 @@ class DetailScreen extends GetView {
                               builder: (BuildContext context) {
                                 return AlertDialog(
                                   title: const Text("Thử lại sau!!!"),
-                                  content: const Text("Sản phẩm này chưa có đánh giá nào!"),
+                                  content: const Text(
+                                      "Sản phẩm này chưa có đánh giá nào!"),
                                   actions: [
                                     TextButton(
                                       onPressed: () {
@@ -348,7 +379,11 @@ class DetailScreen extends GetView {
                               },
                             );
                           } else {
-                            Navigator.push(context, MaterialPageRoute(builder: (builder) => PreviewsScreen(productID: id)));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (builder) =>
+                                        PreviewsScreen(productID: id)));
                           }
                         },
                         child: Container(

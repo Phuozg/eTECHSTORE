@@ -28,7 +28,7 @@ class ResultScreen extends StatelessWidget {
                   const Text("Đơn hàng của bạn sẻ được giao sớm"),
                   ElevatedButton(
                       onPressed: () async {
-                        orderController.processOrderwithVNPay(
+                        await orderController.processOrderwithVNPay(
                             FirebaseAuth.instance.currentUser!.uid,
                             CartController().instance.totalPrice.value.toInt());
                         Get.off(() => const NavMenu());
@@ -45,6 +45,7 @@ class ResultScreen extends StatelessWidget {
           : Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const Text(
                     "Có lỗi trong quá trình thanh toán",
@@ -56,7 +57,7 @@ class ResultScreen extends StatelessWidget {
                   const Text("Vui lòng thử lại"),
                   ElevatedButton(
                       onPressed: () {
-                        Get.back();
+                        Get.off(const NavMenu());
                       },
                       style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF383CA0)),

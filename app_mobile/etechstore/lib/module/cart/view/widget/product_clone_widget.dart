@@ -29,7 +29,8 @@ Widget buildProductSamples(
     required bool TrangThai,
     required Timestamp NgayNhap,
     required bool isPopular}) {
-  final ProductSampleController productSampleController = Get.put(ProductSampleController());
+  final ProductSampleController productSampleController =
+      Get.put(ProductSampleController());
 
   return ScreenUtilInit(
     builder: (context, child) => SizedBox(
@@ -47,7 +48,9 @@ Widget buildProductSamples(
                   );
                 } else {
                   List<ProductSampleModel> lstSample = snapshot.data!;
-                  List fillterSample = lstSample.where((element) => element.MaSanPham == id).toList();
+                  List fillterSample = lstSample
+                      .where((element) => element.MaSanPham == id)
+                      .toList();
                   return Row(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -62,10 +65,17 @@ Widget buildProductSamples(
                                 showModalBottomSheet(
                                   context: context,
                                   builder: (ctx) {
-                                    productSampleController.setSelectedColorIndex(0, sample);
-                                    productSampleController.setSelectedConfigIndex(0, sample);
-                                    productSampleController.checkPrice(sample, GiaTien.toString());
-                                    return BuySampleSingle(GiaTien: GiaTien, KhuyenMai: KhuyenMai, sample: sample, thumbnail: thumbnail);
+                                    productSampleController
+                                        .setSelectedColorIndex(0, sample);
+                                    productSampleController
+                                        .setSelectedConfigIndex(0, sample);
+                                    productSampleController.checkPrice(
+                                        sample, GiaTien.toString());
+                                    return BuySampleSingle(
+                                        GiaTien: GiaTien,
+                                        KhuyenMai: KhuyenMai,
+                                        sample: sample,
+                                        thumbnail: thumbnail);
                                   },
                                 );
                               },
@@ -74,34 +84,27 @@ Widget buildProductSamples(
                                 width: 150.w,
                                 height: 70.h,
                                 decoration: BoxDecoration(
-                                  border: Border.all(width: .5.w, color: TColros.purple_line),
+                                  border: Border.all(
+                                      width: .5.w, color: TColros.purple_line),
                                   borderRadius: BorderRadius.circular(30.r),
                                 ),
                                 child: Text(
                                   TTexts.themVaoGioHang,
-                                  style: const TextStyle(color: TColros.purple_line),
+                                  style: const TextStyle(
+                                      color: TColros.purple_line),
                                 ),
                               ),
                             ),
                             SizedBox(width: 15.w),
                             GestureDetector(
                               onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (builder) => BuyNowScreen(
-                                            product: ProductModel(
-                                                GiaTien: GiaTien,
-                                                HinhAnh: HinhAnh,
-                                                KhuyenMai: KhuyenMai,
-                                                MaDanhMuc: MaDanhMuc,
-                                                MoTa: MoTa,
-                                                TrangThai: TrangThai,
-                                                Ten: Ten,
-                                                id: id,
-                                                thumbnail: thumbnail,
-                                                NgayNhap: NgayNhap,
-                                                isPopular: isPopular))));
+                                // Navigator.push(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //         builder: (builder) => BuyNowScreen(
+                                //               productID: id,
+                                //               quantity: 1,
+                                //             )));
                               },
                               child: Container(
                                 alignment: Alignment.bottomCenter,
@@ -113,7 +116,8 @@ Widget buildProductSamples(
                                   borderRadius: BorderRadius.circular(30.r),
                                 ),
                                 child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
                                   children: [
                                     Text(
                                       TTexts.muaVoiVoucher,
@@ -135,9 +139,12 @@ Widget buildProductSamples(
                           showModalBottomSheet(
                             context: context,
                             builder: (ctx) {
-                              productSampleController.setSelectedColorIndex(0, sample);
-                              productSampleController.setSelectedConfigIndex(0, sample);
-                              productSampleController.checkPrice(sample, GiaTien.toString());
+                              productSampleController.setSelectedColorIndex(
+                                  0, sample);
+                              productSampleController.setSelectedConfigIndex(
+                                  0, sample);
+                              productSampleController.checkPrice(
+                                  sample, GiaTien.toString());
                               return SampleBottomSheet(
                                 KhuyenMai: KhuyenMai,
                                 GiaTien: GiaTien,
@@ -155,33 +162,26 @@ Widget buildProductSamples(
                               width: 150.w,
                               height: 70.h,
                               decoration: BoxDecoration(
-                                border: Border.all(width: .5.w, color: TColros.purple_line),
+                                border: Border.all(
+                                    width: .5.w, color: TColros.purple_line),
                                 borderRadius: BorderRadius.circular(30.r),
                               ),
                               child: Text(
                                 TTexts.themVaoGioHang,
-                                style: const TextStyle(color: TColros.purple_line),
+                                style:
+                                    const TextStyle(color: TColros.purple_line),
                               ),
                             ),
                             SizedBox(width: 15.w),
                             GestureDetector(
                               onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (builder) => BuyNowScreen(
-                                            product: ProductModel(
-                                                GiaTien: GiaTien,
-                                                HinhAnh: HinhAnh,
-                                                KhuyenMai: KhuyenMai,
-                                                MaDanhMuc: MaDanhMuc,
-                                                MoTa: MoTa,
-                                                TrangThai: TrangThai,
-                                                Ten: Ten,
-                                                id: id,
-                                                thumbnail: thumbnail,
-                                                NgayNhap: NgayNhap,
-                                                isPopular: isPopular))));
+                                // Navigator.push(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //         builder: (builder) => BuyNowScreen(
+                                //               productID: id,
+                                //               quantity: 1,
+                                //             )));
                               },
                               child: Container(
                                 alignment: Alignment.bottomCenter,
@@ -193,7 +193,8 @@ Widget buildProductSamples(
                                   borderRadius: BorderRadius.circular(30.r),
                                 ),
                                 child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
                                   children: [
                                     Text(
                                       TTexts.muaVoiVoucher,
