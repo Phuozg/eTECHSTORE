@@ -140,23 +140,38 @@ class OrderCompleted extends StatelessWidget {
                                                         )
                                                       : const Text("Loading..."),
                                                   SizedBox(height: 5.h),
-                                                  Row(
-                                                    children: [
-                                                      const Text("Loại:", style: TextStyle(color: Colors.blueGrey)),
-                                                      item.maMauSanPham['MauSac'] != null
-                                                          ? Text(" ${item.maMauSanPham['MauSac']}",
-                                                              style: const TextStyle(fontWeight: FontWeight.w400))
-                                                          : const Text("Loading..."),
-                                                      Text(
-                                                        " | ",
-                                                        style: TextStyle(fontSize: 12.sp, color: Colors.blueGrey),
-                                                      ),
-                                                      item.maMauSanPham['CauHinh'] != null
-                                                          ? Text(" ${item.maMauSanPham['CauHinh']}",
-                                                              style: const TextStyle(fontWeight: FontWeight.w400))
-                                                          : const Text("Loading..."),
-                                                    ],
-                                                  ),
+                                                  item.maMauSanPham['MauSac'] != "" && item.maMauSanPham['CauHinh'] != "" ||
+                                                          item.maMauSanPham['MauSac'] != "" ||
+                                                          item.maMauSanPham['CauHinh'] != ""
+                                                      ? Row(
+                                                          children: [
+                                                            const Text("Loại:", style: TextStyle(color: Colors.blueGrey)),
+                                                            item.maMauSanPham['MauSac'] == null
+                                                                ? const Text("Loại:", style: TextStyle(color: Colors.grey))
+                                                                : Container(),
+                                                            item.maMauSanPham['MauSac'] != null
+                                                                ? Text("${item.maMauSanPham['MauSac']}",
+                                                                    style: const TextStyle(fontWeight: FontWeight.w400))
+                                                                : const Text("Loading..."),
+                                                            Row(
+                                                              children: [
+                                                                item.maMauSanPham['MauSac'] != "" && item.maMauSanPham['CauHinh'] != "" ||
+                                                                        item.maMauSanPham['MauSac'] != "" ||
+                                                                        item.maMauSanPham['CauHinh'] != ""
+                                                                    ? Text(
+                                                                        " | ",
+                                                                        style: TextStyle(fontSize: 12.sp, color: Colors.grey),
+                                                                      )
+                                                                    : Container(),
+                                                                item.maMauSanPham['CauHinh'] != null
+                                                                    ? Text("${item.maMauSanPham['CauHinh']}",
+                                                                        style: const TextStyle(fontWeight: FontWeight.w400))
+                                                                    : const Text("Loading..."),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        )
+                                                      : Container(),
                                                   Row(
                                                     children: [
                                                       const Text("Số lượng: ", style: TextStyle(fontWeight: FontWeight.w400, color: Colors.blueGrey)),
@@ -179,36 +194,36 @@ class OrderCompleted extends StatelessWidget {
                                       ],
                                     ),
                                     SizedBox(height: 10.h),
-                                    Flexible(
-                                      child: Padding(
-                                        padding: EdgeInsets.only(left: 130.0.w),
-                                        child: Row(
-                                          children: [
-                                            Flexible(
-                                              child: Align(
-                                                alignment: Alignment.bottomRight,
-                                                child: Text(
-                                                  priceFormat(product!.GiaTien),
-                                                  style: const TextStyle(
-                                                    color: Colors.blueGrey,
-                                                    decoration: TextDecoration.lineThrough,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(width: 10.w),
-                                            Flexible(
-                                              child: Align(
-                                                alignment: Alignment.bottomRight,
-                                                child: Text(
-                                                  priceFormat((product.GiaTien - (product.GiaTien * product.KhuyenMai / 100)).toInt()),
-                                                  style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.redAccent),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
+                                    Row(
+                                      children: [
+                                        SizedBox(
+                                          width: item.giaTien!.toString().length == 4
+                                              ? 180.0.w
+                                              : item.giaTien!.toString().length == 5
+                                                  ? 175.0.w
+                                                  : item.giaTien!.toString().length == 6
+                                                      ? 175.0.w
+                                                      : item.giaTien!.toString().length == 7
+                                                          ? 175.0.w
+                                                          : item.giaTien!.toString().length == 8
+                                                              ? 156.0.w
+                                                              : item.giaTien!.toString().length == 9
+                                                                  ? 155.w
+                                                                  : 150.0.w,
                                         ),
-                                      ),
+                                        Text(
+                                          priceFormat(product!.GiaTien),
+                                          style: const TextStyle(
+                                            color: Colors.blueGrey,
+                                            decoration: TextDecoration.lineThrough,
+                                          ),
+                                        ),
+                                        SizedBox(width: 10.w),
+                                        Text(
+                                          priceFormat((item.giaTien!).toInt()),
+                                          style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.redAccent),
+                                        ),
+                                      ],
                                     ),
                                     SizedBox(height: 5.h),
                                     Linehelper(color: const Color.fromARGB(94, 217, 217, 217), height: 1),
@@ -242,7 +257,7 @@ class OrderCompleted extends StatelessWidget {
                                             ),
                                             SizedBox(width: 5.w),
                                             Text(
-                                              priceFormat(((product.GiaTien - (product.GiaTien * product.KhuyenMai / 100)) * item.soLuong).toInt()),
+                                              priceFormat((item.giaTien! * item.soLuong).toInt()),
                                               style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Colors.redAccent),
                                             ),
                                           ],

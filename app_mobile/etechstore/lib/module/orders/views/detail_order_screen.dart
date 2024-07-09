@@ -32,7 +32,6 @@ class DetailOrderSreen extends StatelessWidget {
   Widget build(BuildContext context) {
     User? user = FirebaseAuth.instance.currentUser;
 
-    // Gọi hàm fetchProfiles để tải dữ liệu
     profileController.fetchProfilesStream(user!.uid);
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 243, 243, 244),
@@ -306,7 +305,7 @@ class DetailOrderSreen extends StatelessWidget {
                                                       ),
                                                       SizedBox(height: 10.h),
                                                       Padding(
-                                                        padding: EdgeInsets.only(left: 170.0.w),
+                                                        padding: EdgeInsets.only(left: ctDonHang.giaTien!.toString().length >= 9 ? 150.0.w : 156.w),
                                                         child: Row(
                                                           children: [
                                                             Text(
@@ -364,7 +363,7 @@ class DetailOrderSreen extends StatelessWidget {
                                   ),
                                   if (orders.isNotEmpty)
                                     Container(
-                                        height: 120.h,
+                                        height: 133.h,
                                         color: Colors.white,
                                         width: double.infinity,
                                         margin: EdgeInsets.only(top: 8.h, bottom: 10.h),
@@ -384,11 +383,20 @@ class DetailOrderSreen extends StatelessWidget {
                                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
+                                                      Text("Tổng thanh toán:", style: TextStyle(fontSize: 13.sp)),
+                                                      Text(priceFormat(order.tongTien), style: TextStyle(fontSize: 16.sp, color: Colors.redAccent)),
+                                                    ],
+                                                  ),
+                                                  SizedBox(height: 5.h),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
                                                       Text("Mã đơn hàng", style: TextStyle(fontSize: 13.sp)),
                                                       Text(order.id),
                                                     ],
                                                   ),
-                                                  SizedBox(height: 5.h),
+                                                  SizedBox(height: 10.h),
                                                   Row(
                                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                     crossAxisAlignment: CrossAxisAlignment.start,

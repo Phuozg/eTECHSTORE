@@ -40,6 +40,7 @@ dependencies:
   crypto: ^3.0.3
   webview_flutter: ^4.8.0
   webview_flutter_android: ^3.16.3
+  flutter_launcher_icons: ^0.13.1
 
 email_auth:
   smtp:
@@ -56,6 +57,12 @@ dev_dependencies:
   flutter_screenutil: ^5.9.0
   flutter_native_splash: ^2.4.0
   build_runner: ^2.4.9
+
+flutter_icons:
+  android: true
+  image_path: "assets/images/logo_start.jpg"
+  flutter_lints: ^2.0.0
+
 
 flutter_native_splash:
   android: true
