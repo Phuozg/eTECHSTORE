@@ -21,7 +21,10 @@ Widget address(String userID) {
     child: Padding(
       padding: const EdgeInsets.all(8.0),
       child: StreamBuilder(
-          stream: FirebaseFirestore.instance.collection('Users').doc(userID).snapshots(),
+          stream: FirebaseFirestore.instance
+              .collection('Users')
+              .doc(userID)
+              .snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return const CircularProgressIndicator();
@@ -32,7 +35,9 @@ Widget address(String userID) {
                 Get.to(EditScreen(
                   controller: profileController.DressController,
                   title: "Sửa địa chỉ",
-                  text: document?["DiaChi"] == '' ? "Thêm địa chỉ" : document?["DiaChi"],
+                  text: document?["DiaChi"] == ''
+                      ? "Thêm địa chỉ"
+                      : document?["DiaChi"],
                   func: () {
                     profileController.editProfile(2);
                   },

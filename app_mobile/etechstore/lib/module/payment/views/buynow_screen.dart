@@ -2,21 +2,34 @@ import 'package:etechstore/module/home/models/product_model_home.dart';
 import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/module/payment/controllers/order_controller.dart';
 import 'package:etechstore/module/payment/controllers/payment_controller.dart';
+import 'package:etechstore/module/payment/controllers/vnpay_payment_controller.dart';
 import 'package:etechstore/module/payment/views/address_user.dart';
+import 'package:etechstore/module/payment/views/vnpay_screen.dart';
 import 'package:etechstore/module/sample/product_horizontal_listtile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class BuyNowScreen extends StatelessWidget {
-  const BuyNowScreen({super.key, required this.product});
-  final ProductModel product;
-
+  const BuyNowScreen(
+      {super.key,
+      required this.productID,
+      required this.quantity,
+      required this.price,
+      required this.color,
+      required this.config});
+  final String productID;
+  final int quantity;
+  final String price;
+  final String color;
+  final String config;
   @override
   Widget build(BuildContext context) {
     final userID = FirebaseAuth.instance.currentUser!.uid;
     final paymentController = Get.put(PaymentController());
     final orderController = Get.put(OrderController());
+    final product = orderController.getProductByID(productID);
+    final vnPayController = Get.put(VNPAY());
     return Scaffold(
         appBar: AppBar(
           flexibleSpace: Container(
@@ -27,6 +40,9 @@ class BuyNowScreen extends StatelessWidget {
             style: TextStyle(color: Colors.white),
           ),
           centerTitle: true,
+          leading: const BackButton(
+            color: Colors.white,
+          ),
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -89,7 +105,7 @@ class BuyNowScreen extends StatelessWidget {
                         ),
                         const Divider(),
                         Text(
-                          "Tổng tiền: ${priceFormat((product.GiaTien - (product.GiaTien * product.KhuyenMai / 100)).toInt())}",
+                          "Tổng tiền: ${int.parse(price)}",
                           style: const TextStyle(
                               color: Colors.red, fontWeight: FontWeight.bold),
                         )
@@ -102,22 +118,45 @@ class BuyNowScreen extends StatelessWidget {
         bottomNavigationBar: Padding(
           padding: const EdgeInsets.all(10),
           child: ElevatedButton(
-              onPressed: () {
-                if (paymentController.selectedPaymentMethod.value.ten ==
-                    'VNPay') {
+              onPressed: () async {
+                if (orderController.checkAddressUser(userID)) {
+                  if (paymentController.selectedPaymentMethod.value.ten ==
+                      'VNPay') {
+                    await vnPayController.getUrlPayment(int.parse(price));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => VNPAYScreen(
+                                url: vnPayController.urlVNPay.value)));
+                  } else {
+                    orderController.processOrderBuyNow(userID, int.parse(price),
+                        productID, quantity, color, config);
+                  }
                 } else {
-                  orderController.processOrderBuyNow(
-                      userID,
-                      (product.GiaTien -
-                              (product.GiaTien * product.KhuyenMai / 100))
-                          .toInt(),
-                      product);
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text('Thiếu thông tin !!!'),
+                        content: const Text(
+                            'Tài khoản của bạn cần cung cấp thông tin số điện thoại và địa chỉ để mua hàng'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(); // Close the dialog
+                            },
+                            child: const Text('Close'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
                 }
               },
               style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF383CA0)),
               child: Text(
-                'Đặt hàng \n ${priceFormat((product.GiaTien - (product.GiaTien * product.KhuyenMai / 100)).toInt())}',
+                'Đặt hàng \n ${int.parse(price)}',
                 style: const TextStyle(color: Colors.white, fontSize: 15),
                 textAlign: TextAlign.center,
               )),

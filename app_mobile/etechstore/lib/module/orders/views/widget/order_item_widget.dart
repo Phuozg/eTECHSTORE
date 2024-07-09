@@ -22,7 +22,13 @@ class OrderdetailWdiet extends StatelessWidget {
   final OrdersModel order;
   final DetailOrders detail;
   final ProductModel product;
-    OrderdetailWdiet({super.key, required this.detail, required this.order, required this.product, required this.status, required this.color});
+  OrderdetailWdiet(
+      {super.key,
+      required this.detail,
+      required this.order,
+      required this.product,
+      required this.status,
+      required this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +73,8 @@ class OrderdetailWdiet extends StatelessWidget {
                                   width: 60.w,
                                   height: 60.h,
                                   fit: BoxFit.cover,
-                                  imageErrorBuilder: (context, error, stackTrace) {
+                                  imageErrorBuilder:
+                                      (context, error, stackTrace) {
                                     return Center(
                                         child: Image.asset(
                                       ImageKey.whiteBackGround,
@@ -87,13 +94,16 @@ class OrderdetailWdiet extends StatelessWidget {
                                 ? GestureDetector(
                                     onTap: () {
                                       //
-                                      Get.to(DetailOrderSreen(maDonHang: order.id));
+                                      Get.to(DetailOrderSreen(
+                                          maDonHang: order.id));
                                     },
                                     child: SizedBox(
                                       width: 170.w,
                                       child: Text(
                                         product.Ten,
-                                        style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13.sp),
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 13.sp),
                                         overflow: TextOverflow.ellipsis,
                                         softWrap: true,
                                       ),
@@ -101,29 +111,45 @@ class OrderdetailWdiet extends StatelessWidget {
                                   )
                                 : const Text("Loading..."),
                             SizedBox(height: 5.h),
-                            detail.maMauSanPham['MauSac'] != "" && detail.maMauSanPham['CauHinh'] != "" ||
+                            detail.maMauSanPham['MauSac'] != "" &&
+                                        detail.maMauSanPham['CauHinh'] != "" ||
                                     detail.maMauSanPham['MauSac'] != "" ||
                                     detail.maMauSanPham['CauHinh'] != ""
                                 ? Row(
                                     children: [
-                                      const Text("Loại:", style: TextStyle(color: Colors.blueGrey)),
+                                      const Text("Loại:",
+                                          style: TextStyle(
+                                              color: Colors.blueGrey)),
                                       detail.maMauSanPham['MauSac'] != null
-                                          ? Text(" ${detail.maMauSanPham['MauSac']}", style: const TextStyle(fontWeight: FontWeight.w400))
+                                          ? Text(
+                                              " ${detail.maMauSanPham['MauSac']}",
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.w400))
                                           : const Text("Loading..."),
                                       Text(
                                         " | ",
-                                        style: TextStyle(fontSize: 12.sp, color: Colors.blueGrey),
+                                        style: TextStyle(
+                                            fontSize: 12.sp,
+                                            color: Colors.blueGrey),
                                       ),
                                       detail.maMauSanPham['CauHinh'] != null
-                                          ? Text(" ${detail.maMauSanPham['CauHinh']}", style: const TextStyle(fontWeight: FontWeight.w400))
+                                          ? Text(
+                                              " ${detail.maMauSanPham['CauHinh']}",
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.w400))
                                           : const Text("Loading..."),
                                     ],
                                   )
                                 : Container(),
                             Row(
                               children: [
-                                const Text("Số lượng: ", style: TextStyle(fontWeight: FontWeight.w400, color: Colors.blueGrey)),
-                                detail.soLuong != null ? Text("${detail.soLuong}") : const Text("Loading..."),
+                                const Text("Số lượng: ",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.blueGrey)),
+                                detail.soLuong != null
+                                    ? Text("${detail.soLuong}")
+                                    : const Text("Loading..."),
                               ],
                             ),
                           ],
@@ -165,7 +191,9 @@ class OrderdetailWdiet extends StatelessWidget {
                           alignment: Alignment.bottomRight,
                           child: Text(
                             priceFormat(detail.giaTien!),
-                            style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.redAccent),
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: Colors.redAccent),
                           ),
                         ),
                       ),
@@ -174,31 +202,41 @@ class OrderdetailWdiet extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 5.h),
-              Linehelper(color: const Color.fromARGB(94, 217, 217, 217), height: 1),
+              Linehelper(
+                  color: const Color.fromARGB(94, 217, 217, 217), height: 1),
               SizedBox(height: 5.h),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   detail.soLuong != null
-                      ? Text("${detail.soLuong} sản phẩm", style: TextStyle(color: const Color.fromARGB(255, 41, 40, 40), fontSize: 13.sp))
+                      ? Text("${detail.soLuong} sản phẩm",
+                          style: TextStyle(
+                              color: const Color.fromARGB(255, 41, 40, 40),
+                              fontSize: 13.sp))
                       : const Text("Loading"),
                   Row(
                     children: [
                       Text(
                         "Thành tiền:",
-                        style: TextStyle(color: const Color.fromARGB(255, 41, 40, 40), fontSize: 13.sp),
+                        style: TextStyle(
+                            color: const Color.fromARGB(255, 41, 40, 40),
+                            fontSize: 13.sp),
                       ),
                       SizedBox(width: 5.w),
                       Text(
                         priceFormat((detail.giaTien! * detail.soLuong).toInt()),
-                        style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Colors.redAccent),
+                        style: TextStyle(
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.redAccent),
                       ),
                     ],
                   ),
                 ],
               ),
               SizedBox(height: 5.h),
-              Linehelper(color: const Color.fromARGB(94, 217, 217, 217), height: 1),
+              Linehelper(
+                  color: const Color.fromARGB(94, 217, 217, 217), height: 1),
               GestureDetector(
                 onTap: () {
                   controller.loadMore();
@@ -207,10 +245,12 @@ class OrderdetailWdiet extends StatelessWidget {
                 child: Container(
                     margin: const EdgeInsets.only(top: 5),
                     alignment: Alignment.center,
-                    child: const Text("Xem chi tiết", style: TextStyle(color: Colors.grey, fontSize: 11))),
+                    child: const Text("Xem chi tiết",
+                        style: TextStyle(color: Colors.grey, fontSize: 11))),
               ),
               SizedBox(height: 5.h),
-              Linehelper(color: const Color.fromARGB(94, 217, 217, 217), height: 1),
+              Linehelper(
+                  color: const Color.fromARGB(94, 217, 217, 217), height: 1),
               SizedBox(height: 5.h),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -231,9 +271,12 @@ class OrderdetailWdiet extends StatelessWidget {
                                           children: List.generate(5, (index) {
                                         return IconButton(
                                             onPressed: () {
-                                              previewsController.selectStar(index);
+                                              previewsController
+                                                  .selectStar(index);
                                             },
-                                            icon: previewsController.selectedstar.value >= index
+                                            icon: previewsController
+                                                        .selectedstar.value >=
+                                                    index
                                                 ? const Icon(
                                                     Icons.star,
                                                     color: Colors.amber,
@@ -250,14 +293,20 @@ class OrderdetailWdiet extends StatelessWidget {
                                     TextField(
                                       controller: textController,
                                       maxLines: null,
-                                      decoration: const InputDecoration(labelText: 'Nhận xét'),
+                                      decoration: const InputDecoration(
+                                          labelText: 'Nhận xét'),
                                     ),
                                   ],
                                 ),
                                 actions: [
                                   TextButton(
                                     onPressed: () {
-                                      previewsController.addPreview(textController.text, previewsController.selectedstar.toInt(), userID, product.id);
+                                      previewsController.addPreview(
+                                          textController.text,
+                                          previewsController.selectedstar
+                                              .toInt(),
+                                          userID,
+                                          product.id);
                                       Navigator.of(context).pop();
                                     },
                                     child: const Text("Xác nhận"),
@@ -274,15 +323,18 @@ class OrderdetailWdiet extends StatelessWidget {
                           );
                         },
                         child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 5.h),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20.w, vertical: 5.h),
                           decoration: BoxDecoration(
                             color: TColros.red,
-                            border: const Border.fromBorderSide(BorderSide.none),
+                            border:
+                                const Border.fromBorderSide(BorderSide.none),
                             borderRadius: BorderRadius.circular(5.r),
                           ),
                           child: Text(
                             "Đánh giá",
-                            style: TextStyle(color: Colors.white, fontSize: 12.sp),
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 12.sp),
                           ),
                         ),
                       );
@@ -294,33 +346,27 @@ class OrderdetailWdiet extends StatelessWidget {
                     if (order.isBeingShipped || order.isCompleted) {
                       return GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (builder) => BuyNowScreen(
-                                      product: ProductModel(
-                                          thumbnail: product.thumbnail,
-                                          HinhAnh: product.HinhAnh,
-                                          MaDanhMuc: product.MaDanhMuc,
-                                          id: product.id,
-                                          KhuyenMai: product.KhuyenMai,
-                                          MoTa: product.MoTa,
-                                          Ten: product.Ten,
-                                          TrangThai: product.TrangThai,
-                                          GiaTien: product.GiaTien,
-                                          NgayNhap: product.NgayNhap,
-                                          isPopular: product.isPopular))));
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (builder) => BuyNowScreen(
+                          //               productID: product.id,
+                          //               quantity: 1,
+                          //             )));
                         },
                         child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 5.h),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20.w, vertical: 5.h),
                           decoration: BoxDecoration(
                             color: TColros.purple_line,
-                            border: const Border.fromBorderSide(BorderSide.none),
+                            border:
+                                const Border.fromBorderSide(BorderSide.none),
                             borderRadius: BorderRadius.circular(5.r),
                           ),
                           child: Text(
                             "Mua Lại",
-                            style: TextStyle(color: Colors.white, fontSize: 12.sp),
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 12.sp),
                           ),
                         ),
                       );
@@ -332,7 +378,8 @@ class OrderdetailWdiet extends StatelessWidget {
                             builder: (BuildContext context) {
                               return AlertDialog(
                                 title: const Text("Cẩn thận !!!"),
-                                content: const Text("Bạn có chắc chắn muốn huỷ đơn hàng này?"),
+                                content: const Text(
+                                    "Bạn có chắc chắn muốn huỷ đơn hàng này?"),
                                 actions: [
                                   TextButton(
                                     onPressed: () {
@@ -353,15 +400,18 @@ class OrderdetailWdiet extends StatelessWidget {
                           );
                         },
                         child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 5.h),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20.w, vertical: 5.h),
                           decoration: BoxDecoration(
                             color: TColros.purple_line,
-                            border: const Border.fromBorderSide(BorderSide.none),
+                            border:
+                                const Border.fromBorderSide(BorderSide.none),
                             borderRadius: BorderRadius.circular(5.r),
                           ),
                           child: Text(
                             "Hủy Đơn",
-                            style: TextStyle(color: Colors.white, fontSize: 12.sp),
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 12.sp),
                           ),
                         ),
                       );

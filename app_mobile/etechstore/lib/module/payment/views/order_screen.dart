@@ -31,6 +31,9 @@ class OrderScreen extends StatelessWidget {
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
+        leading: const BackButton(
+          color: Colors.white,
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -59,17 +62,39 @@ class OrderScreen extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         child: ElevatedButton(
             onPressed: () async {
-              if (paymentController.selectedPaymentMethod.value.ten ==
-                  'VNPay') {
-                await vnpayController.getUrlPayment(10000);
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            VNPAYScreen(url: vnpayController.urlVNPay.value)));
+              if (orderController.checkAddressUser(userID)) {
+                if (paymentController.selectedPaymentMethod.value.ten ==
+                    'VNPay') {
+                  await vnpayController.getUrlPayment(
+                      CartController().instance.totalPrice.value.toInt());
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => VNPAYScreen(
+                              url: vnpayController.urlVNPay.value)));
+                } else {
+                  orderController.processOrder(userID,
+                      CartController().instance.totalPrice.value.toInt());
+                }
               } else {
-                orderController.processOrder(
-                    userID, CartController().instance.totalPrice.value.toInt());
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text('Thiếu thông tin !!!'),
+                      content: const Text(
+                          'Tài khoản của bạn cần cung cấp thông tin số điện thoại và địa chỉ để mua hàng'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(); // Close the dialog
+                          },
+                          child: const Text('Close'),
+                        ),
+                      ],
+                    );
+                  },
+                );
               }
             },
             style: ElevatedButton.styleFrom(

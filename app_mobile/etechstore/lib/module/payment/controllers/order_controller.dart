@@ -2,12 +2,14 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:etechstore/module/cart/controller/cart_controller.dart';
 import 'package:etechstore/module/home/models/product_model_home.dart';
+import 'package:etechstore/module/home/views/product.dart';
 import 'package:etechstore/module/payment/controllers/order_items_controller.dart';
 import 'package:etechstore/module/payment/models/model_product_model.dart';
 import 'package:etechstore/module/payment/models/order_detail_model.dart';
 import 'package:etechstore/module/payment/models/order_model.dart';
 import 'package:etechstore/module/payment/views/screen_loader.dart';
 import 'package:etechstore/module/payment/views/success_screen.dart';
+import 'package:etechstore/module/previews/models/user_model.dart';
 import 'package:etechstore/module/product_detail/controller/product_sample_controller.dart';
 import 'package:get/get.dart';
 import 'package:network_info_plus/network_info_plus.dart';
@@ -20,7 +22,23 @@ class OrderController extends GetxController {
   final db = FirebaseFirestore.instance;
   final orderItemController = Get.put(OrderItemsController());
   var id = generateRandomString(20);
+  RxList<UserModel> listUser = <UserModel>[].obs;
   RxList<ModelProductModel> listModel = <ModelProductModel>[].obs;
+
+  @override
+  void onInit() {
+    fetchUser();
+    super.onInit();
+  }
+
+  Future<void> fetchUser() async {
+    await db.collection('Users').snapshots().listen((snapshot) {
+      snapshot.docs.forEach((user) {
+        listUser.add(UserModel.fromSnapshot(user));
+      });
+    });
+  }
+
   Future<void> saveOrder(OrderModel order) async {
     try {
       await db.collection('DonHang').doc(id).set(order.toJson());
@@ -50,6 +68,14 @@ class OrderController extends GetxController {
     } catch (e) {
       throw 'Something went wrong';
     }
+  }
+
+  ProductModel getProductByID(String productID) {
+    ProductModel productReturn = ProductModel.empty();
+    db.collection('SanPham').doc(productID).get().then((product) {
+      productReturn = ProductModel.fromSnapshot(product);
+    });
+    return productReturn;
   }
 
   Future<void> addListModel(
@@ -142,8 +168,8 @@ class OrderController extends GetxController {
     }
   }
 
-  void processOrderBuyNow(
-      String userID, int totalPrice, ProductModel product) async {
+  void processOrderBuyNow(String userID, int totalPrice, String productID,
+      int quantity, String config, String color) async {
     try {
       ScreenLoader.openLoadingDialog();
 
@@ -155,7 +181,7 @@ class OrderController extends GetxController {
         TongTien: totalPrice,
         NgayTaoDon: Timestamp.now(),
         MaKhachHang: userID,
-        isPaid: true,
+        isPaid: false,
         isBeingShipped: false,
         isShipped: false,
         isCompleted: false,
@@ -163,13 +189,13 @@ class OrderController extends GetxController {
       await saveOrder(order);
 
       await saveOrderDetail(OrderDetail(
-          GiaTien: 1,
+          GiaTien: totalPrice,
           MaDonHang: id,
-          SoLuong: 1,
+          SoLuong: quantity,
           TrangThai: 1,
           KhuyenMai: 0,
           MaMauSanPham: ModelProductModel(
-                  CauHinh: '1TB', MaSanPham: product.id, MauSac: 'Đen')
+                  CauHinh: config, MaSanPham: productID, MauSac: color)
               .toJson()));
       controller.setTotalPriceAndCheckAll();
       await clearCart(userID);
@@ -189,6 +215,15 @@ class OrderController extends GetxController {
       int totalAmount, DateTime createDate, String orderID) async {
     final Uri url = Uri.parse(
         'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?vnp_Amount=$totalAmount&vnp_Command=pay&vnp_CreateDate=$createDate&vnp_CurrCode=VND&vnp_IpAddr=${getDeviceIP()}&vnp_Locale=vn&vnp_OrderInfo=Thanh+toan+don+hang+$orderID&vnp_OrderType=other&vnp_ReturnUrl=https%3A%2F%2Fdomainmerchant.vn%2FReturnUrl&vnp_TmnCode=DEMOV210&vnp_TxnRef=5&vnp_Version=2.1.0&vnp_SecureHash=3e0d61a0c0534b2e36680b3f7277743e8784cc4e1d68fa7d276e79c23be7d6318d338b477910a27992f5057bb1582bd44bd82ae8009ffaf6d141219218625c42');
+  }
+
+  bool checkAddressUser(String userID) {
+    for (var user in listUser) {
+      if (user.SoDienThoai != 0 && user.DiaChi != '' && user.uid == userID) {
+        return true;
+      }
+    }
+    return false;
   }
 }
 

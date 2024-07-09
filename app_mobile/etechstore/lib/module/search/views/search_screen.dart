@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:etechstore/module/home/models/product_model_home.dart';
 import 'package:etechstore/module/sample/product_horizontal_listtile.dart';
 import 'package:flutter/material.dart';
+import "package:unorm_dart/unorm_dart.dart" as unorm;
 
 class SearchSreen extends StatefulWidget {
   const SearchSreen({super.key});
@@ -52,7 +53,7 @@ class _SearchSreenState extends State<SearchSreen> {
                 )),
             onChanged: (value) {
               setState(() {
-                name = value;
+                name = removeDiacritics(value);
               });
             },
           ),
@@ -74,7 +75,7 @@ class _SearchSreenState extends State<SearchSreen> {
                     if (name.isEmpty) {
                       return productHorizontalListTile(context, product);
                     }
-                    if (product.Ten.toString()
+                    if (removeDiacritics(product.Ten.toString())
                         .toLowerCase()
                         .contains(name.toLowerCase())) {
                       return productHorizontalListTile(context, product);
@@ -85,4 +86,8 @@ class _SearchSreenState extends State<SearchSreen> {
       ),
     );
   }
+}
+
+String removeDiacritics(String input) {
+  return unorm.nfd(input).replaceAll(RegExp(r'[\u0300-\u036f]'), '');
 }
