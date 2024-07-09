@@ -1,9 +1,11 @@
 import 'package:etechstore/module/home/models/product_model_home.dart';
 import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/module/product_detail/view/product_detail_screen.dart';
+import 'package:etechstore/utlis/constants/image_key.dart';
 import 'package:flutter/material.dart';
 
 Widget productHorizontalListTile(BuildContext context, ProductModel product) {
+  print("Sản phẩm: ${product.Ten}");
   return GestureDetector(
     onTap: () {
       Navigator.push(
@@ -33,12 +35,18 @@ Widget productHorizontalListTile(BuildContext context, ProductModel product) {
             Stack(
               children: [
                 SizedBox(
-                    height: MediaQuery.of(context).size.height / 7,
-                    width: MediaQuery.of(context).size.width / 2.3,
-                    child: Image.network(
-                      product.thumbnail,
-                      fit: BoxFit.contain,
-                    )),
+                  height: MediaQuery.of(context).size.height / 7,
+                  width: MediaQuery.of(context).size.width / 2.3,
+                  child: FadeInImage.assetNetwork(
+                    image: product.thumbnail,
+                    placeholder: ImageKey.whiteBackGround,
+                    imageErrorBuilder: (context, error, stackTrace) {
+                      return const Center(
+                        child: Text("Lỗi kết nối"),
+                      );
+                    },
+                  ),
+                ),
                 Builder(
                   builder: (context) {
                     if (product.KhuyenMai != 0) {
@@ -47,8 +55,7 @@ Widget productHorizontalListTile(BuildContext context, ProductModel product) {
                           left: 90,
                           right: 45,
                           child: Container(
-                            decoration: const BoxDecoration(
-                                shape: BoxShape.rectangle, color: Colors.red),
+                            decoration: const BoxDecoration(shape: BoxShape.rectangle, color: Colors.red),
                             width: 100,
                             height: 50,
                             child: Padding(
@@ -76,9 +83,7 @@ Widget productHorizontalListTile(BuildContext context, ProductModel product) {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      product.Ten.length < 30
-                          ? product.Ten
-                          : '${product.Ten.substring(0, 30)}...',
+                      product.Ten.length < 30 ? product.Ten : '${product.Ten.substring(0, 30)}...',
                       style: const TextStyle(fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
                     ),
@@ -89,22 +94,14 @@ Widget productHorizontalListTile(BuildContext context, ProductModel product) {
                             children: [
                               Text(
                                 priceFormat(product.GiaTien),
-                                style: const TextStyle(
-                                    color: Colors.grey,
-                                    decoration: TextDecoration.lineThrough),
+                                style: const TextStyle(color: Colors.grey, decoration: TextDecoration.lineThrough),
                               ),
-                              Text(
-                                  priceFormat(((product.GiaTien -
-                                          (product.GiaTien *
-                                              product.KhuyenMai /
-                                              100)))
-                                      .round()),
+                              Text(priceFormat(((product.GiaTien - (product.GiaTien * product.KhuyenMai / 100))).round()),
                                   style: const TextStyle(color: Colors.red))
                             ],
                           );
                         }
-                        return Text(priceFormat(product.GiaTien),
-                            style: const TextStyle(color: Colors.red));
+                        return Text(priceFormat(product.GiaTien), style: const TextStyle(color: Colors.red));
                       },
                     )
                   ],
