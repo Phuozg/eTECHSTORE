@@ -338,6 +338,83 @@ class OrderdetailWdiet extends StatelessWidget {
                           ),
                         ),
                       );
+                    } else if (order.isPaid) {
+                      GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text("Huỷ đơn hàng"),
+                                content: Column(
+                                  children: [
+                                    Obx(() {
+                                      return Row(
+                                          children: List.generate(5, (index) {
+                                        return IconButton(
+                                            onPressed: () {
+                                              previewsController
+                                                  .selectStar(index);
+                                            },
+                                            icon: previewsController
+                                                        .selectedstar.value >=
+                                                    index
+                                                ? const Icon(
+                                                    Icons.star,
+                                                    color: Colors.amber,
+                                                  )
+                                                : const Icon(
+                                                    Icons.star_border,
+                                                    color: Colors.amber,
+                                                  ));
+                                      }));
+                                    }),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    TextField(
+                                      controller: textController,
+                                      maxLines: null,
+                                      decoration: const InputDecoration(
+                                          labelText: 'Nhận xét'),
+                                    ),
+                                  ],
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      controller.deleteOrder(order.id);
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text("Xác nhận"),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text("Đóng"),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20.w, vertical: 5.h),
+                          decoration: BoxDecoration(
+                            color: TColros.red,
+                            border:
+                                const Border.fromBorderSide(BorderSide.none),
+                            borderRadius: BorderRadius.circular(5.r),
+                          ),
+                          child: Text(
+                            "Đánh giá",
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 12.sp),
+                          ),
+                        ),
+                      );
                     }
                     return Container();
                   }),

@@ -8,8 +8,15 @@ class PreviewsController extends GetxController {
   static PreviewsController get instance => Get.find();
   final db = FirebaseFirestore.instance;
   RxList<PreviewModel> previewsOfProduct = <PreviewModel>[].obs;
-  RxList<UserModel> user = <UserModel>[].obs;
+  RxList<UserModel> listUser = <UserModel>[].obs;
   RxInt selectedstar = RxInt(-1);
+
+  @override
+  void onInit() {
+    fetchUser();
+    super.onInit();
+  }
+
   void selectStar(int index) {
     selectedstar.value = index;
   }
@@ -28,17 +35,24 @@ class PreviewsController extends GetxController {
     }
   }
 
-
-Future<void> fetchUser() async {
-    db.collection("Users").where("TrangThai", isEqualTo: true).get().then(
-      (querySnapshot) {
-        for (var docSnapshot in querySnapshot.docs) {
-          user.add(UserModel.fromSnapshot(docSnapshot));
-        }
-      },
-    );
+  Future<void> fetchUser() async {
+    db.collection('Users').snapshots().listen((users) {
+      listUser.clear();
+      users.docs.forEach((user) {
+        listUser.add(UserModel.fromSnapshot(user));
+      });
+    });
   }
 
+  RxString getUserName(String userID) {
+    RxString userName = ''.obs;
+    for (var user in listUser) {
+      if (user.uid == userID) {
+        userName = user.HoTen.obs;
+      }
+    }
+    return userName;
+  }
 
   num getAverage() {
     num average = 0;
@@ -61,7 +75,7 @@ Future<void> fetchUser() async {
         MaSanPham: productID,
         DanhGia: previewUser,
         SoSao: star + 1,
-        TrangThai: true);
+        TrangThai: false);
     db.collection('DanhGia').doc(id).set(preview.toJson());
   }
 }

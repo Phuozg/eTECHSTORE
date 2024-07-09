@@ -45,10 +45,8 @@ class PreviewsScreen extends StatelessWidget {
               itemCount: previewsController.previewsOfProduct.length,
               itemBuilder: (context, index) {
                 final preview = previewsController.previewsOfProduct[index];
-                final userPreview = previewsController.user.firstWhere(
-                  (user) => user.uid == preview.MaKhachHang,
-                  orElse: () => UserModel.empty(),
-                );
+                final String userName =
+                    previewsController.getUserName(preview.MaKhachHang).value;
                 return Container(
                   margin: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
@@ -65,14 +63,10 @@ class PreviewsScreen extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              children: [
-                                const Text(
-                                  'Khách hàng:  ',
-                                  style: TextStyle(fontWeight: FontWeight.w300),
-                                ),
-                                Text(userPreview.HoTen),
-                              ],
+                            Text(
+                              'Khách hàng:  ${userName}',
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.w300),
                             ),
                             Row(
                               children: [
