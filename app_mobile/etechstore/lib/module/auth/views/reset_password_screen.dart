@@ -63,7 +63,7 @@ class ResetPasswordScreen extends StatelessWidget {
               ),
               SizedBox(
                 width: double.infinity,
-                child: TextButton(
+                child: TextButton(   style: TextButton.styleFrom(backgroundColor: TColros.purple_line),
                   onPressed: () {
                     controller.resendPasswordResetEmail(email);
                   },

@@ -15,14 +15,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthServices extends GetxController {
   static AuthServices get instance => Get.find();
-  //instance & firestore
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
 
 
-  //get current usre
-  User? getCurrentUser() {
+   User? getCurrentUser() {
     return _auth.currentUser;
   }
 
