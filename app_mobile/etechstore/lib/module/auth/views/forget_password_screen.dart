@@ -19,14 +19,8 @@ class ForgetPasswordScreen extends StatelessWidget {
     final controller = Get.put(ForgetPasswordController());
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
-        actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: const Icon(Icons.clear))
-        ],
+        title: const Text("Quên mật khẩu"),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -34,10 +28,11 @@ class ForgetPasswordScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Quên mật khẩu", style: Theme.of(context).textTheme.headlineMedium),
-              const SizedBox(height: 15),
-              Text("Nhập email để đổi mật khẩu mới", style: Theme.of(context).textTheme.headlineMedium),
-              const SizedBox(height: 15),
+              const Text(
+                "Nhập email để đổi mật khẩu mới",
+                style: TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 5),
               Form(
                 key: controller.forgetPasswordFormKey,
                 child: TextFormField(
@@ -60,12 +55,14 @@ class ForgetPasswordScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: TColros.purple_line),
                     onPressed: () {
-                      //FullScreenLoader.openLoadingDialog('Quá trình đang diễn ra...', ImageKey.loadingAnimation);
-                      //Get.off(() => ResetPasswordScreen(email: controller.sendPasswordResetEmail()));
                       controller.sendPasswordResetEmail();
                     },
-                    child: const Text("Gửi")),
+                    child: const Text(
+                      "Gửi",
+                      style: TextStyle(color: Colors.white),
+                    )),
               ),
             ],
           ),

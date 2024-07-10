@@ -110,7 +110,7 @@ class CartScreen extends StatelessWidget {
                                       final product = controller.products[item.maSanPham['maSanPham']]!;
 
                                       final price = controller.calculatePrice(productSample, product, selectedColor, selectedConfig);
- 
+
                                       return Slidable(
                                         endActionPane: ActionPane(motion: const ScrollMotion(), children: [DeleteItem(item: item)]),
                                         child: SingleChildScrollView(
@@ -231,7 +231,6 @@ class CartScreen extends StatelessWidget {
                                                                       showModalBottomSheet(
                                                                         context: context,
                                                                         builder: (ctx) {
- 
                                                                           return ShowCustomModalBottomSheet(
                                                                             cart: item,
                                                                             GiaTien: product.giaTien,
@@ -259,7 +258,7 @@ class CartScreen extends StatelessWidget {
                                                                   : priceFormat((product.giaTien - product.giaTien * product.KhuyenMai ~/ 100)),
                                                             ),
                                                             SizedBox(height: 3.h),
-                                                            ChangeQuantityItemWidget(item: item )
+                                                            ChangeQuantityItemWidget(item: item, quantity: item.soLuong)
                                                           ],
                                                         ),
                                                       ],
