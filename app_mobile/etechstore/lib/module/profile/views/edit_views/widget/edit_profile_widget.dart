@@ -4,8 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:etechstore/utlis/constants/colors.dart';
 
 class EditProfile extends StatelessWidget {
-  EditProfile({super.key, required this.title, required this.text});
-
+  EditProfile({super.key, required this.title, required this.text, required this.color});
+  Color color;
   String title;
   String text;
 
@@ -30,19 +30,16 @@ class EditProfile extends StatelessWidget {
               width: 200,
               child: Text(
                 text,
-                style: const TextStyle(
+                style:   TextStyle(
                   fontWeight: FontWeight.w400,
-                  fontSize: 14,
+                  fontSize: 14,color: color
                 ),
                 overflow: TextOverflow.ellipsis,
                 softWrap: true,
               ),
             ),
             const Spacer(),
-            const Icon(
-              Icons.arrow_forward_ios,
-              size: 15
-            ),
+            const Icon(Icons.arrow_forward_ios, size: 15),
           ],
         ),
       ),

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,12 +16,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthServices extends GetxController {
   static AuthServices get instance => Get.find();
-   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
 
+    Timer.periodic(const Duration(minutes: 5), (timer) {
+   
+      listenForLogout();
+    });
+  }
 
-   User? getCurrentUser() {
+  User? getCurrentUser() {
     return _auth.currentUser;
   }
 
@@ -42,31 +52,34 @@ class AuthServices extends GetxController {
       email: email,
       password: password,
     );
-    if (await _isUserAllowedToSignIn(email)) {
+    if (await isUserAllowedToSignIn(email)) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setBool('isLoggedIn', true);
       Get.offNamed('/navMenu');
       return userCredential;
     } else {
       await _auth.signOut();
-      TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.dangNhapThatBai);
-
       return null;
     }
   }
 
-  Future<bool> _isUserAllowedToSignIn(String email) async {
+  Future<bool> isUserAllowedToSignIn(String email) async {
     try {
-      QuerySnapshot snapshot = await firestore.collection('Users').where('email', isEqualTo: email).where('TrangThai', isEqualTo: 1).get();
+      QuerySnapshot snapshot = await firestore.collection('Users').where('email', isEqualTo: email).get();
 
       if (snapshot.docs.isNotEmpty) {
-        return true;
+        int trangThai = snapshot.docs.first.get('TrangThai');
+        if (trangThai == 1) {
+          return true;
+        } else {
+          TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.taiKhoanDaBiKhoa);
+          return false;
+        }
       } else {
         return false;
       }
     } catch (e) {
       TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.dangNhapThatBai);
-
       return false;
     }
   }
@@ -241,5 +254,26 @@ class AuthServices extends GetxController {
       }
     }
     return userCredential;
+  }
+
+  void listenForLogout() {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser != null) {
+      FirebaseFirestore.instance.collection('Users').doc(currentUser.uid).snapshots().listen((snapshot) {
+        print("uid: $currentUser.uid");
+        Map<String, dynamic> userData = snapshot.data()!;
+        if (userData['TrangThai'] == 0) {
+          // Đặt lại trường forceLogout để tránh lặp lại đăng xuất
+
+          // Đăng xuất người dùng
+          FirebaseAuth.instance.signOut().then((_) {
+            // Điều hướng người dùng về trang đăng nhập hoặc bất kỳ hành động cần thiết nào khác
+            // Ví dụ: Navigator.of(context).pushReplacementNamed('/login');
+            Get.offAll(const SignInScreen());
+          });
+        }
+      });
+    }
   }
 }
