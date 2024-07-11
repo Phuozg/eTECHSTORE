@@ -41,7 +41,7 @@ class Categories extends StatelessWidget {
                               )));
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 122, 125, 191),
+                  // backgroundColor: const Color.fromARGB(255, 122, 125, 191),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -51,11 +51,11 @@ class Categories extends StatelessWidget {
                   children: [
                     Icon(
                       MdiIcons.fromString(category.HinhAnh),
-                      color: Colors.white,
+                      color: const Color(0xFF383CA0),
                     ),
                     Text(
                       category.TenDanhMuc,
-                      style: const TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Color(0xFF383CA0)),
                     ),
                   ],
                 )),

@@ -18,7 +18,7 @@ class CategoryController extends GetxController {
     try {
       final snapshot = await db
           .collection('DanhMucSanPham')
-          .orderBy('id', descending: false)
+          .where('TrangThai', isEqualTo: 1)
           .get();
       final categories = snapshot.docs
           .map((document) => CategoryModel.fromSnapshot(document))

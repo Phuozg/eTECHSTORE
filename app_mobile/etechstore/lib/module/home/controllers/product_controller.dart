@@ -7,10 +7,11 @@ class ProductControllerr extends GetxController {
 
   final db = FirebaseFirestore.instance;
   final RxString selectedSortOption = 'Tên'.obs;
-  final RxList<ProductModel> products = <ProductModel>[].obs;
+  RxList<ProductModel> products = <ProductModel>[].obs;
   var allProduct = <ProductModel>[].obs;
   var discountProducts = <ProductModel>[].obs;
   var popularProducts = <ProductModel>[].obs;
+  var filterProduct = <ProductModel>[].obs;
   @override
   void onInit() {
     fetchProduct();
@@ -129,5 +130,12 @@ class ProductControllerr extends GetxController {
     } catch (e) {
       throw 'Something went wrong';
     }
+  }
+
+  void filter(double minPrice, double maxPrice) {
+    allProduct.clear();
+    allProduct.assignAll(products);
+    allProduct.removeWhere(
+        (product) => product.GiaTien < minPrice || product.GiaTien > maxPrice);
   }
 }

@@ -1,4 +1,3 @@
-
 // import 'package:carousel_slider/carousel_slider.dart';
 // import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:flutter/material.dart';
@@ -12,11 +11,11 @@
 //         if (snapshot.hasError) {
 //           return const Text('Something went wrong');
 //         }
-    
+
 //         if (snapshot.connectionState == ConnectionState.waiting) {
 //           return const Text("Loading");
 //         }
-    
+
 //         return CarouselSlider(
 //           items: snapshot.data!.docs
 //               .map((DocumentSnapshot document) {
@@ -25,7 +24,7 @@
 //                 return Image.network(data['HinhAnh'],fit: BoxFit.fitHeight,);
 //               })
 //               .toList()
-//               .cast(), 
+//               .cast(),
 //           options: CarouselOptions(
 //             autoPlay: true,
 //             enlargeCenterPage: true,
@@ -47,26 +46,31 @@ class SlideShowBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     final bannerController = Get.put(BannerController());
 
     return Obx(() {
-      if(bannerController.allBanner.isEmpty){
-        return const Center(child: Text("Không có dữ liệu"),);
+      if (bannerController.allBanner.isEmpty) {
+        return const Center(
+          child: Text("Không có dữ liệu"),
+        );
       }
       return CarouselSlider.builder(
         itemCount: bannerController.allBanner.length,
         itemBuilder: (context, index, realIndex) {
           final banner = bannerController.allBanner[index];
-          return Image.network(banner.HinhAnh,fit: BoxFit.fitHeight,);
-        }, 
-          options: CarouselOptions(
-            autoPlay: true,
-            enlargeCenterPage: true,
-            viewportFraction: 0.9,
-            aspectRatio: 2.0,
-            initialPage: 2,
-          ),);
+          return Image.network(
+            banner.HinhAnh,
+            fit: BoxFit.cover,
+          );
+        },
+        options: CarouselOptions(
+          autoPlay: true,
+          enlargeCenterPage: true,
+          viewportFraction: 1,
+          aspectRatio: 2.0,
+          initialPage: 0,
+        ),
+      );
     });
   }
 }

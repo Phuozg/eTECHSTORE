@@ -1,11 +1,13 @@
 import 'package:etechstore/module/cart/controller/cart_controller.dart';
 import 'package:etechstore/module/cart/view/cart_screen.dart';
 import 'package:etechstore/module/cart/view/widget/cart_icon_widget.dart';
+import 'package:etechstore/module/home/controllers/product_controller.dart';
 import 'package:etechstore/module/home/views/category.dart';
 import 'package:etechstore/module/home/views/product.dart';
 import 'package:etechstore/module/home/views/search_bar.dart';
 import 'package:etechstore/module/home/views/slideshow_banner.dart';
 import 'package:etechstore/module/product_detail/controller/product_sample_controller.dart';
+import 'package:etechstore/module/products/views/product_screen.dart';
 import 'package:etechstore/module/wishlist/controller/wishlist_controller.dart';
 import 'package:etechstore/utlis/constants/image_key.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,16 +17,20 @@ import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatelessWidget {
-    HomeScreen({super.key});
-    ProductSampleController productSampleController = Get.put(ProductSampleController());
+  HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
+    ProductSampleController productSampleController =
+        Get.put(ProductSampleController());
     final CartController cartController = Get.put(CartController());
-    final Uri facbook = Uri.parse('https://www.facebook.com/messages/t/323929774140624');
+    final productController = Get.put(ProductControllerr());
+    final Uri facbook =
+        Uri.parse('https://www.facebook.com/messages/t/323929774140624');
     final wishListController = Get.put(WishListController());
     wishListController.createWishList(FirebaseAuth.instance.currentUser!.uid);
-      productSampleController.getSampleProduct();
- 
+    productSampleController.getSampleProduct();
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -54,7 +60,8 @@ class HomeScreen extends StatelessWidget {
             child: Obx(
               () => Padding(
                 padding: const EdgeInsets.only(left: 2.0, right: 5),
-                child: CartIconWithBadge(itemCount: cartController.cartItems.length),
+                child: CartIconWithBadge(
+                    itemCount: cartController.cartItems.length),
               ),
             ),
           ),
@@ -65,33 +72,64 @@ class HomeScreen extends StatelessWidget {
             },
             child: const Padding(
               padding: EdgeInsets.only(bottom: 8, right: 15),
-              child: Image(image: AssetImage(ImageKey.messengerIcon), height: 25, width: 30),
+              child: Image(
+                  image: AssetImage(ImageKey.messengerIcon),
+                  height: 25,
+                  width: 30),
             ),
           ),
         ],
       ),
       body: Container(
-        padding: const EdgeInsets.all(8.0),
-        color: Colors.grey.shade200,
+        padding: const EdgeInsets.all(3.0),
+        color: Colors.grey.shade300,
         child: ListView(
           shrinkWrap: true,
           children: [
             //Banner khuyến mãi
-            SizedBox(width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height / 6, child: const SlideShowBanner()),
-            const Divider(),
+            SizedBox(
+                height: MediaQuery.of(context).size.height / 6,
+                child: const SlideShowBanner()),
 
             //Danh mục sản phẩm
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "Danh mục",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height / 15, child: const Categories()),
-              ],
+            Container(
+              color: Colors.white,
+              padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
+              margin: const EdgeInsets.only(top: 5),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Danh mục",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (builder) => ProductScreen(
+                                          title: 'Tất cả',
+                                          futureMethod: productController
+                                              .getProductsForCate(catId: 0),
+                                        )));
+                          },
+                          child: const Text(
+                            'Xem tất cả',
+                            style: TextStyle(color: Colors.black),
+                          ))
+                    ],
+                  ),
+                  SizedBox(
+                      height: MediaQuery.of(context).size.height / 15,
+                      child: const Categories()),
+                ],
+              ),
             ),
-            const Divider(),
 
             //Danh sách sản phẩm
             const Product(),
