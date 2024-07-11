@@ -148,7 +148,11 @@ class EditProfileScreen extends StatelessWidget {
                                 controller: profileController.nameController,
                               ));
                             },
-                            child: EditProfile(title: "Tên", text: profile.HoTen),
+                            child: EditProfile(
+                              title: "Tên",
+                              text: profile.HoTen,
+                              color: Colors.black,
+                            ),
                           ),
                           Linehelper(color: const Color(0xFFD9D9D9), height: .8.h),
                           GestureDetector(
@@ -163,6 +167,7 @@ class EditProfileScreen extends StatelessWidget {
                                 ));
                               },
                               child: EditProfile(
+                                  color: Colors.black,
                                   title: "Điện thoại",
                                   text: profile.SoDienThoai != 0 ? "0${profile.SoDienThoai.toString()}" : ("Thêm số điện thoại"))),
                           Linehelper(color: const Color.fromARGB(94, 217, 217, 217), height: 9.h),
@@ -170,7 +175,11 @@ class EditProfileScreen extends StatelessWidget {
                               onTap: () {
                                 TLoaders.errorSnackBar(title: 'Thông báo', message: 'Không thể thay đổi Email.');
                               },
-                              child: EditProfile(title: "Email", text: profile.Email)),
+                              child: EditProfile(
+                                title: "Email",
+                                text: profile.Email,
+                                color: const Color.fromARGB(255, 146, 145, 145),
+                              )),
                           Linehelper(color: const Color(0xFFD9D9D9), height: .8.h),
                           GestureDetector(
                               onTap: () {
@@ -183,7 +192,11 @@ class EditProfileScreen extends StatelessWidget {
                                   },
                                 ));
                               },
-                              child: EditProfile(title: "Địa chỉ", text: profile.DiaChi == '' ? "Thêm địa chỉ" : profile.DiaChi)),
+                              child: EditProfile(
+                                title: "Địa chỉ",
+                                text: profile.DiaChi == '' ? "Thêm địa chỉ" : profile.DiaChi,
+                                color: Colors.black,
+                              )),
                         ]);
                       },
                     );

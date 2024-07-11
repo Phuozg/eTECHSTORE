@@ -48,28 +48,32 @@ class SignInController extends GetxController {
   }
 
   Future<void> signOut() async {
-    await authServices.signOut();
+    ETAlertDialog.showConfirmPopup(
+      title: "Xác nhận",
+      description: "Bạn có thực sự muốn đăng xuất",
+      conFirm: () => authServices.signOut(),
+    );
   }
 
-  //SignIn
   Future<void> signIn() async {
     final isconnected = network.isConnectedToInternet.value;
     try {
       if (!isconnected) {
         TLoaders.errorSnackBar(title: TTexts.thongBao, message: "Không có kết nối internet");
         return;
-      } else {
-        FullScreenLoader.openLoadingDialog('Quá trình đang diễn ra...', ImageKey.loadingAnimation);
-        await authServices.signInWithEmailPassword(email.text.trim(), password.text.trim());
-        await authServices.updatePasswordInFirestore(email.text.trim(), password.text.trim());
-        clearPassword();
       }
-    } catch (e) {
+
       if (email.text.isEmpty || password.text.isEmpty) {
         TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.chuaNhapDuThongTin);
-      } else {
-        TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.saiEmailHoacMatKhau);
+        return;
       }
+
+      FullScreenLoader.openLoadingDialog('Quá trình đang diễn ra...', ImageKey.loadingAnimation);
+      await authServices.signInWithEmailPassword(email.text.trim(), password.text.trim());
+      await authServices.updatePasswordInFirestore(email.text.trim(), password.text.trim());
+      clearPassword();
+    } catch (e) {
+      TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.saiEmailHoacMatKhau);
     }
   }
 
