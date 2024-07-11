@@ -17,7 +17,7 @@ class Product extends StatelessWidget {
     productSampleController.getSampleProduct();
 
     final productController = Get.put(ProductControllerr());
-    var products = productController.allProduct;
+    final products = productController.allProduct;
     return Obx(() {
       if (productController.discountProducts.isEmpty) {
         return const Center(

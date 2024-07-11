@@ -12,6 +12,7 @@ class ProductControllerr extends GetxController {
   var discountProducts = <ProductModel>[].obs;
   var popularProducts = <ProductModel>[].obs;
   var filterProduct = <ProductModel>[].obs;
+  RxBool isFilter = false.obs;
   @override
   void onInit() {
     fetchProduct();

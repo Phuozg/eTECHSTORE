@@ -25,19 +25,21 @@ class _WishListScreenState extends State<WishListScreen> {
         ),
         centerTitle: true,
       ),
-      body: Container(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(children: [
-            Obx(() {
-              if (wishlistController.listProductWishList.isEmpty) {
-                return const Center(
-                  child: Text('Bạn chưa có sản phẩm yêu thích nào'),
-                );
-              }
-              return productVerticalSample(
-                  context, wishlistController.listProductWishList);
-            }),
-          ])),
+      body: SingleChildScrollView(
+        child: Container(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(children: [
+              Obx(() {
+                if (wishlistController.listProductWishList.isEmpty) {
+                  return const Center(
+                    child: Text('Bạn chưa có sản phẩm yêu thích nào'),
+                  );
+                }
+                return productVerticalSample(
+                    context, wishlistController.listProductWishList);
+              }),
+            ])),
+      ),
     );
   }
 }

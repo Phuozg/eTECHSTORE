@@ -3,7 +3,6 @@ import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/module/product_detail/controller/product_sample_controller.dart';
 import 'package:etechstore/module/product_detail/model/product_sample_model.dart';
 import 'package:etechstore/module/product_detail/view/product_detail_screen.dart';
-import 'package:etechstore/module/product_detail/view/widget/build_product_sample.dart';
 import 'package:etechstore/module/product_detail/view/widget/sample_bottom_sheet.dart';
 import 'package:etechstore/module/wishlist/controller/wishlist_controller.dart';
 import 'package:flutter/material.dart';
