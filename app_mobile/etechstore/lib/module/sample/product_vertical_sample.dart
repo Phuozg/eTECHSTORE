@@ -58,26 +58,30 @@ Widget productVerticalSample(
                               builder: (context) {
                                 if (product.KhuyenMai != 0) {
                                   return Positioned(
-                                      top: 0,
-                                      left: 80,
-                                      right: 2,
-                                      bottom: 85,
+                                      top: -5,
+                                      left: 60,
                                       child: Container(
                                         decoration: const BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.red),
+                                            image: DecorationImage(
+                                                image: AssetImage(
+                                                    'assets/images/discount_icon.png'),
+                                                fit: BoxFit.cover)),
                                         width: 100,
                                         height: 50,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              "-${product.KhuyenMai.toString()}%",
-                                              style: const TextStyle(
-                                                  color: Colors.white),
-                                            )
-                                          ],
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              0, 5, 3, 0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                "${product.KhuyenMai.toString()}%",
+                                                style: const TextStyle(
+                                                    color: Colors.white),
+                                              )
+                                            ],
+                                          ),
                                         ),
                                       ));
                                 }

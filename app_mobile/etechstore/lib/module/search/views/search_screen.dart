@@ -59,30 +59,33 @@ class _SearchSreenState extends State<SearchSreen> {
           ),
         ),
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('SanPham').snapshots(),
-        builder: (context, snapshot) {
-          return (snapshot.connectionState == ConnectionState.waiting)
-              ? const Center(
-                  child: CircularProgressIndicator(),
-                )
-              : ListView.builder(
-                  itemCount: snapshot.data!.docs.length,
-                  itemBuilder: (context, index) {
-                    ProductModel product = ProductModel.fromQuerySnapshot(
-                        snapshot.data!.docs[index]);
+      body: Container(
+        color: Colors.grey.shade300,
+        child: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance.collection('SanPham').snapshots(),
+          builder: (context, snapshot) {
+            return (snapshot.connectionState == ConnectionState.waiting)
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : ListView.builder(
+                    itemCount: snapshot.data!.docs.length,
+                    itemBuilder: (context, index) {
+                      ProductModel product = ProductModel.fromQuerySnapshot(
+                          snapshot.data!.docs[index]);
 
-                    if (name.isEmpty) {
-                      return productHorizontalListTile(context, product);
-                    }
-                    if (removeDiacritics(product.Ten.toString())
-                        .toLowerCase()
-                        .contains(name.toLowerCase())) {
-                      return productHorizontalListTile(context, product);
-                    }
-                    return Container();
-                  });
-        },
+                      if (name.isEmpty) {
+                        return productHorizontalListTile(context, product);
+                      }
+                      if (removeDiacritics(product.Ten.toString())
+                          .toLowerCase()
+                          .contains(name.toLowerCase())) {
+                        return productHorizontalListTile(context, product);
+                      }
+                      return Container();
+                    });
+          },
+        ),
       ),
     );
   }

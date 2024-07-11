@@ -1,5 +1,8 @@
+import 'dart:ffi';
+
 import 'package:etechstore/module/home/controllers/product_controller.dart';
 import 'package:etechstore/module/home/models/product_model_home.dart';
+import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/module/sample/product_vertical_sample.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -56,7 +59,66 @@ class _SortableProductsState extends State<SortableProducts> {
                   ),
                 ),
               ),
-              IconButton(onPressed: () {}, icon: const Icon(Icons.filter_alt)),
+              IconButton(
+                  onPressed: () {
+                    // Rx<RangeValues> selectedRange =
+                    //     const RangeValues(0.0, 100000000.0).obs;
+
+                    // showDialog(
+                    //   context: context,
+                    //   builder: (BuildContext context) {
+                    //     return AlertDialog(
+                    //       title: const Text('Tiêu chí'),
+                    //       content: Column(
+                    //         children: [
+                    //           Obx(() {
+                    //             return Row(
+                    //               mainAxisAlignment:
+                    //                   MainAxisAlignment.spaceBetween,
+                    //               children: [
+                    //                 Text(priceFormat(
+                    //                     selectedRange.value.start.toInt())),
+                    //                 Text(priceFormat(
+                    //                     selectedRange.value.end.toInt()))
+                    //               ],
+                    //             );
+                    //           }),
+                    //           Obx(() => RangeSlider(
+                    //                 values: selectedRange.value,
+                    //                 min: 0,
+                    //                 max: 100000000,
+                    //                 onChanged: (RangeValues newRange) {
+                    //                   selectedRange.value = newRange;
+                    //                 },
+                    //               )),
+                    //         ],
+                    //       ),
+                    //       actions: [
+                    //         Row(
+                    //           children: [
+                    //             TextButton(
+                    //               onPressed: () {
+                    //                 productController.filter(
+                    //                     selectedRange.value.start,
+                    //                     selectedRange.value.end);
+                    //                 Navigator.of(context).pop();
+                    //               },
+                    //               child: const Text('Xem kết quả'),
+                    //             ),
+                    //             TextButton(
+                    //               onPressed: () {
+                    //                 Navigator.of(context).pop();
+                    //               },
+                    //               child: const Text('Đóng'),
+                    //             ),
+                    //           ],
+                    //         )
+                    //       ],
+                    //     );
+                    //   },
+                    // );
+                  },
+                  icon: const Icon(Icons.filter_alt)),
             ],
           ),
           Obx(() => productVerticalSample(context, productController.products))
