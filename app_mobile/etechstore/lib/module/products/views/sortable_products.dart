@@ -30,34 +30,20 @@ class _SortableProductsState extends State<SortableProducts> {
       height: MediaQuery.of(context).size.height * 0.8,
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Obx(
-                () => SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  child: DropdownButtonFormField(
-                    decoration:
-                        const InputDecoration(prefixIcon: Icon(Icons.sort)),
-                    value: productController.selectedSortOption.value,
-                    onChanged: (value) {
-                      productController.sortProducts(value!);
-                    },
-                    items: [
-                      'Tên',
-                      'Giá cao',
-                      'Giá thấp',
-                      'Khuyến mãi',
-                      'Mới nhất'
-                    ]
-                        .map((option) => DropdownMenuItem(
-                            value: option, child: Text(option)))
-                        .toList(),
-                  ),
-                ),
+          Obx(
+            () => SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: DropdownButtonFormField(
+                decoration: const InputDecoration(prefixIcon: Icon(Icons.sort)),
+                value: productController.selectedSortOption.value,
+                onChanged: (value) {
+                  productController.sortProducts(value!);
+                },
+                items: ['Tên', 'Giá cao', 'Giá thấp', 'Khuyến mãi', 'Mới nhất']
+                    .map((option) => DropdownMenuItem(value: option, child: Text(option)))
+                    .toList(),
               ),
-              IconButton(onPressed: () {}, icon: const Icon(Icons.filter_alt)),
-            ],
+            ),
           ),
           Obx(() => productVerticalSample(context, productController.products))
         ],

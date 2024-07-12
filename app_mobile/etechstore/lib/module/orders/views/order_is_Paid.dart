@@ -20,6 +20,8 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'widget/order_isEmpty._widget.dart';
+
 class OrderIsPaid extends StatelessWidget {
   const OrderIsPaid({super.key});
 
@@ -27,7 +29,6 @@ class OrderIsPaid extends StatelessWidget {
   Widget build(BuildContext context) {
     final OrdersController controller = Get.put(OrdersController());
     final FirebaseAuth auth = FirebaseAuth.instance;
-
     return ScreenUtilInit(
       builder: (context, child) => StreamBuilder<List<OrdersModel>>(
           stream: controller.getOrder(),
@@ -44,6 +45,9 @@ class OrderIsPaid extends StatelessWidget {
                 .where(
                     (order) => order.maKhachHang == userId && order.isBeingShipped == false && order.isCompleted == false && order.isShipped == false)
                 .toList();
+            if (fillterOrder.isEmpty) {
+              return const OrderIsEmpty();
+            }
 
             return StreamBuilder<List<DetailOrders>>(
               stream: controller.fetchData(),
@@ -330,8 +334,7 @@ class OrderIsPaid extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                              )
-                            : const Text("hello");
+                              );
                       },
                     ),
                   );

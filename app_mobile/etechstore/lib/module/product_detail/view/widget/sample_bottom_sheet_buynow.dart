@@ -28,12 +28,7 @@ class SampleBottomSheetBuyNow extends StatefulWidget {
   final int KhuyenMai;
 
   const SampleBottomSheetBuyNow(
-      {super.key,
-      required this.sample,
-      required this.thumbnail,
-      required this.GiaTien,
-      required this.id,
-      required this.KhuyenMai});
+      {super.key, required this.sample, required this.thumbnail, required this.GiaTien, required this.id, required this.KhuyenMai});
 
   @override
   _SampleBottomSheetState createState() => _SampleBottomSheetState();
@@ -60,9 +55,7 @@ class _SampleBottomSheetState extends State<SampleBottomSheetBuyNow> {
       ),
       padding: EdgeInsets.only(left: 25.w, top: 5.h),
       width: double.infinity,
-      height: widget.sample.cauHinh.isEmpty || widget.sample.mauSac.isEmpty
-          ? 280.h
-          : 450.h,
+      height: widget.sample.cauHinh.isEmpty || widget.sample.mauSac.isEmpty ? 280.h : 450.h,
       alignment: Alignment.topCenter,
       child: SingleChildScrollView(
         child: Column(
@@ -70,9 +63,7 @@ class _SampleBottomSheetState extends State<SampleBottomSheetBuyNow> {
           children: [
             buildHeader(context),
             widget.sample.mauSac.isNotEmpty ? buildColorOptions() : Container(),
-            widget.sample.cauHinh.isNotEmpty
-                ? buildConfigOptions()
-                : Container(),
+            widget.sample.cauHinh.isNotEmpty ? buildConfigOptions() : Container(),
             buildQuantitySelector(),
             buildAddToCartButton(context),
             const Padding(padding: EdgeInsets.only(bottom: 5))
@@ -94,9 +85,7 @@ class _SampleBottomSheetState extends State<SampleBottomSheetBuyNow> {
             margin: EdgeInsets.only(right: 40.w, bottom: 5),
             width: 40.w,
             height: 5.h,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: const Color.fromARGB(126, 209, 207, 207)),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: const Color.fromARGB(126, 209, 207, 207)),
           )),
         ),
         const Padding(padding: EdgeInsets.only(top: 5)),
@@ -133,8 +122,9 @@ class _SampleBottomSheetState extends State<SampleBottomSheetBuyNow> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Obx(() {
+                          var price = int.parse(controller.currentPrice.value);
                           return Text(
-                            ((controller.currentPrice.value)),
+                            ((price.toString())),
                             style: TColros.red_18_w500,
                           );
                         }),
@@ -185,10 +175,7 @@ class _SampleBottomSheetState extends State<SampleBottomSheetBuyNow> {
                     selected: controller.selectedColorIndex.value == index,
                     onSelected: (selected) {
                       controller.selectedColorIndex.value = index;
-                      controller.checkPrice(
-                          widget.sample,
-                          priceFormat((widget.GiaTien -
-                              widget.GiaTien * widget.KhuyenMai ~/ 100)));
+                      controller.checkPrice(widget.sample, priceFormat((widget.GiaTien - widget.GiaTien * widget.KhuyenMai ~/ 100)));
                     },
                   ),
                 ],
@@ -226,10 +213,7 @@ class _SampleBottomSheetState extends State<SampleBottomSheetBuyNow> {
                       selected: controller.selectedConfigIndex.value == index,
                       onSelected: (selected) {
                         controller.selectedConfigIndex.value = index;
-                        controller.checkPrice(
-                            widget.sample,
-                            priceFormat((widget.GiaTien -
-                                widget.GiaTien * widget.KhuyenMai ~/ 100)));
+                        controller.checkPrice(widget.sample, priceFormat((widget.GiaTien - widget.GiaTien * widget.KhuyenMai ~/ 100)));
                       },
                     )
                   : Container();
@@ -248,9 +232,7 @@ class _SampleBottomSheetState extends State<SampleBottomSheetBuyNow> {
         const Text("Số lượng", style: TColros.black_14_w500),
         Container(
           margin: const EdgeInsets.only(right: 15, top: 15),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              border: Border.all(width: .4)),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), border: Border.all(width: .4)),
           child: Row(
             children: [
               GestureDetector(
@@ -275,10 +257,7 @@ class _SampleBottomSheetState extends State<SampleBottomSheetBuyNow> {
               GestureDetector(
                 onTap: () {},
                 child: Container(
-                  decoration: const BoxDecoration(
-                      border: Border(
-                          left: BorderSide(width: .4),
-                          right: BorderSide(width: .4))),
+                  decoration: const BoxDecoration(border: Border(left: BorderSide(width: .4), right: BorderSide(width: .4))),
                   alignment: Alignment.center,
                   height: 20,
                   width: 25,
@@ -307,19 +286,16 @@ class _SampleBottomSheetState extends State<SampleBottomSheetBuyNow> {
 
   Widget buildAddToCartButton(BuildContext context) {
     final CartController cartController = Get.put(CartController());
-
+    final orderController = Get.put(OrderController());
     return ScreenUtilInit(
       builder: (context, child) => GestureDetector(
         onTap: () {
+          orderController.getProductByID();
           String selectedColor =
-              controller.selectedColorIndex.value < widget.sample.mauSac.length
-                  ? widget.sample.mauSac[controller.selectedColorIndex.value]
-                  : '';
+              controller.selectedColorIndex.value < widget.sample.mauSac.length ? widget.sample.mauSac[controller.selectedColorIndex.value] : '';
 
-          String selectedConfig = controller.selectedConfigIndex.value <
-                  widget.sample.cauHinh.length
-              ? widget.sample.cauHinh[controller.selectedConfigIndex.value]
-              : '';
+          String selectedConfig =
+              controller.selectedConfigIndex.value < widget.sample.cauHinh.length ? widget.sample.cauHinh[controller.selectedConfigIndex.value] : '';
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
@@ -420,9 +396,7 @@ class _BuySampleSingleState extends State<BuySampleSingleBuyNow> {
             margin: EdgeInsets.only(right: 40.w, bottom: 5),
             width: 35.w,
             height: 5.h,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: const Color.fromARGB(126, 209, 207, 207)),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: const Color.fromARGB(126, 209, 207, 207)),
           )),
         ),
         const Padding(padding: EdgeInsets.only(top: 5)),
@@ -490,9 +464,7 @@ class _BuySampleSingleState extends State<BuySampleSingleBuyNow> {
         const Text("Số lượng", style: TColros.black_14_w500),
         Container(
           margin: const EdgeInsets.only(right: 15, top: 20),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              border: Border.all(width: .4)),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), border: Border.all(width: .4)),
           child: Row(
             children: [
               GestureDetector(
@@ -517,10 +489,7 @@ class _BuySampleSingleState extends State<BuySampleSingleBuyNow> {
               GestureDetector(
                 onTap: () {},
                 child: Container(
-                  decoration: const BoxDecoration(
-                      border: Border(
-                          left: BorderSide(width: .4),
-                          right: BorderSide(width: .4))),
+                  decoration: const BoxDecoration(border: Border(left: BorderSide(width: .4), right: BorderSide(width: .4))),
                   alignment: Alignment.center,
                   height: 20,
                   width: 25,
@@ -548,9 +517,14 @@ class _BuySampleSingleState extends State<BuySampleSingleBuyNow> {
   }
 
   Widget buildAddToCartButton(BuildContext context) {
+    widget.KhuyenMai.clamp(0, 100);
+    int price = widget.GiaTien - (widget.GiaTien * widget.KhuyenMai ~/ 100);
+
+    final orderController = Get.put(OrderController());
     return ScreenUtilInit(
       builder: (context, child) => GestureDetector(
         onTap: () {
+          orderController.getProductByID();
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
@@ -559,7 +533,7 @@ class _BuySampleSingleState extends State<BuySampleSingleBuyNow> {
                         quantity: quantity,
                         color: '',
                         config: '',
-                        price: widget.GiaTien.toString(),
+                        price: price.toString(),
                       )));
         },
         child: Container(

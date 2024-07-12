@@ -66,14 +66,12 @@ class OrderController extends GetxController {
     }
   }
 
-  Future<void> getProductByID(   ) async {
+  Future<void> getProductByID() async {
     db.collection('SanPham').snapshots().listen((product) async {
       var productGet = product.docs.map((e) => ProductModel.fromJson(e.data())).toList();
       productReturn.value = productGet;
     });
-
-  
-   }
+  }
 
   Future<void> addListModel(String color, String config, String productID) async {
     listModel.add(ModelProductModel(CauHinh: config, MaSanPham: productID, MauSac: color));
