@@ -46,7 +46,7 @@ class BuyNowScreen extends StatelessWidget {
                       children: [
                         address(userID),
                         Container(
-                            padding: EdgeInsets.only(top: 10, bottom: MediaQuery.of(context).size.height / 4),
+                            padding: EdgeInsets.only(top: 10, bottom: MediaQuery.of(context).size.height / 4.5),
                             width: MediaQuery.of(context).size.width,
                             margin: const EdgeInsets.all(8),
                             decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.white, boxShadow: const [
@@ -101,7 +101,7 @@ class BuyNowScreen extends StatelessWidget {
                                     ),
                                     const Divider(),
                                     Text(
-                                      "Tổng tiền: ${int.parse(price)}",
+                                      "Tổng tiền: ${priceFormat(int.parse(price))}",
                                       style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
                                     )
                                   ],
@@ -147,7 +147,7 @@ class BuyNowScreen extends StatelessWidget {
                 },
                 style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF383CA0)),
                 child: Text(
-                  'Đặt hàng \n ${int.parse(price)}',
+                  'Đặt hàng \n ${priceFormat(int.parse(price))}',
                   style: const TextStyle(color: Colors.white, fontSize: 15),
                   textAlign: TextAlign.center,
                 )),

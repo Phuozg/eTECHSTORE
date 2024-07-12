@@ -14,6 +14,8 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'widget/order_isEmpty._widget.dart';
+
 class OrderIsPaid extends StatelessWidget {
   const OrderIsPaid({super.key});
 
@@ -21,8 +23,6 @@ class OrderIsPaid extends StatelessWidget {
   Widget build(BuildContext context) {
     final OrdersController controller = Get.put(OrdersController());
     final FirebaseAuth auth = FirebaseAuth.instance;
-    final previewsController = Get.put(PreviewsController());
-    TextEditingController textController = TextEditingController();
     return ScreenUtilInit(
       builder: (context, child) => StreamBuilder<List<OrdersModel>>(
           stream: controller.getOrder(),
@@ -36,12 +36,12 @@ class OrderIsPaid extends StatelessWidget {
             String userId = auth.currentUser?.uid ?? '';
             List<OrdersModel> donHangs = snapshotDonHang.data!;
             List<OrdersModel> fillterOrder = donHangs
-                .where((order) =>
-                    order.maKhachHang == userId &&
-                    order.isBeingShipped == false &&
-                    order.isCompleted == false &&
-                    order.isShipped == false)
+                .where(
+                    (order) => order.maKhachHang == userId && order.isBeingShipped == false && order.isCompleted == false && order.isShipped == false)
                 .toList();
+            if (fillterOrder.isEmpty) {
+              return const OrderIsEmpty();
+            }
 
             return StreamBuilder<List<DetailOrders>>(
               stream: controller.fetchData(),
@@ -54,10 +54,8 @@ class OrderIsPaid extends StatelessWidget {
                   List<DetailOrders> ctDonHangs = snapshot.data!;
                   Set<String> displayedOrders = <String>{};
 
-                  List<DetailOrders> filteredCTDonHangs = ctDonHangs
-                      .where((ctDonHang) => fillterOrder
-                          .any((order) => order.id == ctDonHang.maDonHang))
-                      .where((ctDonHang) {
+                  List<DetailOrders> filteredCTDonHangs =
+                      ctDonHangs.where((ctDonHang) => fillterOrder.any((order) => order.id == ctDonHang.maDonHang)).where((ctDonHang) {
                     if (displayedOrders.contains(ctDonHang.maDonHang)) {
                       return false;
                     } else {
@@ -67,26 +65,19 @@ class OrderIsPaid extends StatelessWidget {
                   }).toList();
                   return Obx(
                     () => ListView.builder(
-                      itemCount: (controller.itemsToShow.value >=
-                              filteredCTDonHangs.length)
-                          ? filteredCTDonHangs.length
-                          : controller.itemsToShow.value + 1,
+                      itemCount:
+                          (controller.itemsToShow.value >= filteredCTDonHangs.length) ? filteredCTDonHangs.length : controller.itemsToShow.value + 1,
                       itemBuilder: (context, index) {
                         DetailOrders item = filteredCTDonHangs[index];
-                        var product =
-                            controller.products[item.maMauSanPham['MaSanPham']];
-                        OrdersModel? order = fillterOrder.firstWhereOrNull(
-                            (order) => order.id == item.maDonHang);
+                        var product = controller.products[item.maMauSanPham['MaSanPham']];
+                        OrdersModel? order = fillterOrder.firstWhereOrNull((order) => order.id == item.maDonHang);
 
-                        return order!.isBeingShipped == false &&
-                                order.isCompleted == false &&
-                                order.isShipped == false
-                            ? Container(
-                                height: 155.h,
-                                margin: EdgeInsets.symmetric(
-                                    horizontal: 5.w, vertical: 3.h),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 10.w, vertical: 3.h),
+                        return order!.isBeingShipped || order.isCompleted || order.isShipped
+                            ? const OrderIsEmpty()
+                            : Container(
+                                height: 157.h,
+                                margin: EdgeInsets.symmetric(horizontal: 5.w, vertical: 3.h),
+                                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
                                 decoration: BoxDecoration(
                                     border: Border.all(
                                       width: .5,
@@ -97,15 +88,12 @@ class OrderIsPaid extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         GestureDetector(
                                           onTap: () {
-                                            Get.to(DetailOrderSreen(
-                                                maDonHang: order.id));
+                                            Get.to(DetailOrderSreen(maDonHang: order.id));
                                           },
                                           child: Row(
                                             children: [
@@ -113,28 +101,18 @@ class OrderIsPaid extends StatelessWidget {
                                               product?.thumbnail != null
                                                   ? GestureDetector(
                                                       onTap: () {
-                                                        Get.to(DetailOrderSreen(
-                                                            maDonHang:
-                                                                order.id));
+                                                        Get.to(DetailOrderSreen(maDonHang: order.id));
                                                       },
-                                                      child: FadeInImage
-                                                          .assetNetwork(
-                                                        image: product!
-                                                            .thumbnail
-                                                            .toString(),
-                                                        placeholder: ImageKey
-                                                            .whiteBackGround,
+                                                      child: FadeInImage.assetNetwork(
+                                                        image: product!.thumbnail.toString(),
+                                                        placeholder: ImageKey.whiteBackGround,
                                                         width: 60.w,
                                                         height: 60.h,
                                                         fit: BoxFit.cover,
-                                                        imageErrorBuilder:
-                                                            (context, error,
-                                                                stackTrace) {
+                                                        imageErrorBuilder: (context, error, stackTrace) {
                                                           return Center(
-                                                              child:
-                                                                  Image.asset(
-                                                            ImageKey
-                                                                .whiteBackGround,
+                                                              child: Image.asset(
+                                                            ImageKey.whiteBackGround,
                                                             width: 60.w,
                                                             height: 60.h,
                                                             fit: BoxFit.cover,
@@ -146,107 +124,54 @@ class OrderIsPaid extends StatelessWidget {
                                                 width: 20,
                                               ),
                                               Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   product?.Ten != null
                                                       ? GestureDetector(
                                                           onTap: () {
                                                             //
-                                                            Get.to(
-                                                                DetailOrderSreen(
-                                                                    maDonHang:
-                                                                        order
-                                                                            .id));
+                                                            Get.to(DetailOrderSreen(maDonHang: order.id));
                                                           },
                                                           child: SizedBox(
                                                             width: 140.w,
                                                             child: Text(
                                                               product!.Ten,
-                                                              style: TextStyle(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  fontSize:
-                                                                      14.sp),
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
+                                                              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14.sp),
+                                                              overflow: TextOverflow.ellipsis,
                                                               softWrap: true,
                                                             ),
                                                           ),
                                                         )
-                                                      : const Text(
-                                                          "Loading..."),
+                                                      : const Text("Loading..."),
                                                   SizedBox(height: 5.h),
-                                                  item.maMauSanPham[
-                                                                      'MauSac'] !=
-                                                                  "" &&
-                                                              item.maMauSanPham[
-                                                                      'CauHinh'] !=
-                                                                  "" ||
-                                                          item.maMauSanPham[
-                                                                  'MauSac'] !=
-                                                              "" ||
-                                                          item.maMauSanPham[
-                                                                  'CauHinh'] !=
-                                                              ""
+                                                  item.maMauSanPham['MauSac'] != "" && item.maMauSanPham['CauHinh'] != "" ||
+                                                          item.maMauSanPham['MauSac'] != "" ||
+                                                          item.maMauSanPham['CauHinh'] != ""
                                                       ? Row(
                                                           children: [
-                                                            const Text("Loại:",
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .blueGrey)),
-                                                            item.maMauSanPham[
-                                                                        'MauSac'] ==
-                                                                    null
-                                                                ? const Text(
-                                                                    "Loại:",
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .grey))
+                                                            const Text("Loại:", style: TextStyle(color: Colors.blueGrey)),
+                                                            item.maMauSanPham['MauSac'] == null
+                                                                ? const Text("Loại:", style: TextStyle(color: Colors.grey))
                                                                 : Container(),
-                                                            item.maMauSanPham[
-                                                                        'MauSac'] !=
-                                                                    null
-                                                                ? Text(
-                                                                    "${item.maMauSanPham['MauSac']}",
-                                                                    style: const TextStyle(
-                                                                        fontWeight:
-                                                                            FontWeight
-                                                                                .w400))
-                                                                : const Text(
-                                                                    "Loading..."),
+                                                            item.maMauSanPham['MauSac'] != null
+                                                                ? Text("${item.maMauSanPham['MauSac']}",
+                                                                    style: const TextStyle(fontWeight: FontWeight.w400))
+                                                                : const Text("Loading..."),
                                                             Row(
                                                               children: [
-                                                                item.maMauSanPham['MauSac'] !=
-                                                                                "" &&
-                                                                            item.maMauSanPham['CauHinh'] !=
-                                                                                "" ||
-                                                                        item.maMauSanPham['MauSac'] !=
-                                                                            "" ||
-                                                                        item.maMauSanPham['CauHinh'] !=
-                                                                            ""
+                                                                item.maMauSanPham['MauSac'] != "" && item.maMauSanPham['CauHinh'] != "" ||
+                                                                        item.maMauSanPham['MauSac'] != "" ||
+                                                                        item.maMauSanPham['CauHinh'] != ""
                                                                     ? Text(
                                                                         " | ",
-                                                                        style: TextStyle(
-                                                                            fontSize:
-                                                                                12.sp,
-                                                                            color: Colors.grey),
+                                                                        style: TextStyle(fontSize: 12.sp, color: Colors.grey),
                                                                       )
                                                                     : Container(),
-                                                                item.maMauSanPham[
-                                                                            'CauHinh'] !=
-                                                                        null
-                                                                    ? Text(
-                                                                        "${item.maMauSanPham['CauHinh']}",
-                                                                        style: const TextStyle(
-                                                                            fontWeight: FontWeight
-                                                                                .w400))
-                                                                    : const Text(
-                                                                        "Loading..."),
+                                                                item.maMauSanPham['CauHinh'] != null
+                                                                    ? Text("${item.maMauSanPham['CauHinh']}",
+                                                                        style: const TextStyle(fontWeight: FontWeight.w400))
+                                                                    : const Text("Loading..."),
                                                               ],
                                                             ),
                                                           ],
@@ -254,18 +179,8 @@ class OrderIsPaid extends StatelessWidget {
                                                       : Container(),
                                                   Row(
                                                     children: [
-                                                      const Text("Số lượng: ",
-                                                          style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
-                                                              color: Colors
-                                                                  .blueGrey)),
-                                                      item.soLuong != null
-                                                          ? Text(
-                                                              "${item.soLuong}")
-                                                          : const Text(
-                                                              "Loading..."),
+                                                      const Text("Số lượng: ", style: TextStyle(fontWeight: FontWeight.w400, color: Colors.blueGrey)),
+                                                      item.soLuong != null ? Text("${item.soLuong}") : const Text("Loading..."),
                                                     ],
                                                   ),
                                                 ],
@@ -277,9 +192,7 @@ class OrderIsPaid extends StatelessWidget {
                                           children: [
                                             Text(
                                               "Chờ xác nhận",
-                                              style: TextStyle(
-                                                  color: Colors.lightBlue,
-                                                  fontSize: 12.sp),
+                                              style: TextStyle(color: Colors.lightBlue, fontSize: 12.sp),
                                             ),
                                           ],
                                         )
@@ -287,8 +200,7 @@ class OrderIsPaid extends StatelessWidget {
                                     ),
                                     SizedBox(height: 10.h),
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         GestureDetector(
                                           onTap: () {
@@ -299,51 +211,30 @@ class OrderIsPaid extends StatelessWidget {
                                                   title: const Center(
                                                     child: Text("Cẩn thận !!!"),
                                                   ),
-                                                  content: const Text(
-                                                      "Bạn có chắc chắn muốn huỷ đơn hàng này?"),
+                                                  content: const Text("Bạn có chắc chắn muốn huỷ đơn hàng này?"),
                                                   actions: [
                                                     Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceEvenly,
+                                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                       children: [
                                                         ElevatedButton(
                                                           onPressed: () {
-                                                            controller
-                                                                .deleteOrder(
-                                                                    order.id);
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop();
+                                                            controller.deleteOrder(order.id);
+                                                            Navigator.of(context).pop();
                                                           },
-                                                          style: ElevatedButton
-                                                              .styleFrom(
-                                                                  backgroundColor:
-                                                                      Colors
-                                                                          .redAccent),
+                                                          style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
                                                           child: const Text(
                                                             "Xác nhận",
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white),
+                                                            style: TextStyle(color: Colors.white),
                                                           ),
                                                         ),
                                                         ElevatedButton(
                                                             onPressed: () {
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .pop();
+                                                              Navigator.of(context).pop();
                                                             },
-                                                            style: ElevatedButton
-                                                                .styleFrom(
-                                                                    backgroundColor:
-                                                                        Colors
-                                                                            .blueAccent),
+                                                            style: ElevatedButton.styleFrom(backgroundColor: Colors.blueAccent),
                                                             child: const Text(
                                                               "Đóng",
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white),
+                                                              style: TextStyle(color: Colors.white),
                                                             )),
                                                       ],
                                                     ),
@@ -353,22 +244,15 @@ class OrderIsPaid extends StatelessWidget {
                                             );
                                           },
                                           child: Container(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 20.w,
-                                                vertical: 5.h),
+                                            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 5.h),
                                             decoration: BoxDecoration(
                                               color: TColros.red,
-                                              border:
-                                                  const Border.fromBorderSide(
-                                                      BorderSide.none),
-                                              borderRadius:
-                                                  BorderRadius.circular(5.r),
+                                              border: const Border.fromBorderSide(BorderSide.none),
+                                              borderRadius: BorderRadius.circular(5.r),
                                             ),
                                             child: Text(
                                               "Huỷ đơn",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 12.sp),
+                                              style: TextStyle(color: Colors.white, fontSize: 12.sp),
                                             ),
                                           ),
                                         ),
@@ -378,78 +262,52 @@ class OrderIsPaid extends StatelessWidget {
                                               priceFormat(product!.GiaTien),
                                               style: const TextStyle(
                                                 color: Colors.blueGrey,
-                                                decoration:
-                                                    TextDecoration.lineThrough,
+                                                decoration: TextDecoration.lineThrough,
                                               ),
                                             ),
                                             SizedBox(width: 10.w),
                                             Text(
-                                              priceFormat(
-                                                  (item.giaTien!).toInt()),
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.w500,
-                                                  color: Colors.redAccent),
+                                              priceFormat((item.giaTien!).toInt()),
+                                              style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.redAccent),
                                             ),
                                           ],
                                         ),
                                       ],
                                     ),
                                     SizedBox(height: 5.h),
-                                    Linehelper(
-                                        color: const Color.fromARGB(
-                                            94, 217, 217, 217),
-                                        height: 1),
+                                    Linehelper(color: const Color.fromARGB(94, 217, 217, 217), height: 1),
                                     GestureDetector(
                                       onTap: () {
                                         controller.loadMore();
-                                        Get.to(DetailOrderSreen(
-                                            maDonHang: order.id));
+                                        Get.to(DetailOrderSreen(maDonHang: order.id));
                                       },
                                       child: Container(
                                           margin: const EdgeInsets.only(top: 5),
                                           alignment: Alignment.center,
-                                          child: const Text("Xem chi tiết",
-                                              style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: 11))),
+                                          child: const Text("Xem chi tiết", style: TextStyle(color: Colors.grey, fontSize: 11))),
                                     ),
                                     SizedBox(height: 5.h),
-                                    Linehelper(
-                                        color: const Color.fromARGB(
-                                            94, 217, 217, 217),
-                                        height: 1),
+                                    Linehelper(color: const Color.fromARGB(94, 217, 217, 217), height: 1),
                                     SizedBox(height: 5.h),
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         item.soLuong != null
                                             ? Text(
                                                 "${item.soLuong} sản phẩm",
-                                                style: TextStyle(
-                                                    color: const Color.fromARGB(
-                                                        255, 41, 40, 40),
-                                                    fontSize: 13.sp),
+                                                style: TextStyle(color: const Color.fromARGB(255, 41, 40, 40), fontSize: 13.sp),
                                               )
                                             : const Text("Loading..."),
                                         Row(
                                           children: [
                                             Text(
                                               "Thành tiền:",
-                                              style: TextStyle(
-                                                  color: const Color.fromARGB(
-                                                      255, 41, 40, 40),
-                                                  fontSize: 13.sp),
+                                              style: TextStyle(color: const Color.fromARGB(255, 41, 40, 40), fontSize: 13.sp),
                                             ),
                                             SizedBox(width: 5.w),
                                             Text(
-                                              priceFormat(
-                                                  (item.giaTien! * item.soLuong)
-                                                      .toInt()),
-                                              style: TextStyle(
-                                                  fontSize: 13.sp,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: Colors.redAccent),
+                                              priceFormat((item.giaTien! * item.soLuong).toInt()),
+                                              style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Colors.redAccent),
                                             ),
                                           ],
                                         ),
@@ -457,8 +315,7 @@ class OrderIsPaid extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                              )
-                            : const Text("hello");
+                              );
                       },
                     ),
                   );

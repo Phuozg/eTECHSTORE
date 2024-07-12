@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:etechstore/module/cart/model/cart_model.dart';
+import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/module/orders/model/detail_orders.dart';
 import 'package:etechstore/module/product_detail/model/product_sample_model.dart';
 import 'package:etechstore/module/profile/model/local_storage_service.dart';
@@ -120,11 +121,9 @@ class ProductSampleController extends GetxController {
   Future<void> checkPrice(ProductSampleModel sample, String price) async {
     final index = selectedColorIndex.value * sample.cauHinh.length + selectedConfigIndex.value;
     if (index < sample.giaTien.length) {
-      currentPrice.value = sample.giaTien[index].toString();
+      currentPrice.value = priceFormat(sample.giaTien[index]);
     } else {
       currentPrice.value = price.toString();
     }
   }
-
- 
 }
