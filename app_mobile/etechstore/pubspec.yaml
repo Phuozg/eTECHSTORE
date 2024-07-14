@@ -42,6 +42,9 @@ dependencies:
   webview_flutter_android: ^3.16.3
   flutter_launcher_icons: ^0.13.1
   unorm_dart: ^0.3.0
+  firebase_messaging: ^14.9.4
+  permission_handler: ^11.3.1
+  flutter_local_notifications: ^17.2.1+1
 
 email_auth:
   smtp:

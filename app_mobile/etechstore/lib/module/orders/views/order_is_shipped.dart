@@ -69,7 +69,8 @@ class OrderIsShipped extends StatelessWidget {
                           return Container(
                             child: Text('Order not found for detail order ${item.maDonHang}.'),
                           );
-                        }
+                        }                        controller.checkItemInOrder(order!.id);
+
                         return order.isShipped == true
                             ? Container(
                                 height: 150.h,
@@ -246,10 +247,12 @@ class OrderIsShipped extends StatelessWidget {
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         item.soLuong != null
-                                            ? Text(
-                                                "${item.soLuong} sản phẩm",
-                                                style: TextStyle(color: const Color.fromARGB(255, 41, 40, 40), fontSize: 13.sp),
-                                              )
+                                            ? Obx(() => 
+                                            Text(
+                                                  "${controller.lstOrder.length} sản phẩm",
+                                                  style: TextStyle(color: const Color.fromARGB(255, 41, 40, 40), fontSize: 13.sp),
+                                                ),
+                                            )
                                             : const Text("Loading..."),
                                         Row(
                                           children: [

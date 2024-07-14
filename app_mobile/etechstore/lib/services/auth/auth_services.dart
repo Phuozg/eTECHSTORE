@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:etechstore/module/auth/views/sign_in_screen.dart';
 import 'package:etechstore/module/bottom_nav_bar/nav_menu.dart';
 import 'package:etechstore/module/profile/model/profile_model.dart';
+import 'package:etechstore/services/auth/auth_gate.dart';
 import 'package:etechstore/utlis/constants/text_strings.dart';
 import 'package:etechstore/utlis/helpers/popups/loader.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -173,7 +174,8 @@ class AuthServices extends GetxController {
           'TrangThai': 1,
           'Quyen': true,
           'SoDienThoai': 0,
-          'DiaChi': ''
+          'DiaChi': '',
+          'token':''
         });
 
         return userCredential;
@@ -261,8 +263,7 @@ class AuthServices extends GetxController {
 
     if (currentUser != null) {
       FirebaseFirestore.instance.collection('Users').doc(currentUser.uid).snapshots().listen((snapshot) {
-        print("uid: $currentUser.uid");
-        Map<String, dynamic> userData = snapshot.data()!;
+         Map<String, dynamic> userData = snapshot.data()!;
         if (userData['TrangThai'] == 0) {
           // Đặt lại trường forceLogout để tránh lặp lại đăng xuất
 
@@ -270,7 +271,7 @@ class AuthServices extends GetxController {
           FirebaseAuth.instance.signOut().then((_) {
             // Điều hướng người dùng về trang đăng nhập hoặc bất kỳ hành động cần thiết nào khác
             // Ví dụ: Navigator.of(context).pushReplacementNamed('/login');
-            Get.offAll(const SignInScreen());
+            Get.offAll(const AuthGate());
           });
         }
       });

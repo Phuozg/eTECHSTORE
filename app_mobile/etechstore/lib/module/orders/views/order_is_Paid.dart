@@ -39,7 +39,7 @@ class OrderIsPaid extends StatelessWidget {
                 .where(
                     (order) => order.maKhachHang == userId && order.isBeingShipped == false && order.isCompleted == false && order.isShipped == false)
                 .toList();
-            if (fillterOrder.isEmpty) {
+             if (fillterOrder.isEmpty) {
               return const OrderIsEmpty();
             }
 
@@ -53,8 +53,7 @@ class OrderIsPaid extends StatelessWidget {
                 } else {
                   List<DetailOrders> ctDonHangs = snapshot.data!;
                   Set<String> displayedOrders = <String>{};
-
-                  List<DetailOrders> filteredCTDonHangs =
+                   List<DetailOrders> filteredCTDonHangs =
                       ctDonHangs.where((ctDonHang) => fillterOrder.any((order) => order.id == ctDonHang.maDonHang)).where((ctDonHang) {
                     if (displayedOrders.contains(ctDonHang.maDonHang)) {
                       return false;
@@ -62,7 +61,10 @@ class OrderIsPaid extends StatelessWidget {
                       displayedOrders.add(ctDonHang.maDonHang);
                       return true;
                     }
+
+                    
                   }).toList();
+                      controller.checkItemInOrder(filteredCTDonHangs.first.maDonHang);
                   return Obx(
                     () => ListView.builder(
                       itemCount:
@@ -71,8 +73,7 @@ class OrderIsPaid extends StatelessWidget {
                         DetailOrders item = filteredCTDonHangs[index];
                         var product = controller.products[item.maMauSanPham['MaSanPham']];
                         OrdersModel? order = fillterOrder.firstWhereOrNull((order) => order.id == item.maDonHang);
-
-                        return order!.isBeingShipped || order.isCompleted || order.isShipped
+                         return order!.isBeingShipped || order.isCompleted || order.isShipped
                             ? const OrderIsEmpty()
                             : Container(
                                 height: 157.h,
@@ -293,10 +294,12 @@ class OrderIsPaid extends StatelessWidget {
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         item.soLuong != null
-                                            ? Text(
-                                                "${item.soLuong} sản phẩm",
-                                                style: TextStyle(color: const Color.fromARGB(255, 41, 40, 40), fontSize: 13.sp),
-                                              )
+                                            ? Obx(() => 
+                                        Text(
+                                                  "${controller.lstOrder.length} sản phẩm",
+                                                  style: TextStyle(color: const Color.fromARGB(255, 41, 40, 40), fontSize: 13.sp),
+                                                ),
+                                            )
                                             : const Text("Loading..."),
                                         Row(
                                           children: [
@@ -306,7 +309,7 @@ class OrderIsPaid extends StatelessWidget {
                                             ),
                                             SizedBox(width: 5.w),
                                             Text(
-                                              priceFormat((item.giaTien! * item.soLuong).toInt()),
+                                              priceFormat((order.tongTien).toInt()),
                                               style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Colors.redAccent),
                                             ),
                                           ],

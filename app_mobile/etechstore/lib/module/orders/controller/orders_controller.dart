@@ -4,7 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:etechstore/module/home/models/product_model_home.dart';
 import 'package:etechstore/module/orders/model/detail_orders.dart';
 import 'package:etechstore/module/orders/model/orders_model.dart';
-  import 'package:firebase_auth/firebase_auth.dart';
+import 'package:etechstore/utlis/helpers/popups/loader.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -20,8 +21,20 @@ class OrdersController extends GetxController {
   var products = <String, ProductModel>{}.obs;
 
   var detailOrder = <DetailOrders>[].obs;
+  final lstOrder = <DetailOrders>[].obs;
 
   var itemsToShow = 1.obs;
+
+  OrdersModel order = OrdersModel(
+    id: "",
+    ngayTaoDon: Timestamp.now(),
+    maKhachHang: "",
+    tongTien: 0,
+    isPaid: false,
+    isBeingShipped: false,
+    isShipped: false,
+    isCompleted: false,
+  );
 
   void loadMore() {
     itemsToShow.value += 10;
@@ -35,21 +48,7 @@ class OrdersController extends GetxController {
   void onInit() {
     super.onInit();
     loadMore();
-    fetchIsPaid();
     fetchData();
-  }
-
-  Stream<List<OrdersModel>> fetchIsPaid() {
-    String? userId = _auth.currentUser?.uid;
-
-    return FirebaseFirestore.instance.collection('DonHang').where('MaKhachHang', isEqualTo: userId).snapshots().map((querySnapshot) {
-      return querySnapshot.docs
-          .map((doc) {
-            return OrdersModel.fromJson(doc.data());
-          })
-          .where((order) => order.isPaid || order.isBeingShipped || order.isShipped || order.isCompleted  )
-          .toList();
-    });
   }
 
   Stream<List<DetailOrders>> fetchData() {
@@ -67,7 +66,6 @@ class OrdersController extends GetxController {
           if (orderDoc.exists) {
             ordersItem[detailItem.maDonHang] = OrdersModel.fromJson(orderDoc.data() as Map<String, dynamic>);
           }
-
           return detailItem;
         }),
       );
@@ -75,8 +73,28 @@ class OrdersController extends GetxController {
     });
   }
 
+  Future<void> checkItemInOrder(String maDonHang) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('CTDonHang').get();
+
+      lstOrder.clear();
+
+      for (var doc in querySnapshot.docs) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        var maMauSanPham = data['MaDonHang'];
+        if (maMauSanPham == maDonHang) {
+          lstOrder.add(DetailOrders.fromJson(data));
+        }
+      }
+    } catch (e) {
+      TLoaders.warningSnackBar(title: "Thông báo", message: "Đã có lỗi xảy ra $e");
+    }
+  }
+
   Stream<List<OrdersModel>> getOrder() {
-    return _firestore.collection('DonHang').snapshots().map((snapshot) => snapshot.docs.map((doc) => OrdersModel.fromJson(doc.data())).toList());
+    return _firestore.collection('DonHang').snapshots().map((snapshot) => snapshot.docs.map((doc) {
+          return OrdersModel.fromJson(doc.data());
+        }).toList());
   }
 
   Stream<List<DetailOrders>> getCTDonHangs(String maDonHang) {

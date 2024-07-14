@@ -5,9 +5,11 @@ import 'package:etechstore/module/bottom_nav_bar/nav_menu.dart';
 import 'package:etechstore/module/payment/views/success_screen.dart';
 import 'package:etechstore/services/auth/auth_gate.dart';
 import 'package:etechstore/services/auth/auth_services.dart';
+import 'package:etechstore/services/notifi_service.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 void main() async {
   ErrorWidget.builder = (FlutterErrorDetails details) {
@@ -15,10 +17,15 @@ void main() async {
   };
   WidgetsFlutterBinding.ensureInitialized();
   final savedThemeMode = await AdaptiveTheme.getThemeMode();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await LocalNotificaiotnServece().requestPermisstion();
+  await LocalNotificaiotnServece().init();
+  final fcmToken = await FirebaseMessaging.instance.getToken();
 
+  print("FCMToken $fcmToken");
   runApp(
     AdaptiveTheme(
         light: ThemeData(
@@ -41,11 +48,9 @@ void main() async {
               debugShowCheckedModeBanner: false,
               home: const AuthGate(),
               getPages: [
-                GetPage(
-                    name: '/successPayment', page: () => const SuccessScreen()),
+                GetPage(name: '/successPayment', page: () => const SuccessScreen()),
                 GetPage(name: '/navMenu', page: () => const NavMenu()),
-                GetPage(
-                    name: '/SignInScreen', page: () => const SignInScreen()),
+                GetPage(name: '/SignInScreen', page: () => const SignInScreen()),
               ],
             )),
   );

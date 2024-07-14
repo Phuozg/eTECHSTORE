@@ -9,12 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-Widget productVerticalSample(
-    BuildContext context, List<ProductModel> products) {
+Widget productVerticalSample(BuildContext context, List<ProductModel> products) {
   final wishListController = Get.put(WishListController());
 
-  final ProductSampleController productSampleController =
-      Get.put(ProductSampleController());
+  final ProductSampleController productSampleController = Get.put(ProductSampleController());
   return Container(
       constraints: const BoxConstraints(maxHeight: double.infinity),
       child: ScreenUtilInit(
@@ -27,20 +25,15 @@ Widget productVerticalSample(
                   final lstSample = snapshot.data!;
                   return GridView.builder(
                       physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2, childAspectRatio: 0.7),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 0.7),
                       shrinkWrap: true,
                       itemCount: products.length,
                       itemBuilder: (_, index) {
                         final product = products[index];
-                        final fillterSample = lstSample.firstWhere(
-                            (element) => element.MaSanPham == product.id);
-                        List fillter = lstSample
-                            .where((element) => element.MaSanPham == product.id)
-                            .toList();
+                        final fillterSample = lstSample.firstWhere((element) => element.MaSanPham == product.id);
+                        List fillter = lstSample.where((element) => element.MaSanPham == product.id).toList();
                         return SizedBox(
-                          height: MediaQuery.of(context).size.height / 2.5,
+                          height: MediaQuery.of(context).size.height / 3.5,
                           child: GestureDetector(
                             onTap: () {
                               Navigator.push(
@@ -70,14 +63,8 @@ Widget productVerticalSample(
                                     Stack(
                                       children: [
                                         SizedBox(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height /
-                                                6.5,
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                3,
+                                            height: MediaQuery.of(context).size.height / 7.75,
+                                            width: MediaQuery.of(context).size.width / 3.5,
                                             child: Image.network(
                                               product.thumbnail,
                                               fit: BoxFit.cover,
@@ -87,29 +74,21 @@ Widget productVerticalSample(
                                             if (product.KhuyenMai != 0) {
                                               return Positioned(
                                                   top: -5,
-                                                  left: 60,
+                                                  left: 50,
                                                   child: Container(
                                                     decoration: const BoxDecoration(
-                                                        image: DecorationImage(
-                                                            image: AssetImage(
-                                                                'assets/images/discount_icon.png'),
-                                                            fit: BoxFit.cover)),
-                                                    width: 100,
-                                                    height: 50,
+                                                        image:
+                                                            DecorationImage(image: AssetImage('assets/images/discount_icon.png'), fit: BoxFit.cover)),
+                                                    width: 80,
+                                                    height: 40,
                                                     child: Padding(
-                                                      padding: const EdgeInsets
-                                                          .fromLTRB(0, 5, 3, 0),
+                                                      padding: const EdgeInsets.fromLTRB(0, 10, 3, 0),
                                                       child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
+                                                        mainAxisAlignment: MainAxisAlignment.center,
                                                         children: [
                                                           Text(
                                                             "${product.KhuyenMai.toString()}%",
-                                                            style:
-                                                                const TextStyle(
-                                                                    color: Colors
-                                                                        .white),
+                                                            style: const TextStyle(color: Colors.white,fontSize: 11),
                                                           )
                                                         ],
                                                       ),
@@ -122,11 +101,8 @@ Widget productVerticalSample(
                                       ],
                                     ),
                                     Text(
-                                      product.Ten.length < 30
-                                          ? product.Ten
-                                          : '${product.Ten.substring(0, 30)}...',
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold),
+                                      product.Ten.length < 30 ? product.Ten : '${product.Ten.substring(0, 30)}...',
+                                      style: const TextStyle(fontWeight: FontWeight.bold),
                                       textAlign: TextAlign.center,
                                     ),
                                     Builder(
@@ -136,83 +112,47 @@ Widget productVerticalSample(
                                             children: [
                                               Text(
                                                 priceFormat(product.GiaTien),
-                                                style: const TextStyle(
-                                                    color: Colors.grey,
-                                                    decoration: TextDecoration
-                                                        .lineThrough),
+                                                style: const TextStyle(color: Colors.grey, decoration: TextDecoration.lineThrough),
                                               ),
-                                              Text(
-                                                  priceFormat(((product
-                                                              .GiaTien -
-                                                          (product.GiaTien *
-                                                              product
-                                                                  .KhuyenMai /
-                                                              100)))
-                                                      .round()),
-                                                  style: const TextStyle(
-                                                      color: Colors.red))
+                                              Text(priceFormat(((product.GiaTien - (product.GiaTien * product.KhuyenMai / 100))).round()),
+                                                  style: const TextStyle(color: Colors.red))
                                             ],
                                           );
                                         }
-                                        return Text(
-                                            priceFormat(product.GiaTien),
-                                            style: const TextStyle(
-                                                color: Colors.red));
+                                        return Text(priceFormat(product.GiaTien), style: const TextStyle(color: Colors.red));
                                       },
                                     ),
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                       children: [
                                         Obx(() {
                                           return IconButton(
                                               onPressed: () {
-                                                if (!wishListController
-                                                    .isWish(product.id)) {
-                                                  wishListController
-                                                      .addWish(product.id);
+                                                if (!wishListController.isWish(product.id)) {
+                                                  wishListController.addWish(product.id);
                                                 } else {
-                                                  wishListController
-                                                      .removeWish(product.id);
+                                                  wishListController.removeWish(product.id);
                                                 }
                                               },
                                               icon: Icon(
                                                 Icons.favorite,
-                                                color: wishListController
-                                                        .isWish(product.id)
-                                                    ? Colors.red
-                                                    : Colors.black,
+                                                color: wishListController.isWish(product.id) ? Colors.red : Colors.black,
                                               ));
                                         }),
                                         IconButton(
                                             onPressed: () {
-                                              fillterSample.mauSac.isNotEmpty &&
-                                                      fillterSample
-                                                          .cauHinh.isNotEmpty
+                                              fillterSample.mauSac.isNotEmpty && fillterSample.cauHinh.isNotEmpty
                                                   ? showModalBottomSheet(
                                                       context: context,
                                                       builder: (ctx) {
-                                                        productSampleController
-                                                            .setSelectedColorIndex(
-                                                                0,
-                                                                fillterSample);
-                                                        productSampleController
-                                                            .setSelectedConfigIndex(
-                                                                0,
-                                                                fillterSample);
-                                                        productSampleController
-                                                            .checkPrice(
-                                                                fillterSample,
-                                                                product.GiaTien
-                                                                    .toString());
+                                                        productSampleController.setSelectedColorIndex(0, fillterSample);
+                                                        productSampleController.setSelectedConfigIndex(0, fillterSample);
+                                                        productSampleController.checkPrice(fillterSample, product.GiaTien.toString());
                                                         return SampleBottomSheet(
-                                                          KhuyenMai:
-                                                              product.KhuyenMai,
-                                                          GiaTien:
-                                                              product.GiaTien,
+                                                          KhuyenMai: product.KhuyenMai,
+                                                          GiaTien: product.GiaTien,
                                                           sample: fillterSample,
-                                                          thumbnail:
-                                                              product.thumbnail,
+                                                          thumbnail: product.thumbnail,
                                                           id: product.id,
                                                         );
                                                       },
@@ -220,27 +160,14 @@ Widget productVerticalSample(
                                                   : showModalBottomSheet(
                                                       context: context,
                                                       builder: (ctx) {
-                                                        productSampleController
-                                                            .setSelectedColorIndex(
-                                                                0,
-                                                                fillterSample);
-                                                        productSampleController
-                                                            .setSelectedConfigIndex(
-                                                                0,
-                                                                fillterSample);
-                                                        productSampleController
-                                                            .checkPrice(
-                                                                fillterSample,
-                                                                product.GiaTien
-                                                                    .toString());
+                                                        productSampleController.setSelectedColorIndex(0, fillterSample);
+                                                        productSampleController.setSelectedConfigIndex(0, fillterSample);
+                                                        productSampleController.checkPrice(fillterSample, product.GiaTien.toString());
                                                         return BuySampleSingle(
-                                                          KhuyenMai:
-                                                              product.KhuyenMai,
-                                                          GiaTien:
-                                                              product.GiaTien,
+                                                          KhuyenMai: product.KhuyenMai,
+                                                          GiaTien: product.GiaTien,
                                                           sample: fillterSample,
-                                                          thumbnail:
-                                                              product.thumbnail,
+                                                          thumbnail: product.thumbnail,
                                                         );
                                                       },
                                                     );
