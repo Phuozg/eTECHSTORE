@@ -57,7 +57,7 @@ class DetailOrderSreen extends StatelessWidget {
             String currentUserUid = auth.currentUser?.uid ?? '';
 
             List<OrdersModel> userOrders = donHangs.where((order) => order.maKhachHang == currentUserUid).toList();
-            if (userOrders.isEmpty) {
+             if (userOrders.isEmpty) {
               return Container(
                 child: const Text('No orders found for current user.'),
               );
@@ -75,7 +75,7 @@ class DetailOrderSreen extends StatelessWidget {
 
                   List<ProductModel> filterProduct = sanPham.toList();
                   List<OrdersModel> fillterOrder = donHangs.where((donHang) => donHang.id == maDonHang).toList();
-                  return StreamBuilder<List<DetailOrders>>(
+                   return StreamBuilder<List<DetailOrders>>(
                     stream: controller.getCTDonHangs(maDonHang),
                     builder: (context, snapshotCTDonHang) {
                       if (!snapshotCTDonHang.hasData) {
@@ -85,52 +85,59 @@ class DetailOrderSreen extends StatelessWidget {
                       List<DetailOrders> ctDonHangs = snapshotCTDonHang.data!;
                       List<DetailOrders> filteredCTDonHangs =
                           ctDonHangs.where((ctDonHang) => userOrders.any((donHang) => donHang.id == ctDonHang.maDonHang)).toList();
+                      
 
                       return StreamBuilder<List<ProfileModel>>(
                         stream: profileController.fetchProfilesStream(user.uid),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState == ConnectionState.waiting) {
                             return const Center(child: CircularProgressIndicator());
+                   
                           } else if (snapshot.hasError) {
                             return Center(child: Text('Error: ${snapshot.error}'));
                           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                             return const Center(child: Text('No profiles found'));
+                  
+                   
                           } else {
                             final profiles = snapshot.data!;
                             List<OrdersModel> orders = [];
 
                             orders = fillterOrder.where((order) => order.maKhachHang == currentUserUid).toList();
+                            orders = fillterOrder.where((order) => order.maKhachHang == currentUserUid).toList();
                             return SingleChildScrollView(
                               child: Column(
                                 children: [
                                   Linehelper(color: const Color.fromARGB(94, 217, 217, 217), height: 5),
+                                  Linehelper(color: const Color.fromARGB(94, 217, 217, 217), height: 5),
                                   ListView.builder(
                                     shrinkWrap: true,
                                     physics: const NeverScrollableScrollPhysics(),
-                                    itemCount: profiles.length,
+                                     itemCount: profiles.length,
                                     itemBuilder: (context, index) {
                                       final profile = profiles[index];
 
                                       return ConstrainedBox(
                                         constraints: BoxConstraints(maxHeight: 94.h, minHeight: 70.h),
-                                        child: Container(
+                                         child: Container(
                                           width: double.infinity,
                                           color: Colors.white,
                                           padding: EdgeInsets.only(left: 15.w, right: 5.w),
-                                          child: Column(
+                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
+                                             children: [
                                               Row(
                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [
+                                                 children: [
                                                   Row(
                                                     children: [
+                                                      Icon(Icons.location_on_outlined, size: 18.sp),
                                                       Icon(Icons.location_on_outlined, size: 18.sp),
                                                       SizedBox(width: 5.w),
                                                       Text(
                                                         "Địa chỉ nhận hàng",
                                                         style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15.sp),
-                                                      ),
+                                                       ),
                                                     ],
                                                   ),
                                                 ],
@@ -143,21 +150,21 @@ class DetailOrderSreen extends StatelessWidget {
                                                       ? Text(
                                                           "0${profile.SoDienThoai.toString()}",
                                                           style: TColros.black_15_w400,
-                                                        )
+                                                         )
                                                       : const Text("Thêm số điện thoại"),
-                                                ],
+                                                 ],
                                               ),
                                               profile.DiaChi != ''
                                                   ? Text(
                                                       profile.DiaChi,
                                                       overflow: TextOverflow.ellipsis,
-                                                      softWrap: true,
+                                                       softWrap: true,
                                                       maxLines: 2,
                                                     )
                                                   : const Text(
                                                       'Địa chỉ trống',
                                                       overflow: TextOverflow.ellipsis,
-                                                      softWrap: true,
+                                                       softWrap: true,
                                                       maxLines: 2,
                                                     ),
                                             ],
@@ -170,11 +177,12 @@ class DetailOrderSreen extends StatelessWidget {
                                   ListView.builder(
                                     shrinkWrap: true,
                                     physics: const NeverScrollableScrollPhysics(),
-                                    itemCount: filteredCTDonHangs.length,
+                                     itemCount: filteredCTDonHangs.length,
                                     itemBuilder: (context, index) {
                                       DetailOrders ctDonHang = filteredCTDonHangs[index];
                                       ProductModel product = filterProduct.firstWhere((p) => p.id == ctDonHang.maMauSanPham['MaSanPham']);
                                       OrdersModel order = fillterOrder.firstWhere((o) => o.id == ctDonHang.maDonHang);
+                                 
                                       orders.add(order);
                                       return SingleChildScrollView(
                                         child: Column(
@@ -190,14 +198,17 @@ class DetailOrderSreen extends StatelessWidget {
                                                         GiaTien: product.GiaTien,
                                                         KhuyenMai: product.KhuyenMai,
                                                         MaDanhMuc: product.MaDanhMuc,
+                                                   
+                                                  
                                                         MoTa: product.MoTa,
                                                         Ten: product.Ten,
                                                         TrangThai: product.TrangThai,
-                                                        id: product.id,
+                                                         id: product.id,
                                                         thumbnail: product.thumbnail,
                                                         HinhAnh: product.HinhAnh,
                                                         isPopular: product.isPopular,
                                                         NgayNhap: product.NgayNhap,
+                                                      
                                                       ),
                                                     ));
                                               },
@@ -205,21 +216,31 @@ class DetailOrderSreen extends StatelessWidget {
                                                 width: double.infinity,
                                                 color: Colors.white,
                                                 padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
-                                                child: SingleChildScrollView(
+                                                 child: SingleChildScrollView(
                                                   child: Column(
                                                     crossAxisAlignment: CrossAxisAlignment.end,
-                                                    children: [
+                                                     children: [
                                                       Row(
                                                         mainAxisAlignment: MainAxisAlignment.start,
                                                         crossAxisAlignment: CrossAxisAlignment.start,
+                                                    
                                                         children: [
                                                           Row(
                                                             children: [
                                                               SizedBox(width: 3.w),
+                                                        
                                                               product.thumbnail != null
                                                                   ? GestureDetector(
                                                                       onTap: () {},
                                                                       child: FadeInImage.assetNetwork(
+                                                                        image: product.thumbnail.toString(),
+                                                                        placeholder: ImageKey.whiteBackGround,
+                                                                        width: 60.w,
+                                                                        height: 60.h,
+                                                                        fit: BoxFit.cover,
+                                                                        imageErrorBuilder: (context, error, stackTrace) {
+                                                                  
+                                                                    return FadeInImage.assetNetwork(
                                                                         image: product.thumbnail.toString(),
                                                                         placeholder: ImageKey.whiteBackGround,
                                                                         width: 60.w,
@@ -232,21 +253,25 @@ class DetailOrderSreen extends StatelessWidget {
                                                                             width: 60.w,
                                                                             height: 60.h,
                                                                             fit: BoxFit.cover,
+                                                                     
                                                                           ));
-                                                                        },
-                                                                      ))
+                                                                        
+                                    });}))
                                                                   : Container(),
+                                                              SizedBox(width: 20.w),
                                                               SizedBox(width: 20.w),
                                                               Column(
                                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                                                children: [
+                                                                 children: [
                                                                   product.Ten != null
-                                                                      ? GestureDetector(
+                                                                       ? GestureDetector(
                                                                           onTap: () {},
                                                                           child: SizedBox(
                                                                             width: 150.w,
                                                                             child: Text(
+                                                                    
+                                                                   
                                                                               product.Ten,
                                                                               style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14.sp),
                                                                               overflow: TextOverflow.ellipsis,
@@ -254,9 +279,11 @@ class DetailOrderSreen extends StatelessWidget {
                                                                             ),
                                                                           ),
                                                                         )
-                                                                      : const Text("Loading..."),
+                                                                       : const Text("Loading..."),
                                                                   //   SizedBox(height: 35.h),
                                                                   ctDonHang.maMauSanPham['MauSac'] != "" && ctDonHang.maMauSanPham['CauHinh'] != "" ||
+                                                                          ctDonHang.maMauSanPham['MauSac'] != "" ||
+                                                              
                                                                           ctDonHang.maMauSanPham['MauSac'] != "" ||
                                                                           ctDonHang.maMauSanPham['CauHinh'] != ""
                                                                       ? Row(
@@ -267,6 +294,7 @@ class DetailOrderSreen extends StatelessWidget {
                                                                             ctDonHang.maMauSanPham['MauSac'] != null
                                                                                 ? Text("${ctDonHang.maMauSanPham['MauSac']}",
                                                                                     style: const TextStyle(fontWeight: FontWeight.w400))
+                                                                            
                                                                                 : const Text("Loading..."),
                                                                             Row(
                                                                               children: [
@@ -274,11 +302,16 @@ class DetailOrderSreen extends StatelessWidget {
                                                                                             ctDonHang.maMauSanPham['CauHinh'] != "" ||
                                                                                         ctDonHang.maMauSanPham['MauSac'] != "" ||
                                                                                         ctDonHang.maMauSanPham['CauHinh'] != ""
+                                                                           
                                                                                     ? Text(
                                                                                         " | ",
                                                                                         style: TextStyle(fontSize: 12.sp, color: Colors.grey),
                                                                                       )
                                                                                     : Container(),
+                                                                                ctDonHang.maMauSanPham['CauHinh'] != null
+                                                                                    ? Text("${ctDonHang.maMauSanPham['CauHinh']}",
+                                                                                        style: const TextStyle(fontWeight: FontWeight.w400))
+                                                                                    : const Text("Loading..."),
                                                                                 ctDonHang.maMauSanPham['CauHinh'] != null
                                                                                     ? Text("${ctDonHang.maMauSanPham['CauHinh']}",
                                                                                         style: const TextStyle(fontWeight: FontWeight.w400))
@@ -290,6 +323,11 @@ class DetailOrderSreen extends StatelessWidget {
                                                                       : Container(),
                                                                   Row(
                                                                     children: [
+                                                                      const Text("Số lượng: ",
+                                                                          style: TextStyle(fontWeight: FontWeight.w400, color: Colors.grey)),
+                                                                      ctDonHang.soLuong != null
+                                                                          ? Text("${ctDonHang.soLuong}")
+                                                                          : const Text("Loading..."),
                                                                       const Text("Số lượng: ",
                                                                           style: TextStyle(fontWeight: FontWeight.w400, color: Colors.grey)),
                                                                       ctDonHang.soLuong != null
@@ -326,24 +364,29 @@ class DetailOrderSreen extends StatelessWidget {
                                                       SizedBox(height: 10.w),
                                                       Linehelper(color: const Color.fromARGB(94, 217, 217, 217), height: 1),
                                                       const SizedBox(height: 10),
+                                                      Linehelper(color: const Color.fromARGB(94, 217, 217, 217), height: 1),
+                                                      const SizedBox(height: 10),
                                                       Row(
                                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                        children: [
-                                                          ctDonHang.soLuong != null
+                                                         children: [
+                                                           ctDonHang.soLuong != null
                                                               ? Text(
                                                                   "${ctDonHang.soLuong} sản phẩm",
                                                                   style: TextStyle(color: const Color.fromARGB(255, 41, 40, 40), fontSize: 13.sp),
-                                                                )
+                                                                 )
                                                               : const Text("Loading..."),
+                                                             
                                                           Row(
                                                             children: [
                                                               Text(
                                                                 "Thành tiền:",
                                                                 style: TextStyle(color: const Color.fromARGB(255, 41, 40, 40), fontSize: 14.sp),
-                                                              ),
+                                                               ),
+                                                              SizedBox(width: 5.w),
                                                               SizedBox(width: 5.w),
                                                               Text(
                                                                 priceFormat((ctDonHang.giaTien! * ctDonHang.soLuong).toInt()),
+                                                            
                                                                 style:
                                                                     TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Colors.redAccent),
                                                               ),

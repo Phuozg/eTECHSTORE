@@ -71,6 +71,8 @@ class OrderIsBeingShipped extends StatelessWidget {
                       if (order == null) {
                         return Container(child: const CircularProgressIndicator());
                       }
+                      controller.checkItemInOrder(order.id);
+
                       return order.isBeingShipped == true
                           ? Container(
                               height: 150.h,
@@ -207,9 +209,9 @@ class OrderIsBeingShipped extends StatelessWidget {
                                                 : item.giaTien!.toString().length == 6
                                                     ? 175.0.w
                                                     : item.giaTien!.toString().length == 7
-                                                        ? 175.0.w
+                                                        ? 160.0.w
                                                         : item.giaTien!.toString().length == 8
-                                                            ? 156.0.w
+                                                            ? 146.0.w
                                                             : item.giaTien!.toString().length == 9
                                                                 ? 155.w
                                                                 : 150.0.w,
@@ -247,9 +249,11 @@ class OrderIsBeingShipped extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       item.soLuong != null
-                                          ? Text(
-                                              "${item.soLuong} sản phẩm",
-                                              style: TextStyle(color: const Color.fromARGB(255, 41, 40, 40), fontSize: 13.sp),
+                                          ? Obx(
+                                              () => Text(
+                                                "${controller.lstOrder.length} sản phẩm",
+                                                style: TextStyle(color: const Color.fromARGB(255, 41, 40, 40), fontSize: 13.sp),
+                                              ),
                                             )
                                           : const Text("Loading..."),
                                       Row(

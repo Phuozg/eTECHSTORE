@@ -4,6 +4,7 @@ import 'package:etechstore/module/auth/views/sign_in_screen.dart';
 import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/module/bottom_nav_bar/nav_menu.dart';
 import 'package:etechstore/services/auth/auth_services.dart';
+import 'package:etechstore/services/notifi_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -23,6 +24,14 @@ class _AuthGateState extends State<AuthGate> {
     super.initState();
     final SignInController authController = Get.put(SignInController());
     authController.checkSignIn();
+    LocalNotificaiotnServece().uploadFcmToken();
+    notidicationHandle();
+  }
+
+  void notidicationHandle() {
+    FirebaseMessaging.onMessage.listen((event) {
+       LocalNotificaiotnServece().showNotification(event);
+    });
   }
 
   @override
