@@ -98,10 +98,8 @@ class OrderController extends GetxController {
     });
   }
 
-  Future<void> addListModel(
-      String color, String config, String productID) async {
-    listModel.add(ModelProductModel(
-        CauHinh: config, MaSanPham: productID, MauSac: color));
+  Future<void> addListModel(String color, String config, String productID) async {
+    listModel.add(ModelProductModel(CauHinh: config, MaSanPham: productID, MauSac: color));
   }
 
   Future<void> loopAddOrderDetail(var id, String userID) async {

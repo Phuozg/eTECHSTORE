@@ -122,19 +122,18 @@ class DetailOrderSreen extends StatelessWidget {
 
                                       return ConstrainedBox(
                                         constraints: BoxConstraints(maxHeight: 94.h, minHeight: 70.h),
-                                         child: Container(
+                                        child: Container(
                                           width: double.infinity,
                                           color: Colors.white,
                                           padding: EdgeInsets.only(left: 15.w, right: 5.w),
-                                           child: Column(
+                                          child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
-                                             children: [
+                                            children: [
                                               Row(
                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                 children: [
+                                                children: [
                                                   Row(
                                                     children: [
-                                                      Icon(Icons.location_on_outlined, size: 18.sp),
                                                       Icon(Icons.location_on_outlined, size: 18.sp),
                                                       SizedBox(width: 5.w),
                                                       Text(
@@ -201,17 +200,14 @@ class DetailOrderSreen extends StatelessWidget {
                                                         GiaTien: product.GiaTien,
                                                         KhuyenMai: product.KhuyenMai,
                                                         MaDanhMuc: product.MaDanhMuc,
-                                                   
-                                                  
                                                         MoTa: product.MoTa,
                                                         Ten: product.Ten,
                                                         TrangThai: product.TrangThai,
-                                                         id: product.id,
+                                                        id: product.id,
                                                         thumbnail: product.thumbnail,
                                                         HinhAnh: product.HinhAnh,
                                                         isPopular: product.isPopular,
                                                         NgayNhap: product.NgayNhap,
-                                                      
                                                       ),
                                                     ));
                                               },
@@ -353,88 +349,57 @@ class DetailOrderSreen extends StatelessWidget {
                                                           GestureDetector(
                                                             onTap: () {
                                                               showDialog(
-                                                                context:
-                                                                    context,
-                                                                builder:
-                                                                    (BuildContext
-                                                                        context) {
+                                                                context: context,
+                                                                builder: (BuildContext context) {
                                                                   return Container(
-                                                                    constraints:
-                                                                        const BoxConstraints(
-                                                                            maxHeight:
-                                                                                double.infinity),
-                                                                    child:
-                                                                        AlertDialog(
-                                                                      backgroundColor:
-                                                                          Colors
-                                                                              .white,
-                                                                      title: const Text(
-                                                                          "Đánh giá sản phẩm"),
-                                                                      content:
-                                                                          SizedBox(
-                                                                        height:
-                                                                            MediaQuery.of(context).size.height /
-                                                                                4,
-                                                                        child:
-                                                                            Column(
-                                                                          children: [
-                                                                            Obx(() {
-                                                                              return Row(
-                                                                                  children: List.generate(5, (index) {
-                                                                                return IconButton(
-                                                                                    onPressed: () {
-                                                                                      previewsController.selectStar(index);
-                                                                                    },
-                                                                                    icon: previewsController.selectedstar.value >= index
-                                                                                        ? const Icon(
-                                                                                            Icons.star,
-                                                                                            color: Colors.amber,
-                                                                                          )
-                                                                                        : const Icon(
-                                                                                            Icons.star_border,
-                                                                                            color: Colors.amber,
-                                                                                          ));
-                                                                              }));
-                                                                            }),
-                                                                            const SizedBox(
-                                                                              height: 10,
-                                                                            ),
-                                                                            TextField(
-                                                                              controller: textController,
-                                                                              maxLines: 3,
-                                                                              decoration: const InputDecoration(labelText: 'Nhận xét'),
-                                                                            ),
-                                                                          ],
-                                                                        ),
+                                                                    constraints: const BoxConstraints(maxHeight: double.infinity),
+                                                                    child: AlertDialog(
+                                                                      title: const Text("Đánh giá sản phẩm"),
+                                                                      content: Column(
+                                                                        children: [
+                                                                          Obx(() {
+                                                                            return Row(
+                                                                                children: List.generate(5, (index) {
+                                                                              return IconButton(
+                                                                                  onPressed: () {
+                                                                                    previewsController.selectStar(index);
+                                                                                  },
+                                                                                  icon: previewsController.selectedstar.value >= index
+                                                                                      ? const Icon(
+                                                                                          Icons.star,
+                                                                                          color: Colors.amber,
+                                                                                        )
+                                                                                      : const Icon(
+                                                                                          Icons.star_border,
+                                                                                          color: Colors.amber,
+                                                                                        ));
+                                                                            }));
+                                                                          }),
+                                                                          const SizedBox(
+                                                                            height: 10,
+                                                                          ),
+                                                                          TextField(
+                                                                            controller: textController,
+                                                                            maxLines: null,
+                                                                            decoration: const InputDecoration(labelText: 'Nhận xét'),
+                                                                          ),
+                                                                        ],
                                                                       ),
                                                                       actions: [
-                                                                        Row(
-                                                                          mainAxisAlignment:
-                                                                              MainAxisAlignment.spaceEvenly,
-                                                                          children: [
-                                                                            ElevatedButton(
-                                                                              onPressed: () {
-                                                                                previewsController.addPreview(textController.text, previewsController.selectedstar.toInt(), userID, product.id);
-                                                                                Navigator.of(context).pop();
-                                                                              },
-                                                                              style: ElevatedButton.styleFrom(backgroundColor: Color.fromARGB(255, 43, 43, 216)),
-                                                                              child: const Text(
-                                                                                "Xác nhận",
-                                                                                style: TextStyle(color: Colors.white),
-                                                                              ),
-                                                                            ),
-                                                                            ElevatedButton(
-                                                                              onPressed: () {
-                                                                                Navigator.of(context).pop();
-                                                                              },
-                                                                              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                                                                              child: const Text(
-                                                                                "Đóng",
-                                                                                style: TextStyle(color: Colors.white),
-                                                                              ),
-                                                                            ),
-                                                                          ],
-                                                                        )
+                                                                        TextButton(
+                                                                          onPressed: () {
+                                                                            previewsController.addPreview(textController.text,
+                                                                                previewsController.selectedstar.toInt(), userID, product.id);
+                                                                            Navigator.of(context).pop();
+                                                                          },
+                                                                          child: const Text("Xác nhận"),
+                                                                        ),
+                                                                        TextButton(
+                                                                          onPressed: () {
+                                                                            Navigator.of(context).pop();
+                                                                          },
+                                                                          child: const Text("Đóng"),
+                                                                        ),
                                                                       ],
                                                                     ),
                                                                   );
@@ -442,60 +407,31 @@ class DetailOrderSreen extends StatelessWidget {
                                                               );
                                                             },
                                                             child: Container(
-                                                              padding: EdgeInsets
-                                                                  .symmetric(
-                                                                      horizontal:
-                                                                          20.w,
-                                                                      vertical:
-                                                                          5.h),
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                color:
-                                                                    TColros.red,
-                                                                border: const Border
-                                                                    .fromBorderSide(
-                                                                    BorderSide
-                                                                        .none),
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            5.r),
+                                                              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 5.h),
+                                                              decoration: BoxDecoration(
+                                                                color: TColros.red,
+                                                                border: const Border.fromBorderSide(BorderSide.none),
+                                                                borderRadius: BorderRadius.circular(5.r),
                                                               ),
                                                               child: Text(
                                                                 "Đánh giá",
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize:
-                                                                        12.sp),
+                                                                style: TextStyle(color: Colors.white, fontSize: 12.sp),
                                                               ),
                                                             ),
                                                           ),
                                                           Row(
                                                             children: [
                                                               Text(
-                                                                priceFormat(
-                                                                    product
-                                                                        .GiaTien),
-                                                                style:
-                                                                    const TextStyle(
-                                                                  color: Colors
-                                                                      .grey,
-                                                                  decoration:
-                                                                      TextDecoration
-                                                                          .lineThrough,
+                                                                priceFormat(product.GiaTien),
+                                                                style: const TextStyle(
+                                                                  color: Colors.grey,
+                                                                  decoration: TextDecoration.lineThrough,
                                                                 ),
                                                               ),
-                                                              SizedBox(
-                                                                  width: 10.w),
+                                                              SizedBox(width: 10.w),
                                                               Text(
-                                                                priceFormat((ctDonHang
-                                                                        .giaTien!)
-                                                                    .toInt()),
-                                                                style: const TextStyle(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500),
+                                                                priceFormat((ctDonHang.giaTien!).toInt()),
+                                                                style: const TextStyle(fontWeight: FontWeight.w500),
                                                               ),
                                                             ],
                                                           ),
@@ -521,12 +457,10 @@ class DetailOrderSreen extends StatelessWidget {
                                                               Text(
                                                                 "Thành tiền:",
                                                                 style: TextStyle(color: const Color.fromARGB(255, 41, 40, 40), fontSize: 14.sp),
-                                                               ),
-                                                              SizedBox(width: 5.w),
+                                                              ),
                                                               SizedBox(width: 5.w),
                                                               Text(
                                                                 priceFormat((ctDonHang.giaTien! * ctDonHang.soLuong).toInt()),
-                                                            
                                                                 style:
                                                                     TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: Colors.redAccent),
                                                               ),

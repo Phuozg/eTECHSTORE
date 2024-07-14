@@ -143,38 +143,4 @@ class ProductSampleController extends GetxController {
       currentPrice.value = price.toString();
     }
   }
-
-  Future<void> fetchModelProduct() async {
-    FirebaseFirestore.instance
-        .collection('MauSanPham')
-        .snapshots()
-        .listen((snapshot) {
-      listModel.clear();
-      snapshot.docs.forEach((model) {
-        listModel.add(ProductSampleModel.fromFirestore(model));
-      });
-    });
-  }
-
-  bool check(String userID) {
-    FirebaseFirestore.instance
-        .collection('GioHang')
-        .where('maKhachHang', isEqualTo: userID)
-        .where('trangThai', isEqualTo: 1)
-        .get()
-        .then((value) {
-      for (var doc in value.docs) {
-        var data = doc.data();
-        if (listModel
-                .firstWhere((element) =>
-                    element.MaSanPham == data['mauSanPham']['maSanPham'])
-                .soLuong <
-            data['soLuong']) {
-          return false;
-        }
-      }
-    });
-
-    return true;
-  }
 }
