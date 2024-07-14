@@ -209,7 +209,7 @@ class OrderIsShipped extends StatelessWidget {
                                                       : item.giaTien!.toString().length == 7
                                                           ? 175.0.w
                                                           : item.giaTien!.toString().length == 8
-                                                              ? 156.0.w
+                                                              ? 146.0.w
                                                               : item.giaTien!.toString().length == 9
                                                                   ? 155.w
                                                                   : 150.0.w,

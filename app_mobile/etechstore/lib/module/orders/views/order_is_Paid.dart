@@ -56,10 +56,8 @@ class OrderIsPaid extends StatelessWidget {
                 } else {
                   List<DetailOrders> ctDonHangs = snapshot.data!;
                   Set<String> displayedOrders = <String>{};
-                  List<DetailOrders> filteredCTDonHangs = ctDonHangs
-                      .where((ctDonHang) => fillterOrder
-                          .any((order) => order.id == ctDonHang.maDonHang))
-                      .where((ctDonHang) {
+                  List<DetailOrders> filteredCTDonHangs =
+                      ctDonHangs.where((ctDonHang) => fillterOrder.any((order) => order.id == ctDonHang.maDonHang)).where((ctDonHang) {
                     if (displayedOrders.contains(ctDonHang.maDonHang)) {
                       return false;
                     } else {
@@ -67,8 +65,7 @@ class OrderIsPaid extends StatelessWidget {
                       return true;
                     }
                   }).toList();
-                  controller
-                      .checkItemInOrder(filteredCTDonHangs.first.maDonHang);
+                  controller.checkItemInOrder(filteredCTDonHangs.first.maDonHang);
                   return Obx(
                     () => ListView.builder(
                       itemCount: (controller.itemsToShow.value >=
@@ -82,16 +79,12 @@ class OrderIsPaid extends StatelessWidget {
                         OrdersModel? order = fillterOrder.firstWhereOrNull(
                             (order) => order.id == item.maDonHang);
 
-                        return order!.isBeingShipped ||
-                                order.isCompleted ||
-                                order.isShipped
+                        return order!.isBeingShipped || order.isCompleted || order.isShipped
                             ? const OrderIsEmpty()
                             : Container(
                                 height: 157.h,
-                                margin: EdgeInsets.symmetric(
-                                    horizontal: 5.w, vertical: 3.h),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 10.w, vertical: 3.h),
+                                margin: EdgeInsets.symmetric(horizontal: 5.w, vertical: 3.h),
+                                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
                                 decoration: BoxDecoration(
                                     border: Border.all(
                                       width: .5,
@@ -292,122 +285,33 @@ class OrderIsPaid extends StatelessWidget {
                                     ),
                                     SizedBox(height: 10.h),
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
                                       children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return AlertDialog(
-                                                  backgroundColor: Colors.white,
-                                                  title: const Center(
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Text("Cẩn thận"),
-                                                        Icon(
-                                                          Icons.warning_amber,
-                                                          size: 30,
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  content: const Text(
-                                                      "Bạn có chắc chắn muốn huỷ đơn hàng này?"),
-                                                  actions: [
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceEvenly,
-                                                      children: [
-                                                        ElevatedButton(
-                                                          onPressed: () {
-                                                            controller
-                                                                .deleteOrder(
-                                                                    order.id);
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop();
-                                                          },
-                                                          style: ElevatedButton
-                                                              .styleFrom(
-                                                                  backgroundColor:
-                                                                      Colors
-                                                                          .redAccent),
-                                                          child: const Text(
-                                                            "Xác nhận",
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white),
-                                                          ),
-                                                        ),
-                                                        ElevatedButton(
-                                                            onPressed: () {
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .pop();
-                                                            },
-                                                            style: ElevatedButton
-                                                                .styleFrom(
-                                                                    backgroundColor:
-                                                                        Colors
-                                                                            .blueAccent),
-                                                            child: const Text(
-                                                              "Đóng",
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white),
-                                                            )),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                );
-                                              },
-                                            );
-                                          },
-                                          child: Container(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 20.w,
-                                                vertical: 5.h),
-                                            decoration: BoxDecoration(
-                                              color: TColros.red,
-                                              border:
-                                                  const Border.fromBorderSide(
-                                                      BorderSide.none),
-                                              borderRadius:
-                                                  BorderRadius.circular(5.r),
-                                            ),
-                                            child: Text(
-                                              "Huỷ đơn",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 12.sp),
-                                            ),
+                                        SizedBox(
+                                          width: item.giaTien!.toString().length == 4
+                                              ? 180.0.w
+                                              : item.giaTien!.toString().length == 5
+                                                  ? 175.0.w
+                                                  : item.giaTien!.toString().length == 6
+                                                      ? 175.0.w
+                                                      : item.giaTien!.toString().length == 7
+                                                          ? 175.0.w
+                                                          : item.giaTien!.toString().length == 8
+                                                              ? 156.0.w
+                                                              : item.giaTien!.toString().length == 9
+                                                                  ? 155.w
+                                                                  : 150.0.w,
+                                        ),
+                                        Text(
+                                          priceFormat(product!.GiaTien),
+                                          style: const TextStyle(
+                                            color: Colors.blueGrey,
+                                            decoration: TextDecoration.lineThrough,
                                           ),
                                         ),
-                                        Row(
-                                          children: [
-                                            Text(
-                                              priceFormat(product!.GiaTien),
-                                              style: const TextStyle(
-                                                color: Colors.blueGrey,
-                                                decoration:
-                                                    TextDecoration.lineThrough,
-                                              ),
-                                            ),
-                                            SizedBox(width: 10.w),
-                                            Text(
-                                              priceFormat(
-                                                  (item.giaTien!).toInt()),
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.w500,
-                                                  color: Colors.redAccent),
-                                            ),
-                                          ],
+                                        SizedBox(width: 10.w),
+                                        Text(
+                                          priceFormat((item.giaTien!).toInt()),
+                                          style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.redAccent),
                                         ),
                                       ],
                                     ),
@@ -425,10 +329,7 @@ class OrderIsPaid extends StatelessWidget {
                                       child: Container(
                                           margin: const EdgeInsets.only(top: 5),
                                           alignment: Alignment.center,
-                                          child: const Text("Xem chi tiết",
-                                              style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: 11))),
+                                          child: const Text("Xem chi tiết", style: TextStyle(color: Colors.grey, fontSize: 11))),
                                     ),
                                     SizedBox(height: 5.h),
                                     Linehelper(
