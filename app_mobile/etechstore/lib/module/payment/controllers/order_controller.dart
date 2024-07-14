@@ -18,7 +18,8 @@ import 'package:network_info_plus/network_info_plus.dart';
 class OrderController extends GetxController {
   static OrderController get instance => Get.find();
   CartController controller = Get.put(CartController());
-  final ProductSampleController productController = Get.put(ProductSampleController());
+  final ProductSampleController productController =
+      Get.put(ProductSampleController());
   final db = FirebaseFirestore.instance;
   final orderItemController = Get.put(OrderItemsController());
   var id = generateRandomString(20);
@@ -55,9 +56,32 @@ class OrderController extends GetxController {
     }
   }
 
+  Future<void> updateQuantity(int quantity, String productID) async {
+    try {
+      int quantityModel = 0;
+      await db
+          .collection('MauSanPham')
+          .where('MaSanPham', isEqualTo: productID)
+          .get()
+          .then((value) {
+        value.docs.forEach((element) {
+          quantityModel = element.data()['SoLuong'];
+          element.reference.update({'SoLuong': quantityModel - quantity});
+        });
+      });
+      quantityModel -= quantity;
+    } catch (e) {
+      throw 'Something wrong';
+    }
+  }
+
   Future<void> clearCart(String userID) async {
     try {
-      final querySnapshot = await db.collection('GioHang').where('maKhachHang', isEqualTo: userID).where('trangThai', isEqualTo: 1).get();
+      final querySnapshot = await db
+          .collection('GioHang')
+          .where('maKhachHang', isEqualTo: userID)
+          .where('trangThai', isEqualTo: 1)
+          .get();
       for (var doc in querySnapshot.docs) {
         doc.reference.delete();
       }
@@ -68,28 +92,44 @@ class OrderController extends GetxController {
 
   Future<void> getProductByID() async {
     db.collection('SanPham').snapshots().listen((product) async {
-      var productGet = product.docs.map((e) => ProductModel.fromJson(e.data())).toList();
+      var productGet =
+          product.docs.map((e) => ProductModel.fromJson(e.data())).toList();
       productReturn.value = productGet;
     });
   }
 
-  Future<void> addListModel(String color, String config, String productID) async {
-    listModel.add(ModelProductModel(CauHinh: config, MaSanPham: productID, MauSac: color));
+  Future<void> addListModel(
+      String color, String config, String productID) async {
+    listModel.add(ModelProductModel(
+        CauHinh: config, MaSanPham: productID, MauSac: color));
   }
 
   Future<void> loopAddOrderDetail(var id, String userID) async {
     var index = 0;
-    final querySnapshot = await db.collection('GioHang').where('maKhachHang', isEqualTo: userID).where('trangThai', isEqualTo: 1).get();
+    final querySnapshot = await db
+        .collection('GioHang')
+        .where('maKhachHang', isEqualTo: userID)
+        .where('trangThai', isEqualTo: 1)
+        .get();
     for (var doc in querySnapshot.docs) {
       var data = doc.data();
-      final productSample = productController.productSamples.firstWhere((p) => p.MaSanPham == data['mauSanPham']['maSanPham']);
-      final product = productController.discount.firstWhere((element) => element.id == data['mauSanPham']['maSanPham']);
+      final productSample = productController.productSamples
+          .firstWhere((p) => p.MaSanPham == data['mauSanPham']['maSanPham']);
+      final product = productController.discount.firstWhere(
+          (element) => element.id == data['mauSanPham']['maSanPham']);
       final selectedColor = data['mauSanPham']['mauSac'];
       final selectedConfig = data['mauSanPham']['cauHinh'];
-      final price = controller.calculatePrice(productSample, product, selectedColor, selectedConfig);
+      final price = controller.calculatePrice(
+          productSample, product, selectedColor, selectedConfig);
 
-      saveOrderDetail(
-          OrderDetail(GiaTien: price, MaDonHang: id, SoLuong: data['soLuong'], TrangThai: 1, KhuyenMai: 0, MaMauSanPham: listModel[index].toJson()));
+      updateQuantity(data['soLuong'], product.id);
+      saveOrderDetail(OrderDetail(
+          GiaTien: price,
+          MaDonHang: id,
+          SoLuong: data['soLuong'],
+          TrangThai: 1,
+          KhuyenMai: 0,
+          MaMauSanPham: listModel[index].toJson()));
       index++;
     }
   }
@@ -119,7 +159,7 @@ class OrderController extends GetxController {
       controller.setTotalPriceAndCheckAll();
       Get.offAll(() => const SuccessScreen());
     } catch (e) {
-      print("phát sinh lỗi: $e");
+      throw 'Something wrong';
     }
   }
 
@@ -145,11 +185,12 @@ class OrderController extends GetxController {
       await clearCart(userID);
       controller.setTotalPriceAndCheckAll();
     } catch (e) {
-      print("phát sinh lỗi: $e");
+      throw 'Something wrong';
     }
   }
 
-  void processOrderBuyNow(String userID, int totalPrice, String productID, int quantity, String config, String color) async {
+  void processOrderBuyNow(String userID, int totalPrice, String productID,
+      int quantity, String config, String color) async {
     try {
       ScreenLoader.openLoadingDialog();
 
@@ -174,9 +215,12 @@ class OrderController extends GetxController {
           SoLuong: quantity,
           TrangThai: 1,
           KhuyenMai: 0,
-          MaMauSanPham: ModelProductModel(CauHinh: config, MaSanPham: productID, MauSac: color).toJson()));
+          MaMauSanPham: ModelProductModel(
+                  CauHinh: config, MaSanPham: productID, MauSac: color)
+              .toJson()));
       controller.setTotalPriceAndCheckAll();
       await clearCart(userID);
+      await updateQuantity(quantity, productID);
       Get.off(() => const SuccessScreen());
     } catch (e) {
       throw 'something went wrong';
@@ -189,7 +233,8 @@ class OrderController extends GetxController {
     return wifiIP ?? '';
   }
 
-  Future<void> paymentVNPay(int totalAmount, DateTime createDate, String orderID) async {
+  Future<void> paymentVNPay(
+      int totalAmount, DateTime createDate, String orderID) async {
     final Uri url = Uri.parse(
         'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?vnp_Amount=$totalAmount&vnp_Command=pay&vnp_CreateDate=$createDate&vnp_CurrCode=VND&vnp_IpAddr=${getDeviceIP()}&vnp_Locale=vn&vnp_OrderInfo=Thanh+toan+don+hang+$orderID&vnp_OrderType=other&vnp_ReturnUrl=https%3A%2F%2Fdomainmerchant.vn%2FReturnUrl&vnp_TmnCode=DEMOV210&vnp_TxnRef=5&vnp_Version=2.1.0&vnp_SecureHash=3e0d61a0c0534b2e36680b3f7277743e8784cc4e1d68fa7d276e79c23be7d6318d338b477910a27992f5057bb1582bd44bd82ae8009ffaf6d141219218625c42');
   }

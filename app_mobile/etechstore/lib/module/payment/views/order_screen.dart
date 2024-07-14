@@ -7,6 +7,7 @@ import 'package:etechstore/module/payment/views/address_user.dart';
 import 'package:etechstore/module/payment/views/order_items.dart';
 import 'package:etechstore/module/payment/views/payment.dart';
 import 'package:etechstore/module/payment/views/vnpay_screen.dart';
+import 'package:etechstore/module/product_detail/controller/product_sample_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -62,7 +63,9 @@ class OrderScreen extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         child: ElevatedButton(
             onPressed: () async {
-              if (orderController.checkAddressUser(userID)) {
+              final controller = Get.put(ProductSampleController());
+              if (orderController.checkAddressUser(userID) &&
+                  controller.check(userID)) {
                 if (paymentController.selectedPaymentMethod.value.ten ==
                     'VNPay') {
                   await vnpayController.getUrlPayment(
@@ -76,20 +79,66 @@ class OrderScreen extends StatelessWidget {
                   orderController.processOrder(userID,
                       CartController().instance.totalPrice.value.toInt());
                 }
+              } else if (controller.check(userID)) {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      backgroundColor: Colors.white,
+                      title: const Column(
+                        children: [
+                          Text('Hết hàng !!!'),
+                          Icon(
+                            Icons.warning_amber,
+                            size: 30,
+                          )
+                        ],
+                      ),
+                      content: const Text(
+                          'Sản phẩm tạm hết hàng, vui lòng thử lại sau hoặc liên hệ chúng tôi để được hỗ trợ'),
+                      actions: [
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF383CA0)),
+                          child: const Text(
+                            'Close',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
               } else {
                 showDialog(
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      title: const Text('Thiếu thông tin !!!'),
+                      title: const Column(
+                        children: [
+                          Text('Thiếu thông tin !!!'),
+                          Icon(
+                            Icons.warning_amber,
+                            size: 30,
+                          )
+                        ],
+                      ),
                       content: const Text(
                           'Tài khoản của bạn cần cung cấp thông tin số điện thoại và địa chỉ để mua hàng'),
                       actions: [
-                        TextButton(
+                        ElevatedButton(
                           onPressed: () {
                             Navigator.of(context).pop(); // Close the dialog
                           },
-                          child: const Text('Close'),
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF383CA0)),
+                          child: const Text(
+                            'Close',
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
                       ],
                     );

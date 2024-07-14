@@ -28,7 +28,12 @@ class SampleBottomSheetBuyNow extends StatefulWidget {
   final int KhuyenMai;
 
   const SampleBottomSheetBuyNow(
-      {super.key, required this.sample, required this.thumbnail, required this.GiaTien, required this.id, required this.KhuyenMai});
+      {super.key,
+      required this.sample,
+      required this.thumbnail,
+      required this.GiaTien,
+      required this.id,
+      required this.KhuyenMai});
 
   @override
   _SampleBottomSheetState createState() => _SampleBottomSheetState();
@@ -55,7 +60,9 @@ class _SampleBottomSheetState extends State<SampleBottomSheetBuyNow> {
       ),
       padding: EdgeInsets.only(left: 25.w, top: 5.h),
       width: double.infinity,
-      height: widget.sample.cauHinh.isEmpty || widget.sample.mauSac.isEmpty ? 280.h : 450.h,
+      height: widget.sample.cauHinh.isEmpty || widget.sample.mauSac.isEmpty
+          ? 280.h
+          : 450.h,
       alignment: Alignment.topCenter,
       child: SingleChildScrollView(
         child: Column(
@@ -63,7 +70,9 @@ class _SampleBottomSheetState extends State<SampleBottomSheetBuyNow> {
           children: [
             buildHeader(context),
             widget.sample.mauSac.isNotEmpty ? buildColorOptions() : Container(),
-            widget.sample.cauHinh.isNotEmpty ? buildConfigOptions() : Container(),
+            widget.sample.cauHinh.isNotEmpty
+                ? buildConfigOptions()
+                : Container(),
             buildQuantitySelector(),
             buildAddToCartButton(context),
             const Padding(padding: EdgeInsets.only(bottom: 5))
@@ -85,7 +94,9 @@ class _SampleBottomSheetState extends State<SampleBottomSheetBuyNow> {
             margin: EdgeInsets.only(right: 40.w, bottom: 5),
             width: 40.w,
             height: 5.h,
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: const Color.fromARGB(126, 209, 207, 207)),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: const Color.fromARGB(126, 209, 207, 207)),
           )),
         ),
         const Padding(padding: EdgeInsets.only(top: 5)),
@@ -121,13 +132,10 @@ class _SampleBottomSheetState extends State<SampleBottomSheetBuyNow> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Obx(() {
-                          var price = int.parse(controller.currentPrice.value);
-                          return Text(
-                            ((price.toString())),
-                            style: TColros.red_18_w500,
-                          );
-                        }),
+                        Text(
+                          ((price.toString())),
+                          style: TColros.red_18_w500,
+                        ),
                         Text(
                           "${priceFormat(widget.GiaTien)} ",
                           style: const TextStyle(
@@ -135,7 +143,9 @@ class _SampleBottomSheetState extends State<SampleBottomSheetBuyNow> {
                             fontSize: 14,
                             color: Color(0xFFC4C4C4),
                           ),
-                        )
+                        ),
+                        Text(
+                            'Kho: ${controller.listModel.firstWhere((element) => element.MaSanPham == widget.sample.MaSanPham).soLuong}')
                       ],
                     ),
                   ],
@@ -175,7 +185,10 @@ class _SampleBottomSheetState extends State<SampleBottomSheetBuyNow> {
                     selected: controller.selectedColorIndex.value == index,
                     onSelected: (selected) {
                       controller.selectedColorIndex.value = index;
-                      controller.checkPrice(widget.sample, priceFormat((widget.GiaTien - widget.GiaTien * widget.KhuyenMai ~/ 100)));
+                      controller.checkPrice(
+                          widget.sample,
+                          priceFormat((widget.GiaTien -
+                              widget.GiaTien * widget.KhuyenMai ~/ 100)));
                     },
                   ),
                 ],
@@ -213,7 +226,10 @@ class _SampleBottomSheetState extends State<SampleBottomSheetBuyNow> {
                       selected: controller.selectedConfigIndex.value == index,
                       onSelected: (selected) {
                         controller.selectedConfigIndex.value = index;
-                        controller.checkPrice(widget.sample, priceFormat((widget.GiaTien - widget.GiaTien * widget.KhuyenMai ~/ 100)));
+                        controller.checkPrice(
+                            widget.sample,
+                            priceFormat((widget.GiaTien -
+                                widget.GiaTien * widget.KhuyenMai ~/ 100)));
                       },
                     )
                   : Container();
@@ -232,7 +248,9 @@ class _SampleBottomSheetState extends State<SampleBottomSheetBuyNow> {
         const Text("Số lượng", style: TColros.black_14_w500),
         Container(
           margin: const EdgeInsets.only(right: 15, top: 15),
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), border: Border.all(width: .4)),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30),
+              border: Border.all(width: .4)),
           child: Row(
             children: [
               GestureDetector(
@@ -257,7 +275,10 @@ class _SampleBottomSheetState extends State<SampleBottomSheetBuyNow> {
               GestureDetector(
                 onTap: () {},
                 child: Container(
-                  decoration: const BoxDecoration(border: Border(left: BorderSide(width: .4), right: BorderSide(width: .4))),
+                  decoration: const BoxDecoration(
+                      border: Border(
+                          left: BorderSide(width: .4),
+                          right: BorderSide(width: .4))),
                   alignment: Alignment.center,
                   height: 20,
                   width: 25,
@@ -288,48 +309,83 @@ class _SampleBottomSheetState extends State<SampleBottomSheetBuyNow> {
     final CartController cartController = Get.put(CartController());
     final orderController = Get.put(OrderController());
     return ScreenUtilInit(
-      builder: (context, child) => GestureDetector(
-        onTap: () {
-          orderController.getProductByID();
-          String selectedColor =
-              controller.selectedColorIndex.value < widget.sample.mauSac.length ? widget.sample.mauSac[controller.selectedColorIndex.value] : '';
+      builder: (context, child) {
+        if (controller.listModel
+                .firstWhere(
+                    (element) => element.MaSanPham == widget.sample.MaSanPham)
+                .soLuong >
+            0) {
+          return GestureDetector(
+            onTap: () {
+              orderController.getProductByID();
+              String selectedColor = controller.selectedColorIndex.value <
+                      widget.sample.mauSac.length
+                  ? widget.sample.mauSac[controller.selectedColorIndex.value]
+                  : '';
 
-          String selectedConfig =
-              controller.selectedConfigIndex.value < widget.sample.cauHinh.length ? widget.sample.cauHinh[controller.selectedConfigIndex.value] : '';
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => BuyNowScreen(
-                        productID: widget.sample.MaSanPham,
-                        quantity: quantity,
-                        color: selectedColor,
-                        config: selectedConfig,
-                        price: controller.currentPrice.value,
-                      )));
-        },
-        child: Center(
-          child: Container(
-            margin: EdgeInsets.only(bottom: 8.h, top: 20, right: 35.w),
-            alignment: Alignment.center,
-            width: 270.w,
-            height: 35.h,
-            decoration: BoxDecoration(
-              color: TColros.purple_line,
-              border: Border.all(width: .5),
-              borderRadius: BorderRadius.circular(30.r),
-            ),
-            child: const Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Text(
-                  'Mua ngay',
-                  style: TColros.white_14_w600,
+              String selectedConfig = controller.selectedConfigIndex.value <
+                      widget.sample.cauHinh.length
+                  ? widget.sample.cauHinh[controller.selectedConfigIndex.value]
+                  : '';
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => BuyNowScreen(
+                            productID: widget.sample.MaSanPham,
+                            quantity: quantity,
+                            color: selectedColor,
+                            config: selectedConfig,
+                            price: controller.currentPrice.value,
+                          )));
+            },
+            child: Center(
+              child: Container(
+                margin: EdgeInsets.only(bottom: 8.h, top: 20, right: 35.w),
+                alignment: Alignment.center,
+                width: 270.w,
+                height: 35.h,
+                decoration: BoxDecoration(
+                  color: TColros.purple_line,
+                  border: Border.all(width: .5),
+                  borderRadius: BorderRadius.circular(30.r),
                 ),
-              ],
+                child: const Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(
+                      'Mua ngay',
+                      style: TColros.white_14_w600,
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ),
-        ),
-      ),
+          );
+        } else {
+          return Center(
+            child: Container(
+              margin: EdgeInsets.only(bottom: 8.h, top: 20, right: 35.w),
+              alignment: Alignment.center,
+              width: 270.w,
+              height: 35.h,
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 241, 87, 97),
+                border: Border.all(width: .5),
+                borderRadius: BorderRadius.circular(30.r),
+              ),
+              child: const Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    'Đã hết hàng',
+                    style: TColros.white_14_w600,
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+      },
     );
   }
 }
@@ -356,7 +412,7 @@ class _BuySampleSingleState extends State<BuySampleSingleBuyNow> {
   late String selectedColor;
   late String selectedConfig;
   int quantity = 1;
-
+  final controller = Get.put(ProductSampleController());
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -396,7 +452,9 @@ class _BuySampleSingleState extends State<BuySampleSingleBuyNow> {
             margin: EdgeInsets.only(right: 40.w, bottom: 5),
             width: 35.w,
             height: 5.h,
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: const Color.fromARGB(126, 209, 207, 207)),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: const Color.fromARGB(126, 209, 207, 207)),
           )),
         ),
         const Padding(padding: EdgeInsets.only(top: 5)),
@@ -443,7 +501,9 @@ class _BuySampleSingleState extends State<BuySampleSingleBuyNow> {
                             fontSize: 14,
                             color: Color(0xFFC4C4C4),
                           ),
-                        )
+                        ),
+                        Obx(() => Text(
+                            'Kho: ${controller.listModel.firstWhere((element) => element.MaSanPham == widget.sample.MaSanPham).soLuong}'))
                       ],
                     ),
                   ],
@@ -464,7 +524,9 @@ class _BuySampleSingleState extends State<BuySampleSingleBuyNow> {
         const Text("Số lượng", style: TColros.black_14_w500),
         Container(
           margin: const EdgeInsets.only(right: 15, top: 20),
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), border: Border.all(width: .4)),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30),
+              border: Border.all(width: .4)),
           child: Row(
             children: [
               GestureDetector(
@@ -489,7 +551,10 @@ class _BuySampleSingleState extends State<BuySampleSingleBuyNow> {
               GestureDetector(
                 onTap: () {},
                 child: Container(
-                  decoration: const BoxDecoration(border: Border(left: BorderSide(width: .4), right: BorderSide(width: .4))),
+                  decoration: const BoxDecoration(
+                      border: Border(
+                          left: BorderSide(width: .4),
+                          right: BorderSide(width: .4))),
                   alignment: Alignment.center,
                   height: 20,
                   width: 25,
@@ -499,7 +564,17 @@ class _BuySampleSingleState extends State<BuySampleSingleBuyNow> {
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    quantity++;
+                    setState(() {
+                      if (quantity >=
+                          controller.listModel
+                              .firstWhere((element) =>
+                                  element.MaSanPham == widget.sample.MaSanPham)
+                              .soLuong) {
+                        //nothing
+                      } else {
+                        quantity++;
+                      }
+                    });
                   });
                 },
                 child: Container(
@@ -522,41 +597,71 @@ class _BuySampleSingleState extends State<BuySampleSingleBuyNow> {
 
     final orderController = Get.put(OrderController());
     return ScreenUtilInit(
-      builder: (context, child) => GestureDetector(
-        onTap: () {
-          orderController.getProductByID();
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => BuyNowScreen(
-                        productID: widget.sample.MaSanPham,
-                        quantity: quantity,
-                        color: '',
-                        config: '',
-                        price: price.toString(),
-                      )));
-        },
-        child: Container(
-          margin: EdgeInsets.only(left: 18.w, bottom: 15.h, top: 20),
-          alignment: Alignment.center,
-          width: 260.w,
-          height: 30.h,
-          decoration: BoxDecoration(
-            color: TColros.purple_line,
-            border: Border.all(width: .5),
-            borderRadius: BorderRadius.circular(30.r),
-          ),
-          child: const Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text(
-                'Mua ngay',
-                style: TColros.white_14_w600,
+      builder: (context, child) {
+        if (controller.listModel
+                .firstWhere(
+                    (element) => element.MaSanPham == widget.sample.MaSanPham)
+                .soLuong >
+            0) {
+          return GestureDetector(
+            onTap: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => BuyNowScreen(
+                            productID: widget.sample.MaSanPham,
+                            quantity: quantity,
+                            color: '',
+                            config: '',
+                            price: widget.GiaTien.toString(),
+                          )));
+            },
+            child: Container(
+              margin: EdgeInsets.only(left: 18.w, bottom: 15.h, top: 20),
+              alignment: Alignment.center,
+              width: 260.w,
+              height: 30.h,
+              decoration: BoxDecoration(
+                color: TColros.purple_line,
+                border: Border.all(width: .5),
+                borderRadius: BorderRadius.circular(30.r),
               ),
-            ],
-          ),
-        ),
-      ),
+              child: const Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    'Mua ngay',
+                    style: TColros.white_14_w600,
+                  ),
+                ],
+              ),
+            ),
+          );
+        } else {
+          return Center(
+            child: Container(
+              margin: EdgeInsets.only(bottom: 8.h, top: 20, right: 35.w),
+              alignment: Alignment.center,
+              width: 270.w,
+              height: 35.h,
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 241, 87, 97),
+                border: Border.all(width: .5),
+                borderRadius: BorderRadius.circular(30.r),
+              ),
+              child: const Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    'Đã hết hàng',
+                    style: TColros.white_14_w600,
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+      },
     );
   }
 }

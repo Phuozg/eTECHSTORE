@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:etechstore/module/cart/controller/cart_controller.dart';
 import 'package:etechstore/module/cart/model/cart_model.dart';
@@ -15,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
 
 class SampleBottomSheet extends StatefulWidget {
   final ProductSampleModel sample;
@@ -142,7 +145,9 @@ class _SampleBottomSheetState extends State<SampleBottomSheet> {
                             fontSize: 14,
                             color: Color(0xFFC4C4C4),
                           ),
-                        )
+                        ),
+                        Obx(() => Text(
+                            'Kho: ${controller.listModel.firstWhere((element) => element.MaSanPham == widget.sample.MaSanPham).soLuong}'))
                       ],
                     ),
                   ],
@@ -285,7 +290,15 @@ class _SampleBottomSheetState extends State<SampleBottomSheet> {
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    quantity++;
+                    if (quantity >=
+                        controller.listModel
+                            .firstWhere((element) =>
+                                element.MaSanPham == widget.sample.MaSanPham)
+                            .soLuong) {
+                      //nothing
+                    } else {
+                      quantity++;
+                    }
                   });
                 },
                 child: Container(
@@ -304,67 +317,96 @@ class _SampleBottomSheetState extends State<SampleBottomSheet> {
 
   Widget buildAddToCartButton(BuildContext context) {
     final CartController cartController = Get.put(CartController());
-
-    return ScreenUtilInit(
-      builder: (context, child) => GestureDetector(
-        onTap: () {
-          String selectedColor =
-              controller.selectedColorIndex.value < widget.sample.mauSac.length
-                  ? widget.sample.mauSac[controller.selectedColorIndex.value]
-                  : '';
-
-          String selectedConfig = controller.selectedConfigIndex.value <
-                  widget.sample.cauHinh.length
-              ? widget.sample.cauHinh[controller.selectedConfigIndex.value]
-              : '';
-
-          var maSanPham = {
-            'maSanPham': widget.sample.MaSanPham,
-            'mauSac': selectedColor,
-            'cauHinh': selectedConfig
-          };
-          final FirebaseAuth auth = FirebaseAuth.instance;
-          User? user = auth.currentUser;
-          var cartItem = CartModel(
-            id: cartController.generateRandomString(20),
-            maKhachHang: user!.uid,
-            soLuong: quantity,
-            trangThai: 0,
-            maSanPham: maSanPham,
-          );
-          /*          var colorIndex = controller.selectedColorIndex.value;
-          var configIndex = controller.selectedConfigIndex.value;
-
-          final index = colorIndex * widget.sample.cauHinh.length + configIndex;
-          cartController.addPriceToCartItem(cartItem.id, widget.sample.giaTien[index].toString()); */
-          cartController.addItemToCart(cartItem);
-
-          Navigator.pop(context);
-        },
-        child: Center(
+    final controller = Get.put(ProductSampleController());
+    return ScreenUtilInit(builder: (context, child) {
+      if (controller.listModel
+              .firstWhere(
+                  (element) => element.MaSanPham == widget.sample.MaSanPham)
+              .soLuong <
+          1) {
+        return Center(
           child: Container(
             margin: EdgeInsets.only(bottom: 8.h, top: 20, right: 35.w),
             alignment: Alignment.center,
             width: 270.w,
             height: 35.h,
             decoration: BoxDecoration(
-              color: TColros.purple_line,
+              color: const Color.fromARGB(255, 241, 87, 97),
               border: Border.all(width: .5),
               borderRadius: BorderRadius.circular(30.r),
             ),
-            child: Column(
+            child: const Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Text(
-                  TTexts.themVaoGioHang,
+                  'Đã hết hàng',
                   style: TColros.white_14_w600,
                 ),
               ],
             ),
           ),
-        ),
-      ),
-    );
+        );
+      } else {
+        return GestureDetector(
+          onTap: () {
+            String selectedColor = controller.selectedColorIndex.value <
+                    widget.sample.mauSac.length
+                ? widget.sample.mauSac[controller.selectedColorIndex.value]
+                : '';
+
+            String selectedConfig = controller.selectedConfigIndex.value <
+                    widget.sample.cauHinh.length
+                ? widget.sample.cauHinh[controller.selectedConfigIndex.value]
+                : '';
+
+            var maSanPham = {
+              'maSanPham': widget.sample.MaSanPham,
+              'mauSac': selectedColor,
+              'cauHinh': selectedConfig
+            };
+            final FirebaseAuth auth = FirebaseAuth.instance;
+            User? user = auth.currentUser;
+            var cartItem = CartModel(
+              id: cartController.generateRandomString(20),
+              maKhachHang: user!.uid,
+              soLuong: quantity,
+              trangThai: 0,
+              maSanPham: maSanPham,
+            );
+            /*          var colorIndex = controller.selectedColorIndex.value;
+          var configIndex = controller.selectedConfigIndex.value;
+
+          final index = colorIndex * widget.sample.cauHinh.length + configIndex;
+          cartController.addPriceToCartItem(cartItem.id, widget.sample.giaTien[index].toString()); */
+            cartController.addItemToCart(cartItem);
+
+            Navigator.pop(context);
+          },
+          child: Center(
+            child: Container(
+              margin: EdgeInsets.only(bottom: 8.h, top: 20, right: 35.w),
+              alignment: Alignment.center,
+              width: 270.w,
+              height: 35.h,
+              decoration: BoxDecoration(
+                color: TColros.purple_line,
+                border: Border.all(width: .5),
+                borderRadius: BorderRadius.circular(30.r),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    TTexts.themVaoGioHang,
+                    style: TColros.white_14_w600,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }
+    });
   }
 }
 
@@ -419,6 +461,7 @@ class _BuySampleSingleState extends State<BuySampleSingle> {
   }
 
   Widget buildHeader(BuildContext context) {
+    final controller = Get.put(ProductSampleController());
     return Column(
       children: [
         GestureDetector(
@@ -479,6 +522,10 @@ class _BuySampleSingleState extends State<BuySampleSingle> {
                             fontSize: 14,
                             color: Color(0xFFC4C4C4),
                           ),
+                        ),
+                        Obx(
+                          () => Text(
+                              'Kho: ${controller.listModel.firstWhere((element) => element.MaSanPham == widget.sample.MaSanPham).soLuong}'),
                         )
                       ],
                     ),
@@ -493,6 +540,7 @@ class _BuySampleSingleState extends State<BuySampleSingle> {
   }
 
   Widget buildQuantitySelector() {
+    final controller = Get.put(ProductSampleController());
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -540,7 +588,15 @@ class _BuySampleSingleState extends State<BuySampleSingle> {
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    quantity++;
+                    if (quantity >=
+                        controller.listModel
+                            .firstWhere((element) =>
+                                element.MaSanPham == widget.sample.MaSanPham)
+                            .soLuong) {
+                      //nothing
+                    } else {
+                      quantity++;
+                    }
                   });
                 },
                 child: Container(
@@ -559,47 +615,76 @@ class _BuySampleSingleState extends State<BuySampleSingle> {
 
   Widget buildAddToCartButton(BuildContext context) {
     final CartController cartController = Get.put(CartController());
-
-    return ScreenUtilInit(
-      builder: (context, child) => GestureDetector(
-        onTap: () {
-          final FirebaseAuth auth = FirebaseAuth.instance;
-          User? user = auth.currentUser;
-          var cartItem = CartModel(
-            id: cartController.generateRandomString(20),
-            maKhachHang: user!.uid,
-            soLuong: quantity,
-            trangThai: 0,
-            maSanPham: {
-              'maSanPham': widget.sample.MaSanPham,
-              'mauSac': '',
-              'cauHinh': '',
-            },
-          );
-          cartController.addItemToCart(cartItem);
-          Navigator.pop(context);
-        },
-        child: Container(
-          margin: EdgeInsets.only(left: 18.w, bottom: 15.h, top: 20),
-          alignment: Alignment.center,
-          width: 260.w,
-          height: 30.h,
-          decoration: BoxDecoration(
-            color: TColros.purple_line,
-            border: Border.all(width: .5),
-            borderRadius: BorderRadius.circular(30.r),
+    final controller = Get.put(ProductSampleController());
+    return ScreenUtilInit(builder: (context, child) {
+      if (controller.listModel
+              .firstWhere(
+                  (element) => element.MaSanPham == widget.sample.MaSanPham)
+              .soLuong <
+          1) {
+        return Center(
+          child: Container(
+            margin: EdgeInsets.only(bottom: 8.h, top: 20, right: 35.w),
+            alignment: Alignment.center,
+            width: 270.w,
+            height: 35.h,
+            decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 241, 87, 97),
+              border: Border.all(width: .5),
+              borderRadius: BorderRadius.circular(30.r),
+            ),
+            child: const Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text(
+                  'Đã hết hàng',
+                  style: TColros.white_14_w600,
+                ),
+              ],
+            ),
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text(
-                TTexts.themVaoGioHang,
-                style: TColros.white_14_w600,
-              ),
-            ],
+        );
+      } else {
+        return GestureDetector(
+          onTap: () {
+            final FirebaseAuth auth = FirebaseAuth.instance;
+            User? user = auth.currentUser;
+            var cartItem = CartModel(
+              id: cartController.generateRandomString(20),
+              maKhachHang: user!.uid,
+              soLuong: quantity,
+              trangThai: 0,
+              maSanPham: {
+                'maSanPham': widget.sample.MaSanPham,
+                'mauSac': '',
+                'cauHinh': '',
+              },
+            );
+            cartController.addItemToCart(cartItem);
+            Navigator.pop(context);
+          },
+          child: Container(
+            margin: EdgeInsets.only(left: 18.w, bottom: 15.h, top: 20),
+            alignment: Alignment.center,
+            width: 260.w,
+            height: 30.h,
+            decoration: BoxDecoration(
+              color: TColros.purple_line,
+              border: Border.all(width: .5),
+              borderRadius: BorderRadius.circular(30.r),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text(
+                  TTexts.themVaoGioHang,
+                  style: TColros.white_14_w600,
+                ),
+              ],
+            ),
           ),
-        ),
-      ),
-    );
+        );
+      }
+    });
   }
 }
