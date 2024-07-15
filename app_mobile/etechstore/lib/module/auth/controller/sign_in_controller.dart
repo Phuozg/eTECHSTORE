@@ -2,6 +2,7 @@ import 'package:etechstore/module/auth/views/sign_in_screen.dart';
 import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/services/auth/auth_gate.dart';
 import 'package:etechstore/services/auth/auth_services.dart';
+import 'package:etechstore/services/notifi_service.dart';
 import 'package:etechstore/utlis/connection/network_manager.dart';
 import 'package:etechstore/utlis/constants/image_key.dart';
 import 'package:etechstore/utlis/constants/text_strings.dart';
@@ -9,6 +10,7 @@ import 'package:etechstore/utlis/helpers/dialog/alert_dialog.dart';
 import 'package:etechstore/utlis/helpers/popups/full_screen_loader.dart';
 import 'package:etechstore/utlis/helpers/popups/loader.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
@@ -76,6 +78,15 @@ class SignInController extends GetxController {
       TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.saiEmailHoacMatKhau);
     }
   }
+
+  
+  void notidicationHandle() { 
+    FirebaseMessaging.onMessage.listen((event) {
+      print("hello ${event.notification!.title}");
+      LocalNotificaiotnServece().showNotification(event);
+    });
+  }
+
 
   Future<void> upDatePassword() async {
     try {

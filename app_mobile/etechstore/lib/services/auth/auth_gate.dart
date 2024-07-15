@@ -29,7 +29,7 @@ class _AuthGateState extends State<AuthGate> {
     notidicationHandle();
   }
 
-  void notidicationHandle() {
+  void notidicationHandle() { 
     FirebaseMessaging.onMessage.listen((event) {
       print("hello ${event.notification!.title}");
       LocalNotificaiotnServece().showNotification(event);

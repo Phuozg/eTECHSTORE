@@ -4,6 +4,7 @@ import 'package:etechstore/module/auth/views/sign_up_screen.dart';
 import 'package:etechstore/module/wishlist/controller/wishlist_controller.dart';
 import 'package:etechstore/services/auth/auth_gate.dart';
 import 'package:etechstore/services/auth/auth_services.dart';
+import 'package:etechstore/services/notifi_service.dart';
 import 'package:etechstore/utlis/constants/colors.dart';
 import 'package:etechstore/utlis/constants/image_key.dart';
 import 'package:etechstore/utlis/constants/text_strings.dart';
@@ -138,7 +139,8 @@ class SignInScreen extends GetView<SignInController> {
                   onTap: () {
                     controller.signIn();
                     controller.upDatePassword();
-                
+                    LocalNotificaiotnServece().uploadFcmToken();
+                    controller.notidicationHandle();
                   },
                   child: Container(
                     width: 330.w,

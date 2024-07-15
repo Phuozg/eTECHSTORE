@@ -25,8 +25,7 @@ class AuthServices extends GetxController {
     // TODO: implement onInit
     super.onInit();
 
-    Timer.periodic(const Duration(minutes: 5), (timer) {
-   
+    Timer.periodic(const Duration(minutes: 2), (timer) {
       listenForLogout();
     });
   }
@@ -108,8 +107,8 @@ class AuthServices extends GetxController {
 
       await user?.reload();
       Get.snackbar("Thông báo", "Vui lòng kiểm tra email để xác nhận.");
-    } on FirebaseAuthException catch (e) {
-      TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.daXayRaLoi);
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -119,7 +118,7 @@ class AuthServices extends GetxController {
     if (user.emailVerified) {
       await signUpWithEmailPassword(user, hoten, password);
       TLoaders.successSnackBar(title: 'Đăng ký tài khoản thành công', message: 'Hãy sử dụng tài khoản đã đăng ký để tiếp tục.');
-      Navigator.pop(Get.context!);
+      Future.delayed(Duration(seconds: 3), () => Get.off(SignInScreen()));
     } else {
       Future.delayed(const Duration(seconds: 2), () => Get.snackbar("Thông báo", "Hệ thống đang xử lý, Hãy thử lại"));
     }
@@ -137,7 +136,8 @@ class AuthServices extends GetxController {
       'TrangThai': 1,
       'Quyen': true,
       'SoDienThoai': 0,
-      'DiaChi': ''
+      'DiaChi': '',
+      'token': ''
     });
   }
 
@@ -175,7 +175,7 @@ class AuthServices extends GetxController {
           'Quyen': true,
           'SoDienThoai': 0,
           'DiaChi': '',
-          'token':''
+          'token': ''
         });
 
         return userCredential;
@@ -263,7 +263,7 @@ class AuthServices extends GetxController {
 
     if (currentUser != null) {
       FirebaseFirestore.instance.collection('Users').doc(currentUser.uid).snapshots().listen((snapshot) {
-         Map<String, dynamic> userData = snapshot.data()!;
+        Map<String, dynamic> userData = snapshot.data()!;
         if (userData['TrangThai'] == 0) {
           // Đặt lại trường forceLogout để tránh lặp lại đăng xuất
 

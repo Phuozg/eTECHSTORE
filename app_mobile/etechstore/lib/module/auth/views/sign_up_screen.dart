@@ -231,6 +231,7 @@ class SignUpScreen extends GetView<SignUpController> {
                             controller.verifyEmail();
                           } else {
                             controller.signUp(context);
+                            
                           }
                         } else {
                           return;

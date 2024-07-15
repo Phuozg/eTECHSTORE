@@ -106,6 +106,7 @@ class SignUpController extends GetxController {
           //SignUp
           if (password.text == conformPassword.text) {
             await authServices.checkEmailVerification(email.text.trim(), password.text.trim(), fullName.text.trim(), context);
+                await authServices.sendEmailVerification(email.text, password.text, fullName.text);
            } else {
             TLoaders.errorSnackBar(title: TTexts.thongBao, message: TTexts.matKhauKhongTrungKhop);
             return;
@@ -125,7 +126,8 @@ class SignUpController extends GetxController {
   }
 
   Future<void> verifyEmail() async {
-    await authServices.sendEmailVerification(email.text, password.text, fullName.text);
+    
+    await authServices.sendEmailVerification(email.text, password.text, fullName.text, );
     isVerificationSent.value = true;
   }
 
