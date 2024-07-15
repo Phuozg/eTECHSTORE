@@ -9,8 +9,10 @@ import 'package:etechstore/module/home/views/slideshow_banner.dart';
 import 'package:etechstore/module/product_detail/controller/product_sample_controller.dart';
 import 'package:etechstore/module/products/views/product_screen.dart';
 import 'package:etechstore/module/wishlist/controller/wishlist_controller.dart';
+import 'package:etechstore/services/notifi_service.dart';
 import 'package:etechstore/utlis/constants/image_key.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -30,7 +32,13 @@ class HomeScreen extends StatelessWidget {
     final wishListController = Get.put(WishListController());
     wishListController.createWishList(FirebaseAuth.instance.currentUser!.uid);
     productSampleController.getSampleProduct();
+    LocalNotificaiotnServece().uploadFcmToken();
 
+    void notidicationHandle(){
+      FirebaseMessaging.onMessage.listen((event) {
+        LocalNotificaiotnServece().showNotification(event);
+      });
+    }
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(

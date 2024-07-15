@@ -29,21 +29,34 @@ class _SortableProductsState extends State<SortableProducts> {
       child: Column(
         children: [
           Obx(
-            () => SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: DropdownButtonFormField(
-                decoration: const InputDecoration(prefixIcon: Icon(Icons.sort)),
-                value: productController.selectedSortOption.value,
-                onChanged: (value) {
-                  productController.sortProducts(value!);
-                },
-                items: ['Tên', 'Giá cao', 'Giá thấp', 'Khuyến mãi', 'Mới nhất']
-                    .map((option) => DropdownMenuItem(value: option, child: Text(option)))
-                    .toList(),
-              ),
+            () => Column(
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: DropdownButtonFormField(
+                    decoration:
+                        const InputDecoration(prefixIcon: Icon(Icons.sort)),
+                    value: productController.selectedSortOption.value,
+                    onChanged: (value) {
+                      productController.sortProductsHome(
+                          value!, widget.products);
+                    },
+                    items: [
+                      'Tên',
+                      'Giá cao',
+                      'Giá thấp',
+                      'Khuyến mãi',
+                      'Mới nhất'
+                    ]
+                        .map((option) => DropdownMenuItem(
+                            value: option, child: Text(option)))
+                        .toList(),
+                  ),
+                ),
+                productVerticalSample(context, widget.products)
+              ],
             ),
           ),
-          productVerticalSample(context, widget.products)
         ],
       ),
     );

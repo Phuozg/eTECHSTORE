@@ -31,7 +31,6 @@ Widget productVerticalSample(BuildContext context, List<ProductModel> products) 
                       itemBuilder: (_, index) {
                         final product = products[index];
                         final fillterSample = lstSample.firstWhere((element) => element.MaSanPham == product.id);
-                        List fillter = lstSample.where((element) => element.MaSanPham == product.id).toList();
                         return SizedBox(
                           height: MediaQuery.of(context).size.height / 3.5,
                           child: GestureDetector(
@@ -59,6 +58,7 @@ Widget productVerticalSample(BuildContext context, List<ProductModel> products) 
                               child: Card(
                                 surfaceTintColor: Colors.white,
                                 child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Stack(
                                       children: [

@@ -40,12 +40,8 @@ class VNPAY extends GetxController {
     });
     String hashData =
         hashDataBuffer.toString().substring(0, hashDataBuffer.length - 1);
-    String query = params.entries
-        .map((e) => '${e.key}=${e.value}')
-        .join('&'); //Uri(host: url, queryParameters: sortedParam).query;
-    String vnpSecureHash = "";
-
-    vnpSecureHash =
+    String query = params.entries.map((e) => '${e.key}=${e.value}').join('&');
+    String vnpSecureHash =
         Hmac(sha512, utf8.encode('K8KK1B7RAO9D108W9WP84NLL43NYS5UK'))
             .convert(utf8.encode(hashData))
             .toString();

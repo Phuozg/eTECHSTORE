@@ -10,8 +10,11 @@ class ResultScreen extends StatelessWidget {
   final bool isSucces;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
     final orderController = Get.put(OrderController());
+    isSucces? orderController.processOrderwithVNPay(
+                            FirebaseAuth.instance.currentUser!.uid,
+                            CartController().instance.totalPrice.value.toInt()):0;
     return Scaffold(
       body: isSucces
           ? Center(
@@ -27,11 +30,9 @@ class ResultScreen extends StatelessWidget {
                   ),
                   const Text("Đơn hàng của bạn sẻ được giao sớm"),
                   ElevatedButton(
-                      onPressed: () async {
-                        await orderController.processOrderwithVNPay(
-                            FirebaseAuth.instance.currentUser!.uid,
-                            CartController().instance.totalPrice.value.toInt());
-                        Get.off(() => const NavMenu());
+                      onPressed: ()   {
+                         
+                          Get.off(()=>const NavMenu());
                       },
                       style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF383CA0)),

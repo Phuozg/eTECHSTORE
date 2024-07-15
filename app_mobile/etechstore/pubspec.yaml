@@ -45,6 +45,9 @@ dependencies:
   firebase_messaging: ^14.9.4
   permission_handler: ^11.3.1
   flutter_local_notifications: ^17.2.1+1
+  flutter_zalopay_sdk: ^0.1.14
+  http: ^1.2.1
+  sprintf: ^7.0.0
 
 email_auth:
   smtp:

@@ -97,6 +97,37 @@ class ProductControllerr extends GetxController {
     }
   }
 
+  void sortProductsHome(String sortOption, List<ProductModel> homeProducts) {
+    selectedSortOption.value = sortOption;
+    switch (sortOption) {
+      case 'Tên':
+        homeProducts.sort((a, b) => a.Ten.compareTo(b.Ten));
+        break;
+      case 'Giá cao':
+        homeProducts.sort((a, b) => b.GiaTien.compareTo(a.GiaTien));
+        break;
+      case 'Giá thấp':
+        homeProducts.sort((a, b) => a.GiaTien.compareTo(b.GiaTien));
+        break;
+      case 'Mới nhất':
+        homeProducts.sort((a, b) => a.NgayNhap.compareTo(b.NgayNhap));
+        break;
+      case 'Khuyến mãi':
+        homeProducts.sort((a, b) {
+          if (b.KhuyenMai > 0) {
+            return b.KhuyenMai.compareTo(a.KhuyenMai);
+          } else if (a.KhuyenMai > 0) {
+            return -1;
+          } else {
+            return 1;
+          }
+        });
+        break;
+      default:
+        homeProducts.sort((a, b) => a.Ten.compareTo(b.Ten));
+    }
+  }
+
   //
   void assignProducts(List<ProductModel> products) {
     this.products.assignAll(products);

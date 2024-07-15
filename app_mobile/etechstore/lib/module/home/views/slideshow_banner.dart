@@ -38,6 +38,9 @@
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:etechstore/module/home/controllers/banner_controller.dart';
+import 'package:etechstore/module/home/controllers/category_controller.dart';
+import 'package:etechstore/module/home/controllers/product_controller.dart';
+import 'package:etechstore/module/products/views/product_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -47,7 +50,8 @@ class SlideShowBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bannerController = Get.put(BannerController());
-
+    final productController = Get.put(ProductControllerr());
+    final categoryController = Get.put(CategoryController());
     return Obx(() {
       if (bannerController.allBanner.isEmpty) {
         return const Center(
@@ -58,9 +62,22 @@ class SlideShowBanner extends StatelessWidget {
         itemCount: bannerController.allBanner.length,
         itemBuilder: (context, index, realIndex) {
           final banner = bannerController.allBanner[index];
-          return Image.network(
-            banner.HinhAnh,
-            fit: BoxFit.cover,
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (builder) => ProductScreen(
+                            title:
+                                categoryController.getCateName(banner.DanhMuc),
+                            futureMethod: productController.getProductsForCate(
+                                catId: banner.DanhMuc),
+                          )));
+            },
+            child: Image.network(
+              banner.HinhAnh,
+              fit: BoxFit.cover,
+            ),
           );
         },
         options: CarouselOptions(

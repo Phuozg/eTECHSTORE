@@ -40,6 +40,10 @@ class PaymentController extends GetxController {
                     const SizedBox(
                       height: 10,
                     ),
+                    PaymentTile(
+                        paymentMethod: PaymentModel(
+                            ten: 'ZaloPay',
+                            icon: 'assets/icons/zalopay_icon.png')),
                   ],
                 ),
               ),

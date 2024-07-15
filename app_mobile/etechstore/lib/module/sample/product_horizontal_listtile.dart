@@ -90,7 +90,7 @@ Widget productHorizontalListTile(BuildContext context, ProductModel product) {
                     Text(
                       product.Ten.length < 27 ? product.Ten : '${product.Ten.substring(0, 27)}...',
                       style: const TextStyle(fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center,
+                      textAlign: TextAlign.left,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

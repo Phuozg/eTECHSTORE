@@ -23,7 +23,7 @@ Widget productHorizontalSample(BuildContext context, String query) {
         }
         final lstSample = snapshot.data!;
         return SizedBox(
-          height: MediaQuery.of(context).size.height / 3.5,
+          height: MediaQuery.of(context).size.height / 3.3,
           child: Obx(
             () => ListView.builder(
                 shrinkWrap: true,

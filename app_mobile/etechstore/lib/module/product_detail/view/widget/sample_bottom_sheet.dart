@@ -146,8 +146,6 @@ class _SampleBottomSheetState extends State<SampleBottomSheet> {
                             color: Color(0xFFC4C4C4),
                           ),
                         ),
-                        Obx(() => Text(
-                            'Kho: ${controller.listModel.firstWhere((element) => element.MaSanPham == widget.sample.MaSanPham).soLuong}'))
                       ],
                     ),
                   ],

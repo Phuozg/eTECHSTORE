@@ -8,14 +8,25 @@ import 'package:get/get.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 
-class VNPAYScreen extends StatefulWidget {
-  const VNPAYScreen({super.key, required this.url});
-  final String url;
+class ZaloBuyNowScreen extends StatefulWidget {
+   const ZaloBuyNowScreen({super.key,
+  required this.url,
+      required this.productID,
+      required this.quantity,
+      required this.price,
+      required this.color,
+      required this.config});
+      final String url;
+  final String productID;
+  final int quantity;
+  final String price;
+  final String color;
+  final String config;
   @override
-  State<VNPAYScreen> createState() => _VNPAYScreenState();
+  State<ZaloBuyNowScreen> createState() => _ZaloScreenState();
 }
 
-class _VNPAYScreenState extends State<VNPAYScreen> {
+class _ZaloScreenState extends State<ZaloBuyNowScreen> {
   late final WebViewController _controller;
   final orderController = Get.put(OrderController());
   @override
@@ -33,13 +44,11 @@ class _VNPAYScreenState extends State<VNPAYScreen> {
       ..setBackgroundColor(const Color(0x00000000))
       ..setNavigationDelegate(
         NavigationDelegate(
-          onPageFinished: (url) async {
-            if (url.contains('vnp_ResponseCode')) {
+          onPageStarted: (url) async {
+            if (url.contains('returncode')) {
               final params = Uri.parse(url).queryParameters;
-              if (params['vnp_ResponseCode'] == '00') {
-                orderController.processOrderwithVNPay(
-                            FirebaseAuth.instance.currentUser!.uid,
-                            CartController().instance.totalPrice.value.toInt());
+              if (params['returncode'] == '1') {
+                orderController.processOrderBuyNow(FirebaseAuth.instance.currentUser!.uid, int.parse(widget.price), widget.productID, widget.quantity,widget.config,widget.color);
                             
                 Get.off(()=>const SuccessScreen());
               } else {

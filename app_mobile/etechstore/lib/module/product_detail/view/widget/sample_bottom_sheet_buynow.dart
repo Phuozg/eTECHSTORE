@@ -1,3 +1,4 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:etechstore/module/cart/controller/cart_controller.dart';
 import 'package:etechstore/module/cart/model/cart_model.dart';
@@ -296,6 +297,8 @@ class _SampleBottomSheetState extends State<SampleBottomSheetBuyNow> {
           return GestureDetector(
             onTap: () {
               orderController.getProductByID();
+                            orderController.productReturn;
+
               String selectedColor =
                   controller.selectedColorIndex.value < widget.sample.mauSac.length ? widget.sample.mauSac[controller.selectedColorIndex.value] : '';
 

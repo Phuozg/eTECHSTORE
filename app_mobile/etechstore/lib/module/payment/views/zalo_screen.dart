@@ -8,14 +8,14 @@ import 'package:get/get.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 
-class VNPAYScreen extends StatefulWidget {
-  const VNPAYScreen({super.key, required this.url});
+class ZaloScreen extends StatefulWidget {
+  const ZaloScreen({super.key, required this.url});
   final String url;
   @override
-  State<VNPAYScreen> createState() => _VNPAYScreenState();
+  State<ZaloScreen> createState() => _ZaloScreenState();
 }
 
-class _VNPAYScreenState extends State<VNPAYScreen> {
+class _ZaloScreenState extends State<ZaloScreen> {
   late final WebViewController _controller;
   final orderController = Get.put(OrderController());
   @override
@@ -33,10 +33,10 @@ class _VNPAYScreenState extends State<VNPAYScreen> {
       ..setBackgroundColor(const Color(0x00000000))
       ..setNavigationDelegate(
         NavigationDelegate(
-          onPageFinished: (url) async {
-            if (url.contains('vnp_ResponseCode')) {
+          onPageStarted: (url) async {
+            if (url.contains('returncode')) {
               final params = Uri.parse(url).queryParameters;
-              if (params['vnp_ResponseCode'] == '00') {
+              if (params['returncode'] == '1') {
                 orderController.processOrderwithVNPay(
                             FirebaseAuth.instance.currentUser!.uid,
                             CartController().instance.totalPrice.value.toInt());

@@ -28,4 +28,8 @@ class CategoryController extends GetxController {
       throw 'Something wrong';
     }
   }
+
+  getCateName(int id) {
+    return allCategories.firstWhere((element) => element.id == id).TenDanhMuc;
+  }
 }

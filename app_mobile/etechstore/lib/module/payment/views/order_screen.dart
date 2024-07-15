@@ -1,16 +1,21 @@
+import 'dart:convert';
+
 import 'package:etechstore/module/cart/controller/cart_controller.dart';
 import 'package:etechstore/module/home/views/home_screen.dart';
 import 'package:etechstore/module/payment/controllers/order_controller.dart';
 import 'package:etechstore/module/payment/controllers/payment_controller.dart';
 import 'package:etechstore/module/payment/controllers/vnpay_payment_controller.dart';
+import 'package:etechstore/module/payment/controllers/zalo_pay_controller.dart';
 import 'package:etechstore/module/payment/views/address_user.dart';
 import 'package:etechstore/module/payment/views/order_items.dart';
 import 'package:etechstore/module/payment/views/payment.dart';
 import 'package:etechstore/module/payment/views/vnpay_screen.dart';
+import 'package:etechstore/module/payment/views/zalo_screen.dart';
 import 'package:etechstore/module/product_detail/controller/product_sample_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 
 class OrderScreen extends StatelessWidget {
   const OrderScreen({super.key});
@@ -21,6 +26,7 @@ class OrderScreen extends StatelessWidget {
     final paymentController = Get.put(PaymentController());
     final orderController = Get.put(OrderController());
     final vnpayController = Get.put(VNPAY());
+    final zalo = Get.put(ZaloPay());
     RxString response = ''.obs;
     return Scaffold(
       appBar: AppBar(
@@ -75,7 +81,23 @@ class OrderScreen extends StatelessWidget {
                       MaterialPageRoute(
                           builder: (context) => VNPAYScreen(
                               url: vnpayController.urlVNPay.value)));
-                } else {
+                }
+                if (paymentController.selectedPaymentMethod.value.ten ==
+                    'ZaloPay') {
+                  final url = Uri.parse(zalo.createOrder(
+                      CartController().instance.totalPrice.value.toInt()));
+                  final response = await http.get(url);
+                  if (response.statusCode == 200) {
+                    Map<String, dynamic> data = jsonDecode(response.body);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                ZaloScreen(url: data['orderurl'])));
+                    // print(data['orderurl']);
+                  }
+                } if(paymentController.selectedPaymentMethod.value.ten ==
+                    'Thanh toán khi nhận hàng') {
                   orderController.processOrder(userID,
                       CartController().instance.totalPrice.value.toInt());
                 }
@@ -131,7 +153,7 @@ class OrderScreen extends StatelessWidget {
                       actions: [
                         ElevatedButton(
                           onPressed: () {
-                            Navigator.of(context).pop(); // Close the dialog
+                            Navigator.of(context).pop();
                           },
                           style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF383CA0)),

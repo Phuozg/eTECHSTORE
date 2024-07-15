@@ -50,7 +50,7 @@ class DetailScreen extends GetView {
   final MoTa;
   final Ten;
   final TrangThai;
-  final id;
+  final String id;
   final thumbnail;
   List<dynamic> HinhAnh = [];
   final NgayNhap;
@@ -280,6 +280,13 @@ class DetailScreen extends GetView {
                                       style: const TextStyle(
                                           fontSize: 13,
                                           fontWeight: FontWeight.bold)),
+                                  const Text(" | Kho: ",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w300)),
+                                  Obx(() {
+                                    return Text(
+                                        '${productSampleController.listModel.firstWhere((element) => element.MaSanPham == id).soLuong}');
+                                  })
                                 ],
                               ),
                             ),

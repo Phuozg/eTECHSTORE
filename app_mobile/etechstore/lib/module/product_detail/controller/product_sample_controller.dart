@@ -144,7 +144,7 @@ class ProductSampleController extends GetxController {
     }
   }
 
-    Future<void> fetchModelProduct() async {
+  Future<void> fetchModelProduct() async {
     FirebaseFirestore.instance
         .collection('MauSanPham')
         .snapshots()
