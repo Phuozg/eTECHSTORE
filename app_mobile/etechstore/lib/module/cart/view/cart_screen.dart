@@ -41,8 +41,7 @@ class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final CartController controller = Get.put(CartController());
-    final ProductSampleController productController =
-        Get.put(ProductSampleController());
+    final ProductSampleController productController = Get.put(ProductSampleController());
     final NetworkManager network = Get.put(NetworkManager());
 
     return ScreenUtilInit(
@@ -100,95 +99,48 @@ class CartScreen extends StatelessWidget {
                                   return ListView.builder(
                                     itemCount: controller.cartItems.length,
                                     itemBuilder: (context, index) {
-                                      CartModel item =
-                                          controller.cartItems[index];
-                                      String selectedColor =
-                                          item.maSanPham['mauSac'];
-                                      String selectedConfig =
-                                          item.maSanPham['cauHinh'];
+                                      CartModel item = controller.cartItems[index];
+                                      String selectedColor = item.maSanPham['mauSac'];
+                                      String selectedConfig = item.maSanPham['cauHinh'];
                                       int quantity = item.soLuong;
-                                      final productSample = productController
-                                          .productSamples
-                                          .firstWhere(
-                                        (p) =>
-                                            p.MaSanPham ==
-                                            item.maSanPham['maSanPham'],
-                                        orElse: () => ProductSampleModel(
-                                            id: '',
-                                            MaSanPham: '',
-                                            soLuong: 0,
-                                            mauSac: [],
-                                            cauHinh: [],
-                                            giaTien: []),
+                                      final productSample = productController.productSamples.firstWhere(
+                                        (p) => p.MaSanPham == item.maSanPham['maSanPham'],
+                                        orElse: () => ProductSampleModel(id: '', MaSanPham: '', soLuong: 0, mauSac: [], cauHinh: [], giaTien: []),
                                       );
-                                      final product = controller.products[
-                                          item.maSanPham['maSanPham']]!;
+                                      final product = controller.products[item.maSanPham['maSanPham']]!;
 
-                                      final price = controller.calculatePrice(
-                                          productSample,
-                                          product,
-                                          selectedColor,
-                                          selectedConfig);
+                                      final price = controller.calculatePrice(productSample, product, selectedColor, selectedConfig);
 
                                       return Slidable(
-                                        endActionPane: ActionPane(
-                                            motion: const ScrollMotion(),
-                                            children: [DeleteItem(item: item)]),
+                                        endActionPane: ActionPane(motion: const ScrollMotion(), children: [DeleteItem(item: item)]),
                                         child: SingleChildScrollView(
                                           child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Container(
                                                 alignment: Alignment.topCenter,
                                                 width: double.infinity,
-                                                height: 100.h,
-                                                margin: EdgeInsets.symmetric(
-                                                    horizontal: 6.w,
-                                                    vertical: 3.h),
-                                                decoration: BoxDecoration(
-                                                    border: null,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            11.r),
-                                                    color: Colors.white),
+                                                height: item.maSanPham['cauHinh']=="" && item.maSanPham['mauSac']== "" ? 85.h : 100.h,
+                                                margin: EdgeInsets.symmetric(horizontal: 6.w, vertical: 3.h),
+                                                decoration:
+                                                    BoxDecoration(border: null, borderRadius: BorderRadius.circular(11.r), color: Colors.white),
                                                 child: Column(
                                                   children: [
                                                     Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
+                                                      mainAxisAlignment: MainAxisAlignment.start,
                                                       children: [
                                                         Obx(
                                                           () => Transform.scale(
                                                             scale: 1,
                                                             child: Checkbox(
-                                                                checkColor:
-                                                                    Colors
-                                                                        .white,
-                                                                activeColor: Colors
-                                                                    .deepOrange,
-                                                                value: controller.selectedItems[
-                                                                        item
-                                                                            .id] ??
-                                                                    false,
-                                                                side: BorderSide(
-                                                                    color: Colors
-                                                                        .grey
-                                                                        .shade400),
-                                                                shape: RoundedRectangleBorder(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            5)),
-                                                                onChanged:
-                                                                    (bool?
-                                                                        val) {
-                                                                  controller
-                                                                      .toggleSelectedItem(
-                                                                          item.id,
-                                                                          val!);
+                                                                checkColor: Colors.white,
+                                                                activeColor: Colors.deepOrange,
+                                                                value: controller.selectedItems[item.id] ?? false,
+                                                                side: BorderSide(color: Colors.grey.shade400),
+                                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                                                                onChanged: (bool? val) {
+                                                                  controller.toggleSelectedItem(item.id, val!);
                                                                 }),
                                                           ),
                                                         ),
@@ -197,43 +149,30 @@ class CartScreen extends StatelessWidget {
                                                             Navigator.push(
                                                                 context,
                                                                 MaterialPageRoute(
-                                                                    builder:
-                                                                        (context) =>
-                                                                            DetailScreen(
-                                                                              GiaTien: product.giaTien,
-                                                                              KhuyenMai: product.KhuyenMai,
-                                                                              MaDanhMuc: product.maDanhMuc,
-                                                                              MoTa: product.moTa,
-                                                                              Ten: product.ten,
-                                                                              TrangThai: product.trangThai,
-                                                                              id: product.id,
-                                                                              thumbnail: product.thumbnail,
-                                                                              HinhAnh: product.hinhAnh,
-                                                                              isPopular: product.isPopular,
-                                                                              NgayNhap: product.NgayNhap,
-                                                                            )));
+                                                                    builder: (context) => DetailScreen(
+                                                                          GiaTien: product.giaTien,
+                                                                          KhuyenMai: product.KhuyenMai,
+                                                                          MaDanhMuc: product.maDanhMuc,
+                                                                          MoTa: product.moTa,
+                                                                          Ten: product.ten,
+                                                                          TrangThai: product.trangThai,
+                                                                          id: product.id,
+                                                                          thumbnail: product.thumbnail,
+                                                                          HinhAnh: product.hinhAnh,
+                                                                          isPopular: product.isPopular,
+                                                                          NgayNhap: product.NgayNhap,
+                                                                        )));
                                                           },
                                                           child: SizedBox(
                                                             width: 70.w,
                                                             height: 60.h,
-                                                            child: product !=
-                                                                    null
-                                                                ? FadeInImage
-                                                                    .assetNetwork(
-                                                                    image: product
-                                                                        .thumbnail,
-                                                                    placeholder:
-                                                                        ImageKey
-                                                                            .whiteBackGround,
-                                                                    fit: BoxFit
-                                                                        .cover,
-                                                                    imageErrorBuilder:
-                                                                        (context,
-                                                                            error,
-                                                                            stackTrace) {
-                                                                      return Center(
-                                                                          child:
-                                                                              Image.asset(ImageKey.whiteBackGround));
+                                                            child: product != null
+                                                                ? FadeInImage.assetNetwork(
+                                                                    image: product.thumbnail,
+                                                                    placeholder: ImageKey.whiteBackGround,
+                                                                    fit: BoxFit.cover,
+                                                                    imageErrorBuilder: (context, error, stackTrace) {
+                                                                      return Center(child: Image.asset(ImageKey.whiteBackGround));
                                                                     },
                                                                   )
                                                                 : null,
@@ -241,59 +180,37 @@ class CartScreen extends StatelessWidget {
                                                         ),
                                                         SizedBox(width: 15.w),
                                                         Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
                                                           children: [
-                                                            SizedBox(
-                                                                height: 13.w),
+                                                            SizedBox(height: 13.w),
                                                             Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .spaceBetween,
+                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                               children: [
                                                                 GestureDetector(
                                                                   onTap: () {
                                                                     Navigator.push(
                                                                         context,
                                                                         MaterialPageRoute(
-                                                                          builder: (context) =>
-                                                                              DetailScreen(
-                                                                            GiaTien:
-                                                                                product.giaTien,
-                                                                            KhuyenMai:
-                                                                                product.KhuyenMai,
-                                                                            MaDanhMuc:
-                                                                                product.maDanhMuc,
-                                                                            MoTa:
-                                                                                product.moTa,
-                                                                            Ten:
-                                                                                product.ten,
-                                                                            TrangThai:
-                                                                                product.trangThai,
+                                                                          builder: (context) => DetailScreen(
+                                                                            GiaTien: product.giaTien,
+                                                                            KhuyenMai: product.KhuyenMai,
+                                                                            MaDanhMuc: product.maDanhMuc,
+                                                                            MoTa: product.moTa,
+                                                                            Ten: product.ten,
+                                                                            TrangThai: product.trangThai,
                                                                             id: product.id,
-                                                                            thumbnail:
-                                                                                product.thumbnail,
-                                                                            HinhAnh:
-                                                                                product.hinhAnh,
-                                                                            isPopular:
-                                                                                product.isPopular,
-                                                                            NgayNhap:
-                                                                                product.NgayNhap,
+                                                                            thumbnail: product.thumbnail,
+                                                                            HinhAnh: product.hinhAnh,
+                                                                            isPopular: product.isPopular,
+                                                                            NgayNhap: product.NgayNhap,
                                                                           ),
                                                                         ));
                                                                   },
-                                                                  child:
-                                                                      SizedBox(
-                                                                    width:
-                                                                        210.w,
-                                                                    child: product !=
-                                                                            null
-                                                                        ? Text(
-                                                                            product
-                                                                                .ten,
-                                                                            style:
-                                                                                TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500),
+                                                                  child: SizedBox(
+                                                                    width: 210.w,
+                                                                    child: product != null
+                                                                        ? Text(product.ten,
+                                                                            style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500),
                                                                             overflow: TextOverflow.ellipsis,
                                                                             softWrap: true)
                                                                         : const Text('Loading...'),
@@ -302,50 +219,24 @@ class CartScreen extends StatelessWidget {
                                                               ],
                                                             ),
                                                             GestureDetector(
-                                                                onTap:
-                                                                    () async {
-                                                                  for (final sample in productController
-                                                                      .productSamples
-                                                                      .where((p0) =>
-                                                                          product
-                                                                              .id ==
-                                                                          p0.MaSanPham)) {
-                                                                    productController
-                                                                        .setSelectedColorIndex(
-                                                                            0,
-                                                                            sample);
-                                                                    productController
-                                                                        .setSelectedConfigIndex(
-                                                                            0,
-                                                                            sample);
-                                                                    productController.checkPrice(
-                                                                        sample,
-                                                                        price
-                                                                            .toString());
-                                                                    if (sample
-                                                                            .cauHinh
-                                                                            .isEmpty &&
-                                                                        sample
-                                                                            .mauSac
-                                                                            .isEmpty) {
+                                                                onTap: () async {
+                                                                  for (final sample
+                                                                      in productController.productSamples.where((p0) => product.id == p0.MaSanPham)) {
+                                                                    productController.setSelectedColorIndex(0, sample);
+                                                                    productController.setSelectedConfigIndex(0, sample);
+                                                                    productController.checkPrice(sample, price.toString());
+                                                                    if (sample.cauHinh.isEmpty && sample.mauSac.isEmpty) {
                                                                       return;
                                                                     } else {
                                                                       showModalBottomSheet(
-                                                                        context:
-                                                                            context,
-                                                                        builder:
-                                                                            (ctx) {
+                                                                        context: context,
+                                                                        builder: (ctx) {
                                                                           return ShowCustomModalBottomSheet(
-                                                                            cart:
-                                                                                item,
-                                                                            GiaTien:
-                                                                                product.giaTien,
-                                                                            KhuyenMai:
-                                                                                product.KhuyenMai,
-                                                                            sample:
-                                                                                sample,
-                                                                            thumbnail:
-                                                                                product.thumbnail,
+                                                                            cart: item,
+                                                                            GiaTien: product.giaTien,
+                                                                            KhuyenMai: product.KhuyenMai,
+                                                                            sample: sample,
+                                                                            thumbnail: product.thumbnail,
                                                                             id: product.id,
                                                                           );
                                                                         },
@@ -353,37 +244,21 @@ class CartScreen extends StatelessWidget {
                                                                     }
                                                                   }
                                                                 },
-                                                                child: selectedConfig
-                                                                            .isNotEmpty ||
-                                                                        selectedColor
-                                                                            .isNotEmpty
+                                                                child: selectedConfig.isNotEmpty || selectedColor.isNotEmpty
                                                                     ? TypeProductItemWidget(
-                                                                        selectedColor:
-                                                                            selectedColor,
-                                                                        selectedConfig:
-                                                                            selectedConfig,
+                                                                        selectedColor: selectedColor,
+                                                                        selectedConfig: selectedConfig,
                                                                       )
                                                                     : Container()),
-                                                            SizedBox(
-                                                                height: 5.h),
+                                                            SizedBox(height: 5.h),
                                                             PriceProductItemWidget(
                                                               product: product,
                                                               pirce: price != 0
-                                                                  ? priceFormat(
-                                                                      price)
-                                                                  : priceFormat((product
-                                                                          .giaTien -
-                                                                      product.giaTien *
-                                                                          product
-                                                                              .KhuyenMai ~/
-                                                                          100)),
+                                                                  ? priceFormat(price)
+                                                                  : priceFormat((product.giaTien - product.giaTien * product.KhuyenMai ~/ 100)),
                                                             ),
-                                                            SizedBox(
-                                                                height: 3.h),
-                                                            ChangeQuantityItemWidget(
-                                                                item: item,
-                                                                quantity: item
-                                                                    .soLuong)
+                                                            SizedBox(height: 3.h),
+                                                            ChangeQuantityItemWidget(item: item, quantity: item.soLuong)
                                                           ],
                                                         ),
                                                       ],
@@ -417,12 +292,8 @@ class CartScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    controller.isEditMode.value
-                        ? const BottomCartWidget()
-                        : const CheckBoxAllProductWidget(),
-                    controller.isEditMode.value
-                        ? Container()
-                        : const PayCartItem(),
+                    controller.isEditMode.value ? const BottomCartWidget() : const CheckBoxAllProductWidget(),
+                    controller.isEditMode.value ? Container() : const PayCartItem(),
                   ],
                 ),
               ),
