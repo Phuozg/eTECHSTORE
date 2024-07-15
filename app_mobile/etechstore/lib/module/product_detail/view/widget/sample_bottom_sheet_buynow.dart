@@ -136,8 +136,7 @@ class _SampleBottomSheetState extends State<SampleBottomSheetBuyNow> {
                             color: Color(0xFFC4C4C4),
                           ),
                         ),
-                        Text(
-                            'Kho: ${controller.listModel.firstWhere((element) => element.MaSanPham == widget.sample.MaSanPham).soLuong}')
+                        Text('Kho: ${controller.listModel.firstWhere((element) => element.MaSanPham == widget.sample.MaSanPham).soLuong}')
                       ],
                     ),
                   ],
@@ -291,21 +290,14 @@ class _SampleBottomSheetState extends State<SampleBottomSheetBuyNow> {
     final orderController = Get.put(OrderController());
     return ScreenUtilInit(
       builder: (context, child) {
-        if (controller.listModel
-                .firstWhere(
-                    (element) => element.MaSanPham == widget.sample.MaSanPham)
-                .soLuong >
-            0) {
+        if (controller.listModel.firstWhere((element) => element.MaSanPham == widget.sample.MaSanPham).soLuong > 0) {
           return GestureDetector(
             onTap: () {
               orderController.getProductByID();
-              String selectedColor = controller.selectedColorIndex.value <
-                      widget.sample.mauSac.length
-                  ? widget.sample.mauSac[controller.selectedColorIndex.value]
-                  : '';
+              String selectedColor =
+                  controller.selectedColorIndex.value < widget.sample.mauSac.length ? widget.sample.mauSac[controller.selectedColorIndex.value] : '';
 
-              String selectedConfig = controller.selectedConfigIndex.value <
-                      widget.sample.cauHinh.length
+              String selectedConfig = controller.selectedConfigIndex.value < widget.sample.cauHinh.length
                   ? widget.sample.cauHinh[controller.selectedConfigIndex.value]
                   : '';
               Navigator.pushReplacement(
@@ -481,8 +473,7 @@ class _BuySampleSingleState extends State<BuySampleSingleBuyNow> {
                             color: Color(0xFFC4C4C4),
                           ),
                         ),
-                        Obx(() => Text(
-                            'Kho: ${controller.listModel.firstWhere((element) => element.MaSanPham == widget.sample.MaSanPham).soLuong}'))
+                        Obx(() => Text('Kho: ${controller.listModel.firstWhere((element) => element.MaSanPham == widget.sample.MaSanPham).soLuong}'))
                       ],
                     ),
                   ],
@@ -539,11 +530,7 @@ class _BuySampleSingleState extends State<BuySampleSingleBuyNow> {
                 onTap: () {
                   setState(() {
                     setState(() {
-                      if (quantity >=
-                          controller.listModel
-                              .firstWhere((element) =>
-                                  element.MaSanPham == widget.sample.MaSanPham)
-                              .soLuong) {
+                      if (quantity >= controller.listModel.firstWhere((element) => element.MaSanPham == widget.sample.MaSanPham).soLuong) {
                         //nothing
                       } else {
                         quantity++;
@@ -572,13 +559,11 @@ class _BuySampleSingleState extends State<BuySampleSingleBuyNow> {
     final orderController = Get.put(OrderController());
     return ScreenUtilInit(
       builder: (context, child) {
-        if (controller.listModel
-                .firstWhere(
-                    (element) => element.MaSanPham == widget.sample.MaSanPham)
-                .soLuong >
-            0) {
+        if (controller.listModel.firstWhere((element) => element.MaSanPham == widget.sample.MaSanPham).soLuong > 0) {
           return GestureDetector(
-            onTap: () {
+            onTap: () {              orderController.getProductByID();
+
+              orderController.productReturn;
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
@@ -587,7 +572,7 @@ class _BuySampleSingleState extends State<BuySampleSingleBuyNow> {
                             quantity: quantity,
                             color: '',
                             config: '',
-                            price: widget.GiaTien.toString(),
+                            price: price.toString(),
                           )));
             },
             child: Container(
