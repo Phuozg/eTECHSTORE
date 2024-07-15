@@ -3,6 +3,7 @@ import 'package:etechstore/module/cart/controller/cart_controller.dart';
 import 'package:etechstore/module/cart/model/cart_model.dart';
 import 'package:etechstore/module/home/models/product_model_home.dart';
 import 'package:etechstore/module/home/views/home_screen.dart';
+import 'package:etechstore/module/payment/controllers/order_controller.dart';
 import 'package:etechstore/module/payment/views/buynow_screen.dart';
 import 'package:etechstore/module/product_detail/controller/product_sample_controller.dart';
 import 'package:etechstore/module/product_detail/model/product_sample_model.dart';
@@ -64,6 +65,8 @@ Widget buildProductSamples(
                           children: [
                             GestureDetector(
                               onTap: () {
+                                  final orderController = Get.put(OrderController());
+    orderController.getProductByID();
                                 showModalBottomSheet(
                                   context: context,
                                   builder: (ctx) {
@@ -99,7 +102,8 @@ Widget buildProductSamples(
                             ),
                             SizedBox(width: 15.w),
                             GestureDetector(
-                              onTap: () {
+                              onTap: () {  final orderController = Get.put(OrderController());
+    orderController.getProductByID();
                                 sample.mauSac.isNotEmpty &&
                                         sample.cauHinh.isNotEmpty
                                     ? showModalBottomSheet(
@@ -185,7 +189,8 @@ Widget buildProductSamples(
                         );
                       }
                       return GestureDetector(
-                        onTap: () {
+                        onTap: () {  final orderController = Get.put(OrderController());
+    orderController.getProductByID();
                           showModalBottomSheet(
                             context: context,
                             builder: (ctx) {
@@ -224,7 +229,8 @@ Widget buildProductSamples(
                             ),
                             SizedBox(width: 15.w),
                             GestureDetector(
-                              onTap: () {
+                              onTap: () {  final orderController = Get.put(OrderController());
+    orderController.getProductByID();
                                 sample.mauSac.isNotEmpty &&
                                         sample.cauHinh.isNotEmpty
                                     ? showModalBottomSheet(
