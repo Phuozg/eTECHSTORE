@@ -72,7 +72,7 @@ class OrderController extends GetxController {
       quantityModel -= quantity;
     } catch (e) {
       throw 'Something wrong';
-    }
+    } 
   }
 
   Future<void> clearCart(String userID) async {

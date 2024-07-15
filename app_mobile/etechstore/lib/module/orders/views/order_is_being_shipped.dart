@@ -230,15 +230,18 @@ class OrderIsBeingShipped extends StatelessWidget {
                                   ),
                                   SizedBox(height: 5.h),
                                   Linehelper(color: const Color.fromARGB(94, 217, 217, 217), height: 1),
-                                  GestureDetector(
-                                    onTap: () {
-                                      controller.loadMore();
-                                      Get.to(DetailOrderSreen(maDonHang: order.id));
-                                    },
-                                    child: Container(
-                                        margin: const EdgeInsets.only(top: 5),
-                                        alignment: Alignment.center,
-                                        child: const Text("Xem chi tiết", style: TextStyle(color: Colors.grey, fontSize: 11))),
+                                  Center(
+                                    child: GestureDetector(
+                                        onTap: () {
+                                          controller.loadMore();
+                                          Get.to(DetailOrderSreen(maDonHang: order.id));
+                                        },
+                                        child: Obx(
+                                          () => controller.lstOrder.length >= 2
+                                              ? Text("Xem thêm ${controller.lstOrder.length - 1} sản phẩm",
+                                                  style: const TextStyle(color: Colors.grey, fontSize: 11))
+                                              : const Text("Xem chi tiết", style: TextStyle(color: Colors.grey, fontSize: 11)),
+                                        )),
                                   ),
                                   SizedBox(height: 5.h),
                                   Linehelper(color: const Color.fromARGB(94, 217, 217, 217), height: 1),

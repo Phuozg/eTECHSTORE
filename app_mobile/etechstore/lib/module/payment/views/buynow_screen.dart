@@ -29,6 +29,7 @@ class BuyNowScreen extends StatelessWidget {
     final userID = FirebaseAuth.instance.currentUser!.uid;
     final paymentController = Get.put(PaymentController());
     final orderController = Get.put(OrderController());
+    
     final vnPayController = Get.put(VNPAY());
     orderController.getProductByID();
     return Scaffold(
