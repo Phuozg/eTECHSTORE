@@ -139,7 +139,7 @@ class EditProfileScreen extends StatelessWidget {
                           ),
                           GestureDetector(
                             onTap: () {
-                              Get.to(EditScreen(
+                              Get.to(EditScreen(profile: 'ten',
                                 title: "Sửa tên",
                                 text: profile.HoTen,
                                 func: () {
@@ -157,7 +157,7 @@ class EditProfileScreen extends StatelessWidget {
                           Linehelper(color: const Color(0xFFD9D9D9), height: .8.h),
                           GestureDetector(
                               onTap: () {
-                                Get.to(EditScreen(
+                                Get.to(EditScreen(profile: '',
                                   title: "Sửa số điện thoại",
                                   text: profile.SoDienThoai != 0 ? "0${profile.SoDienThoai.toString()}" : ("Số điện thoại"),
                                   func: () {
@@ -183,7 +183,7 @@ class EditProfileScreen extends StatelessWidget {
                           Linehelper(color: const Color(0xFFD9D9D9), height: .8.h),
                           GestureDetector(
                               onTap: () {
-                                Get.to(EditScreen(
+                                Get.to(EditScreen(profile: 'diachi',
                                   controller: profileController.DressController,
                                   title: "Sửa địa chỉ",
                                   text: profile.DiaChi == '' ? "Thêm địa chỉ" : profile.DiaChi,

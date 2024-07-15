@@ -1,4 +1,5 @@
 import 'package:etechstore/module/profile/controller/profile_controller.dart';
+import 'package:etechstore/module/profile/model/profile_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -7,11 +8,12 @@ import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class EditScreen extends StatelessWidget {
-  EditScreen({super.key, required this.text, required this.title, required this.func, required this.controller});
+  EditScreen({super.key, required this.text, required this.title, required this.func, required this.controller, required this.profile});
   String text;
   String title;
   VoidCallback? func;
   TextEditingController controller;
+  String profile;
   final ProfileController profileController = Get.put(ProfileController());
 
   @override
@@ -39,18 +41,21 @@ class EditScreen extends StatelessWidget {
                     )),
               ],
             ),
-            body: TextFormField(
-              onChanged: (text) {
-                profileController.validateText(text);
-              },
-              decoration: InputDecoration(
-                border: const OutlineInputBorder(borderSide: BorderSide(width: .5)),
-                label: Text(
-                  text,
-                  style: const TextStyle(color: Color(0xFF848484)),
+            body: Container(
+              margin: EdgeInsets.all(5),
+              child: TextFormField(keyboardType: profile =='' ?TextInputType.number:null,
+                onChanged: (text) {
+                  profileController.validateText(text);
+                },
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(borderSide: BorderSide(width: .5)),
+                  label: Text(
+                    text,
+                    style: const TextStyle(color: Color(0xFF848484)),
+                  ),
                 ),
+                controller: controller,
               ),
-              controller: controller,
             )));
   }
 }
