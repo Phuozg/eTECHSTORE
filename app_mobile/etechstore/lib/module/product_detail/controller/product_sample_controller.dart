@@ -138,7 +138,7 @@ class ProductSampleController extends GetxController {
     final index = selectedColorIndex.value * sample.cauHinh.length +
         selectedConfigIndex.value;
     if (index < sample.giaTien.length) {
-      currentPrice.value = priceFormat(sample.giaTien[index]);
+      currentPrice.value =  (sample.giaTien[index]).toString();
     } else {
       currentPrice.value = price.toString();
     }

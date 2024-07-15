@@ -101,23 +101,7 @@ class SettingScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.only(left: 23.w, right: 23.w),
-                  width: double.infinity,
-                  height: 40.h,
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Ngôn Ngữ / Language",
-                        style: TextStyle(fontWeight: FontWeight.w400, fontSize: 15),
-                      ),
-                      Spacer(),
-                      Icon(Icons.arrow_forward_ios, size: 12, color: Color(0xFF848484)),
-                    ],
-                  ),
-                ),
+             
                 Linehelper(color: const Color.fromARGB(94, 217, 217, 217), height: 1),
                 GestureDetector(
                   onTap: () {

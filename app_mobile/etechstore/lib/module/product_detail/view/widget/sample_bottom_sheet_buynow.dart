@@ -124,7 +124,7 @@ class _SampleBottomSheetState extends State<SampleBottomSheetBuyNow> {
                         Obx(() {
                           var price = int.parse(controller.currentPrice.value);
                           return Text(
-                            ((price.toString())),
+                            ( '${priceFormat(int.parse( controller.currentPrice.value)).toString()} đ'),
                             style: TColros.red_18_w500,
                           );
                         }),
@@ -286,6 +286,8 @@ class _SampleBottomSheetState extends State<SampleBottomSheetBuyNow> {
   }
 
   Widget buildAddToCartButton(BuildContext context) {
+    widget.KhuyenMai.clamp(0, 100);
+
     final CartController cartController = Get.put(CartController());
     final orderController = Get.put(OrderController());
     return ScreenUtilInit(
@@ -561,7 +563,8 @@ class _BuySampleSingleState extends State<BuySampleSingleBuyNow> {
       builder: (context, child) {
         if (controller.listModel.firstWhere((element) => element.MaSanPham == widget.sample.MaSanPham).soLuong > 0) {
           return GestureDetector(
-            onTap: () {              orderController.getProductByID();
+            onTap: () {
+              orderController.getProductByID();
 
               orderController.productReturn;
               Navigator.pushReplacement(

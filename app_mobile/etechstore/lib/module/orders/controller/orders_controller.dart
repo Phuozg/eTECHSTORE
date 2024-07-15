@@ -21,7 +21,7 @@ class OrdersController extends GetxController {
   var products = <String, ProductModel>{}.obs;
 
   var detailOrder = <DetailOrders>[].obs;
-  final lstOrder = <DetailOrders>[].obs;
+  var lstOrder = <DetailOrders>[].obs;
 
   var itemsToShow = 1.obs;
 
@@ -73,12 +73,10 @@ class OrdersController extends GetxController {
     });
   }
 
-  Future<void> checkItemInOrder(String maDonHang) async {
+  Future<List<DetailOrders>> checkItemInOrder(String maDonHang) async {
     try {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('CTDonHang').get();
-
       lstOrder.clear();
-
       for (var doc in querySnapshot.docs) {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         var maMauSanPham = data['MaDonHang'];
@@ -89,6 +87,7 @@ class OrdersController extends GetxController {
     } catch (e) {
       TLoaders.warningSnackBar(title: "Thông báo", message: "Đã có lỗi xảy ra $e");
     }
+    return lstOrder;
   }
 
   Stream<List<OrdersModel>> getOrder() {

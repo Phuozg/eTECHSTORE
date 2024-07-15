@@ -1,5 +1,6 @@
 import 'package:etechstore/module/home/models/product_model_home.dart';
 import 'package:etechstore/module/home/views/home_screen.dart';
+import 'package:etechstore/module/product_detail/controller/product_sample_controller.dart';
 import 'package:etechstore/module/product_detail/view/product_detail_screen.dart';
 import 'package:etechstore/module/wishlist/controller/wishlist_controller.dart';
 import 'package:etechstore/utlis/constants/image_key.dart';
@@ -8,6 +9,7 @@ import 'package:get/get.dart';
 
 Widget productHorizontalListTile(BuildContext context, ProductModel product) {
   final wishListController = Get.put(WishListController());
+  ProductSampleController sampleController =Get.put(ProductSampleController());
   return GestureDetector(
     onTap: () {
       Navigator.push(
@@ -56,11 +58,8 @@ Widget productHorizontalListTile(BuildContext context, ProductModel product) {
                           top: -5,
                           left: 60,
                           child: Container(
-                            decoration: const BoxDecoration(
-                                image: DecorationImage(
-                                    image: AssetImage(
-                                        'assets/images/discount_icon.png'),
-                                    fit: BoxFit.cover)),
+                            decoration:
+                                const BoxDecoration(image: DecorationImage(image: AssetImage('assets/images/discount_icon.png'), fit: BoxFit.cover)),
                             width: 100,
                             height: 50,
                             child: Padding(
@@ -89,9 +88,7 @@ Widget productHorizontalListTile(BuildContext context, ProductModel product) {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      product.Ten.length < 27
-                          ? product.Ten
-                          : '${product.Ten.substring(0, 27)}...',
+                      product.Ten.length < 27 ? product.Ten : '${product.Ten.substring(0, 27)}...',
                       style: const TextStyle(fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
                     ),
@@ -105,22 +102,14 @@ Widget productHorizontalListTile(BuildContext context, ProductModel product) {
                                 children: [
                                   Text(
                                     priceFormat(product.GiaTien),
-                                    style: const TextStyle(
-                                        color: Colors.grey,
-                                        decoration: TextDecoration.lineThrough),
+                                    style: const TextStyle(color: Colors.grey, decoration: TextDecoration.lineThrough),
                                   ),
-                                  Text(
-                                      priceFormat(((product.GiaTien -
-                                              (product.GiaTien *
-                                                  product.KhuyenMai /
-                                                  100)))
-                                          .round()),
+                                  Text(priceFormat(((product.GiaTien - (product.GiaTien * product.KhuyenMai / 100))).round()),
                                       style: const TextStyle(color: Colors.red))
                                 ],
                               );
                             }
-                            return Text(priceFormat(product.GiaTien),
-                                style: const TextStyle(color: Colors.red));
+                            return Text('${priceFormat(int.parse(sampleController.currentPrice.toString()))}', style: const TextStyle(color: Colors.red));
                           },
                         ),
                         Obx(() {
@@ -134,9 +123,7 @@ Widget productHorizontalListTile(BuildContext context, ProductModel product) {
                               },
                               icon: Icon(
                                 Icons.favorite,
-                                color: wishListController.isWish(product.id)
-                                    ? Colors.red
-                                    : Colors.black,
+                                color: wishListController.isWish(product.id) ? Colors.red : Colors.black,
                               ));
                         })
                       ],
