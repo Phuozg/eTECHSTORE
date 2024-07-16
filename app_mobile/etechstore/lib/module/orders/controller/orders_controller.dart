@@ -49,35 +49,23 @@ class OrdersController extends GetxController {
     super.onInit();
     loadMore();
     fetchData();
+    getOrder();
   }
 
   Stream<List<DetailOrders>> fetchData() {
-    return _firestore
-        .collection('CTDonHang')
-        .where('TrangThai', isEqualTo: 1)
-        .snapshots()
-        .asyncMap((snapshot) async {
+    return _firestore.collection('CTDonHang').where('TrangThai', isEqualTo: 1).snapshots().asyncMap((snapshot) async {
       final items = await Future.wait(
         snapshot.docs.map((doc) async {
           final detailItem = DetailOrders.fromJson(doc.data());
 
-          final productDoc = await _firestore
-              .collection('SanPham')
-              .doc(detailItem.maMauSanPham['MaSanPham'])
-              .get();
+          final productDoc = await _firestore.collection('SanPham').doc(detailItem.maMauSanPham['MaSanPham']).get();
           if (productDoc.exists) {
-            products[detailItem.maMauSanPham['MaSanPham']] =
-                ProductModel.fromJson(
-                    productDoc.data() as Map<String, dynamic>);
+            products[detailItem.maMauSanPham['MaSanPham']] = ProductModel.fromJson(productDoc.data() as Map<String, dynamic>);
           }
 
-          final orderDoc = await _firestore
-              .collection('DonHang')
-              .doc(detailItem.maDonHang)
-              .get();
+          final orderDoc = await _firestore.collection('DonHang').doc(detailItem.maDonHang).get();
           if (orderDoc.exists) {
-            ordersItem[detailItem.maDonHang] =
-                OrdersModel.fromJson(orderDoc.data() as Map<String, dynamic>);
+            ordersItem[detailItem.maDonHang] = OrdersModel.fromJson(orderDoc.data() as Map<String, dynamic>);
           }
           return detailItem;
         }),
@@ -88,8 +76,7 @@ class OrdersController extends GetxController {
 
   Future<List<DetailOrders>> checkItemInOrder(String maDonHang) async {
     try {
-      QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection('CTDonHang').get();
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('CTDonHang').get();
       lstOrder.clear();
       for (var doc in querySnapshot.docs) {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
@@ -99,19 +86,24 @@ class OrdersController extends GetxController {
         }
       }
     } catch (e) {
-      TLoaders.warningSnackBar(
-          title: "Thông báo", message: "Đã có lỗi xảy ra $e");
+      TLoaders.warningSnackBar(title: "Thông báo", message: "Đã có lỗi xảy ra $e");
     }
     return lstOrder;
   }
 
   Stream<List<OrdersModel>> getOrder() {
-    return _firestore
-        .collection('DonHang')
-        .snapshots()
-        .map((snapshot) => snapshot.docs.map((doc) {
-              return OrdersModel.fromJson(doc.data());
-            }).toList());
+    return _firestore.collection('DonHang').snapshots().map((snapshot) => snapshot.docs.map((doc) {
+          return OrdersModel.fromJson(doc.data());
+        }).toList());
+  }
+
+  Future<void> getOrderA() async {
+    FirebaseFirestore.instance.collection('CTDonHang').snapshots().listen((snapshot) {
+      lstOrder.clear();
+      for (var model in snapshot.docs) {
+        lstOrder.add(DetailOrders.fromJson(model.data()));
+      }
+    });
   }
 
   Stream<List<DetailOrders>> getCTDonHangs(String maDonHang) {
@@ -119,21 +111,46 @@ class OrdersController extends GetxController {
         .collection('CTDonHang')
         .where('MaDonHang', isEqualTo: maDonHang)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => DetailOrders.fromJson(doc.data()))
-            .toList());
+        .map((snapshot) => snapshot.docs.map((doc) => DetailOrders.fromJson(doc.data())).toList());
+  }
+
+   getQuantityProduct(String orderID  ) {
+    var quantity = [];
+    for (var order in lstOrder) {
+      if (order.maDonHang  == orderID) {
+        quantity.add(order.maDonHang.trim());
+      }
+    }
+    return quantity;
+  }
+
+  int getQuantity(List<DetailOrders> ctDonHangs, String orderID) {
+  return ctDonHangs.where((order) => order.maDonHang == orderID).length;
+}
+
+
+  Future<Map<String, int>> countDonHangInCTDonHang(String maDonHang) async {
+    QuerySnapshot snapshot = await _firestore.collection('CTDonhang').get();
+    Map<String, int> countMap = {};
+
+    for (var doc in snapshot.docs) {
+        maDonHang = doc.get('MaDonHang');
+      if (countMap.containsKey(maDonHang)) {
+        countMap[maDonHang] = countMap[maDonHang]! + 1;
+      } else {
+        countMap[maDonHang] = 1;
+      }
+    }
+
+    return countMap;
   }
 
   Stream<List<ProductModel>> getProduct() {
-    return _firestore.collection('SanPham').snapshots().map((snapshot) =>
-        snapshot.docs.map((doc) => ProductModel.fromJson(doc.data())).toList());
+    return _firestore.collection('SanPham').snapshots().map((snapshot) => snapshot.docs.map((doc) => ProductModel.fromJson(doc.data())).toList());
   }
 
   Future<void> deleteOrder(String orderID) async {
-    final snapshot = await FirebaseFirestore.instance
-        .collection('CTDonHang')
-        .where('MaDonHang', isEqualTo: orderID)
-        .get();
+    final snapshot = await FirebaseFirestore.instance.collection('CTDonHang').where('MaDonHang', isEqualTo: orderID).get();
     for (var doc in snapshot.docs) {
       final data = doc.data();
       updateQuantity(data['SoLuong'], data['MaMauSanPham']['MaSanPham']);
@@ -149,15 +166,11 @@ class OrdersController extends GetxController {
   Future<void> updateQuantity(int quantity, String productID) async {
     try {
       int quantityModel = 0;
-      await FirebaseFirestore.instance
-          .collection('MauSanPham')
-          .where('MaSanPham', isEqualTo: productID)
-          .get()
-          .then((value) {
-        value.docs.forEach((element) {
+      await FirebaseFirestore.instance.collection('MauSanPham').where('MaSanPham', isEqualTo: productID).get().then((value) {
+        for (var element in value.docs) {
           quantityModel = element.data()['SoLuong'];
           element.reference.update({'SoLuong': quantityModel + quantity});
-        });
+        }
       });
     } catch (e) {
       throw 'Something wrong';

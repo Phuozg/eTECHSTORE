@@ -41,18 +41,15 @@ class ProductSampleController extends GetxController {
   }
 
   Stream<List<CartModel>> getCarts() {
-    return FirebaseFirestore.instance.collection('GioHang').snapshots().map(
-        (snapshot) =>
-            snapshot.docs.map((doc) => CartModel.fromMap(doc.data())).toList());
+    return FirebaseFirestore.instance
+        .collection('GioHang')
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((doc) => CartModel.fromMap(doc.data())).toList());
   }
 
   Stream<List<ProductModel>> getProduct() {
-    return FirebaseFirestore.instance
-        .collection('SanPham')
-        .snapshots()
-        .map((event) {
-      discount.value =
-          event.docs.map((e) => ProductModel.fromFirestore(e.data())).toList();
+    return FirebaseFirestore.instance.collection('SanPham').snapshots().map((event) {
+      discount.value = event.docs.map((e) => ProductModel.fromFirestore(e.data())).toList();
       return discount;
     });
   }
@@ -74,16 +71,14 @@ class ProductSampleController extends GetxController {
   }
 
   void fetchProductSamplesLocally() async {
-    List<ProductSampleModel> localProductSamples =
-        await _localStorageService.getProductSamples();
+    List<ProductSampleModel> localProductSamples = await _localStorageService.getProductSamples();
     productSamples.assignAll(localProductSamples);
     fetchProductsLocally();
   }
 
   Stream<List<ProductSampleModel>> getSampleProduct() {
     return _firestore.collection("MauSanPham").snapshots().map((event) {
-      var item =
-          event.docs.map((e) => ProductSampleModel.fromMap(e.data())).toList();
+      var item = event.docs.map((e) => ProductSampleModel.fromMap(e.data())).toList();
       productSamples.value = item;
       return item;
     });
@@ -92,14 +87,8 @@ class ProductSampleController extends GetxController {
   Future<void> fetchProducts() async {
     products.clear();
     for (var sample in productSamples) {
-      QuerySnapshot snapshot = await _firestore
-          .collection('SanPham')
-          .where('id', isEqualTo: sample.MaSanPham)
-          .get();
-      products.addAll(snapshot.docs
-          .map((doc) =>
-              ProductModel.fromFirestore(doc.data() as Map<String, dynamic>))
-          .toList());
+      QuerySnapshot snapshot = await _firestore.collection('SanPham').where('id', isEqualTo: sample.MaSanPham).get();
+      products.addAll(snapshot.docs.map((doc) => ProductModel.fromFirestore(doc.data() as Map<String, dynamic>)).toList());
     }
 
     _localStorageService.saveProducts(products);
@@ -107,15 +96,13 @@ class ProductSampleController extends GetxController {
 
   Future<void> productsSold(String id) async {
     try {
-      QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection('CTDonHang').get();
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('CTDonHang').get();
 
       lstProduct.clear();
 
       for (var doc in querySnapshot.docs) {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-        Map<String, dynamic> maMauSanPham =
-            data['MaMauSanPham'] as Map<String, dynamic>;
+        Map<String, dynamic> maMauSanPham = data['MaMauSanPham'] as Map<String, dynamic>;
         if (maMauSanPham['MaSanPham'] == id) {
           lstProduct.add(DetailOrders.fromJson(data));
         }
@@ -135,41 +122,29 @@ class ProductSampleController extends GetxController {
   }
 
   Future<void> checkPrice(ProductSampleModel sample, String price) async {
-    final index = selectedColorIndex.value * sample.cauHinh.length +
-        selectedConfigIndex.value;
+    final index = selectedColorIndex.value * sample.cauHinh.length + selectedConfigIndex.value;
     if (index < sample.giaTien.length) {
-      currentPrice.value =  (sample.giaTien[index]).toString();
+      currentPrice.value = (sample.giaTien[index]).toString();
     } else {
       currentPrice.value = price.toString();
     }
   }
 
   Future<void> fetchModelProduct() async {
-    FirebaseFirestore.instance
-        .collection('MauSanPham')
-        .snapshots()
-        .listen((snapshot) {
+    FirebaseFirestore.instance.collection('MauSanPham').snapshots().listen((snapshot) {
       listModel.clear();
-      snapshot.docs.forEach((model) {
+      for (var model in snapshot.docs) {
         listModel.add(ProductSampleModel.fromFirestore(model));
-      });
+      }
     });
   }
+  
 
   bool check(String userID) {
-    FirebaseFirestore.instance
-        .collection('GioHang')
-        .where('maKhachHang', isEqualTo: userID)
-        .where('trangThai', isEqualTo: 1)
-        .get()
-        .then((value) {
+    FirebaseFirestore.instance.collection('GioHang').where('maKhachHang', isEqualTo: userID).where('trangThai', isEqualTo: 1).get().then((value) {
       for (var doc in value.docs) {
         var data = doc.data();
-        if (listModel
-                .firstWhere((element) =>
-                    element.MaSanPham == data['mauSanPham']['maSanPham'])
-                .soLuong <
-            data['soLuong']) {
+        if (listModel.firstWhere((element) => element.MaSanPham == data['mauSanPham']['maSanPham']).soLuong < data['soLuong']) {
           return false;
         }
       }

@@ -233,16 +233,15 @@ class OrderIsShipped extends StatelessWidget {
                                     Linehelper(color: const Color.fromARGB(94, 217, 217, 217), height: 1),
                                     Center(
                                       child: GestureDetector(
-                                          onTap: () {
-                                            controller.loadMore();
-                                            Get.to(DetailOrderSreen(maDonHang: order.id));
-                                          },
-                                          child: Obx(()=>
-                                          controller.lstOrder.length >= 2
-                                                ? Text("Xem thêm ${controller.lstOrder.length - 1} sản phẩm",
-                                                    style: const TextStyle(color: Colors.grey, fontSize: 11))
-                                                : const Text("Xem chi tiết", style: TextStyle(color: Colors.grey, fontSize: 11)),
-                                          )),
+                                        onTap: () {
+                                          controller.loadMore();
+                                          Get.to(DetailOrderSreen(maDonHang: order.id));
+                                        },
+                                        child: controller.getQuantity(ctDonHangs, order.id) >= 2
+                                            ? Text("Xem thêm ${controller.getQuantity(ctDonHangs, order.id) - 1} sản phẩm",
+                                                style: const TextStyle(color: Colors.grey, fontSize: 11))
+                                            : const Text("Xem chi tiết", style: TextStyle(color: Colors.grey, fontSize: 11)),
+                                      ),
                                     ),
                                     SizedBox(height: 5.h),
                                     Linehelper(color: const Color.fromARGB(94, 217, 217, 217), height: 1),
@@ -251,11 +250,9 @@ class OrderIsShipped extends StatelessWidget {
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         item.soLuong != null
-                                            ? Obx(
-                                                () => Text(
-                                                  "${controller.lstOrder.length} sản phẩm",
-                                                  style: TextStyle(color: const Color.fromARGB(255, 41, 40, 40), fontSize: 13.sp),
-                                                ),
+                                            ? Text(
+                                                "${controller.getQuantity(ctDonHangs, order.id)} sản phẩm",
+                                                style: TextStyle(color: const Color.fromARGB(255, 41, 40, 40), fontSize: 13.sp),
                                               )
                                             : const Text("Loading..."),
                                         Row(
@@ -266,7 +263,7 @@ class OrderIsShipped extends StatelessWidget {
                                             ),
                                             SizedBox(width: 5.w),
                                             Text(
-                                              priceFormat((item.giaTien! * item.soLuong).toInt()),
+                                              priceFormat((order.tongTien).toInt()),
                                               style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: Colors.redAccent),
                                             ),
                                           ],
