@@ -48,7 +48,7 @@ class _VNPAYScreenState extends State<VnPayBuyNow> {
             if (url.contains('vnp_ResponseCode')) {
               final params = Uri.parse(url).queryParameters;
               if (params['vnp_ResponseCode'] == '00') {
-                orderController.processOrderBuyNow(FirebaseAuth.instance.currentUser!.uid, int.parse(widget.price), widget.productID, widget.quantity,widget.config,widget.color);
+                orderController.processOrderBuyNowOnline(FirebaseAuth.instance.currentUser!.uid, int.parse(widget.price), widget.productID, widget.quantity,widget.config,widget.color);
                             
                 Get.off(()=>const SuccessScreen());
               } else {

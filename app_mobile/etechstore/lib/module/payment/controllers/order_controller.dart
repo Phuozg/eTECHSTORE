@@ -167,6 +167,8 @@ class OrderController extends GetxController {
     }
   }
 
+  
+
   void processOrderBuyNow(String userID, int totalPrice, String productID, int quantity, String config, String color) async {
     try {
       ScreenLoader.openLoadingDialog();
@@ -180,6 +182,41 @@ class OrderController extends GetxController {
         NgayTaoDon: Timestamp.now(),
         MaKhachHang: userID,
         isPaid: false,
+        isBeingShipped: false,
+        isShipped: false,
+        isCompleted: false,
+      );
+      await saveOrder(order);
+
+      await saveOrderDetail(OrderDetail(
+          GiaTien: totalPrice,
+          MaDonHang: id,
+          SoLuong: quantity,
+          TrangThai: 1,
+          KhuyenMai: 0,
+          MaMauSanPham: ModelProductModel(CauHinh: config, MaSanPham: productID, MauSac: color).toJson()));
+      controller.setTotalPriceAndCheckAll();
+      await clearCart(userID);
+      await updateQuantity(quantity, productID);
+      Get.off(() => const SuccessScreen());
+    } catch (e) {
+      throw 'something went wrong';
+    }
+  }
+
+  void processOrderBuyNowOnline(String userID, int totalPrice, String productID, int quantity, String config, String color) async {
+    try {
+      ScreenLoader.openLoadingDialog();
+
+      if (userID.isEmpty) return;
+
+      id = generateRandomString(20);
+      final order = OrderModel(
+        id: id,
+        TongTien: totalPrice,
+        NgayTaoDon: Timestamp.now(),
+        MaKhachHang: userID,
+        isPaid: true,
         isBeingShipped: false,
         isShipped: false,
         isCompleted: false,

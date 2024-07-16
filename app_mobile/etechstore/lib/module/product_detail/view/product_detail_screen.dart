@@ -285,7 +285,7 @@ class DetailScreen extends GetView {
                                           fontWeight: FontWeight.w300)),
                                   Obx(() {
                                     return Text(
-                                        '${productSampleController.listModel.firstWhere((element) => element.MaSanPham == id).soLuong}');
+                                        '${productSampleController.listModel.firstWhere((element) => element.MaSanPham == id).soLuong==0?'Hết hàng':productSampleController.listModel.firstWhere((element) => element.MaSanPham == id).soLuong}');
                                   })
                                 ],
                               ),
