@@ -12,11 +12,9 @@ Widget address(String userID) {
   return Container(
     margin: const EdgeInsets.all(8),
     decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(10),
       color: Colors.white,
-      boxShadow: const [
-        BoxShadow(color: Color(0xFF383CA0), spreadRadius: 1),
-      ],
+      border: Border.all(width: 1,color:const Color(0xFF383CA0) ),
     ),
     child: Padding(
       padding: const EdgeInsets.all(8.0),

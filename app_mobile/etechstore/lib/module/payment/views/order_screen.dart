@@ -51,11 +51,8 @@ class OrderScreen extends StatelessWidget {
               margin: const EdgeInsets.all(8),
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: Colors.white,
-                boxShadow: const [
-                  BoxShadow(color: Color(0xFF383CA0), spreadRadius: 1),
-                ],
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.white,border: Border.all(width: 1,color:const Color(0xFF383CA0) ),
               ),
               child: const Column(
                 children: [Payment()],
@@ -70,7 +67,8 @@ class OrderScreen extends StatelessWidget {
         child: ElevatedButton(
             onPressed: () async {
               final controller = Get.put(ProductSampleController());
-              if (orderController.checkAddressUser(userID) && controller.check(userID)) {
+              bool result = await controller.check(userID);
+              if (orderController.checkAddressUser() && result==true) {
                 if (paymentController.selectedPaymentMethod.value.ten == 'VNPay') {
                   await vnpayController.getUrlPayment(CartController().instance.totalPrice.value.toInt());
                   Navigator.push(context, MaterialPageRoute(builder: (context) => VNPAYScreen(url: vnpayController.urlVNPay.value)));
@@ -87,12 +85,13 @@ class OrderScreen extends StatelessWidget {
                 if (paymentController.selectedPaymentMethod.value.ten == 'Thanh toán khi nhận hàng') {
                   orderController.processOrder(userID, CartController().instance.totalPrice.value.toInt());
                 }
-              } else if (controller.check(userID)) {
+              }  
+              if (result==false) {
                 showDialog(
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      backgroundColor: Colors.white,
+                      surfaceTintColor: Colors.white,
                       title: const Column(
                         children: [
                           Text('Hết hàng !!!'),
@@ -103,7 +102,7 @@ class OrderScreen extends StatelessWidget {
                           )
                         ],
                       ),
-                      content: const Text('Sản phẩm tạm hết hàng, vui lòng thử lại sau hoặc liên hệ chúng tôi để được hỗ trợ'),
+                      content: const Text('Sản phẩm tạm hết hàng hoặc không đủ số lượng cho bạn, vui lòng thử lại sau hoặc liên hệ chúng tôi để được hỗ trợ'),
                       actions: [
                         ElevatedButton(
                           onPressed: () {
@@ -119,11 +118,13 @@ class OrderScreen extends StatelessWidget {
                     );
                   },
                 );
-              } else {
+              } 
+              if (orderController.checkAddressUser()==false) {
                 showDialog(
                   context: context,
                   builder: (context) {
                     return AlertDialog(
+                      surfaceTintColor: Colors.white,
                       title: const Column(
                         children: [
                           Text('Thiếu thông tin !!!'),
@@ -134,7 +135,7 @@ class OrderScreen extends StatelessWidget {
                           )
                         ],
                       ),
-                      content: const Text('Tài khoản của bạn cần cung cấp thông tin số điện thoại và địa chỉ để mua hàng'),
+                      content: const Text('Tài khoản của bạn cần cung cấp thông tin số điện thoại đủ 10 số và địa chỉ để mua hàng'),
                       actions: [
                         ElevatedButton(
                           onPressed: () {
@@ -152,7 +153,7 @@ class OrderScreen extends StatelessWidget {
                 );
               }
             },
-            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF383CA0)),
+            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF383CA0),shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
             child: Obx(() {
               return Text(
                 'Đặt hàng \n ${priceFormat(CartController().instance.totalPrice.value.toInt())}',

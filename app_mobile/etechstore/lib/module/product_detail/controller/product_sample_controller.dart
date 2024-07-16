@@ -131,7 +131,7 @@ class ProductSampleController extends GetxController {
   }
 
   Future<void> fetchModelProduct() async {
-    FirebaseFirestore.instance.collection('MauSanPham').snapshots().listen((snapshot) {
+    FirebaseFirestore.instance.collection('MauSanPham').get().then((snapshot) {
       listModel.clear();
       for (var model in snapshot.docs) {
         listModel.add(ProductSampleModel.fromFirestore(model));
@@ -140,16 +140,21 @@ class ProductSampleController extends GetxController {
   }
   
 
-  bool check(String userID) {
-    FirebaseFirestore.instance.collection('GioHang').where('maKhachHang', isEqualTo: userID).where('trangThai', isEqualTo: 1).get().then((value) {
-      for (var doc in value.docs) {
-        var data = doc.data();
-        if (listModel.firstWhere((element) => element.MaSanPham == data['mauSanPham']['maSanPham']).soLuong < data['soLuong']) {
-          return false;
-        }
-      }
-    });
+  check(String userID)async {
+    await fetchModelProduct();
+    var querySnapshot = await FirebaseFirestore.instance
+      .collection('GioHang')
+      .where('maKhachHang', isEqualTo: userID)
+      .where('trangThai', isEqualTo: 1)
+      .get();
 
+  for (var doc in querySnapshot.docs) {
+    var data = doc.data();
+    var model = listModel.firstWhere((element) => element.MaSanPham == data['mauSanPham']['maSanPham']);
+    if (model.soLuong < data['soLuong']) {
+      return false;
+    }
+  }
     return true;
   }
 }

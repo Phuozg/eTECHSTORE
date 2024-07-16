@@ -31,7 +31,6 @@ class BuyNowScreen extends StatelessWidget {
     final orderController = Get.put(OrderController());
     orderController.getProductByID();
     final vnPayController = Get.put(VNPAY());
-
     final zalo = Get.put(ZaloPay());
     return Scaffold(
         appBar: AppBar(
@@ -48,7 +47,7 @@ class BuyNowScreen extends StatelessWidget {
           ),
         ),
         body: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: orderController.productReturn.map((element) {
               return element.id == productID
                   ? Column(
@@ -58,18 +57,14 @@ class BuyNowScreen extends StatelessWidget {
                             padding: EdgeInsets.only(top: 10, bottom: MediaQuery.of(context).size.height / 4.5),
                             width: MediaQuery.of(context).size.width,
                             margin: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.white, boxShadow: const [
-                              BoxShadow(color: Color(0xFF383CA0), spreadRadius: 1),
-                            ]),
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white,border: Border.all(width: 1,color:const Color(0xFF383CA0) ),),
                             child: productHorizontalListTile(context, element)),
                         Container(
                           margin: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(10),
                             color: Colors.white,
-                            boxShadow: const [
-                              BoxShadow(color: Color(0xFF383CA0), spreadRadius: 1),
-                            ],
+                            border: Border.all(width: 1,color:const Color(0xFF383CA0) ),
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -129,7 +124,7 @@ class BuyNowScreen extends StatelessWidget {
                 onPressed: () async {
                   final controller = Get.put(ProductSampleController());
                   final user = FirebaseAuth.instance.currentUser!.uid;
-                  if (orderController.checkAddressUser(user) &&
+                  if (orderController.checkAddressUser() &&
                       controller.listModel.firstWhere((element) => element.MaSanPham == productID).soLuong >= quantity) {
                     if (paymentController.selectedPaymentMethod.value.ten == 'VNPay') {
                       await vnPayController.getUrlPayment(int.parse(price));
@@ -193,7 +188,7 @@ class BuyNowScreen extends StatelessWidget {
                       },
                     );
                   }
-                  if (!orderController.checkAddressUser(userID)) {
+                  if (!orderController.checkAddressUser()) {
                     showDialog(
                       context: context,
                       builder: (context) {
@@ -227,7 +222,7 @@ class BuyNowScreen extends StatelessWidget {
                     );
                   }
                 },
-                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF383CA0)),
+                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF383CA0),shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
                 child: const Text(
                   'Đặt hàng',
                   style: TextStyle(color: Colors.white, fontSize: 15),

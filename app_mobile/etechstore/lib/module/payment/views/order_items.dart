@@ -35,11 +35,9 @@ class OrderItem extends StatelessWidget {
       return Container(
         margin: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(10),
           color: Colors.white,
-          boxShadow: const [
-            BoxShadow(color: Color(0xFF383CA0), spreadRadius: 1),
-          ],
+          border: Border.all(width: 1,color:const Color(0xFF383CA0) ),
         ),
         child: Container(
           padding: const EdgeInsets.all(8),
@@ -84,7 +82,7 @@ class OrderItem extends StatelessWidget {
                             children: [
                               Row(
                                 children: [
-                                  SizedBox(height: MediaQuery.of(context).size.height / 7, child: Image.network(product.thumbnail)),
+                                  SizedBox(height: MediaQuery.of(context).size.height / 7,width: MediaQuery.of(context).size.width/3, child: Image.network(product.thumbnail)),
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,

@@ -11,6 +11,7 @@ import 'package:etechstore/module/payment/views/screen_loader.dart';
 import 'package:etechstore/module/payment/views/success_screen.dart';
 import 'package:etechstore/module/previews/models/user_model.dart';
 import 'package:etechstore/module/product_detail/controller/product_sample_controller.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:network_info_plus/network_info_plus.dart';
@@ -212,15 +213,23 @@ class OrderController extends GetxController {
         'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?vnp_Amount=$totalAmount&vnp_Command=pay&vnp_CreateDate=$createDate&vnp_CurrCode=VND&vnp_IpAddr=${getDeviceIP()}&vnp_Locale=vn&vnp_OrderInfo=Thanh+toan+don+hang+$orderID&vnp_OrderType=other&vnp_ReturnUrl=https%3A%2F%2Fdomainmerchant.vn%2FReturnUrl&vnp_TmnCode=DEMOV210&vnp_TxnRef=5&vnp_Version=2.1.0&vnp_SecureHash=3e0d61a0c0534b2e36680b3f7277743e8784cc4e1d68fa7d276e79c23be7d6318d338b477910a27992f5057bb1582bd44bd82ae8009ffaf6d141219218625c42');
   }
 
-  bool checkAddressUser(String userID) {
-    for (var user in listUser) {
-      if (user.uid == userID && user.SoDienThoai.toString().length > 9 && user.DiaChi != '') {
-        print(user.SoDienThoai.toString().length);
-        print('saddddddddddd=> ${user.SoDienThoai}');
+  bool checkAddressUser() {
+    fetchUser();
+  final userID = FirebaseAuth.instance.currentUser?.uid;
+  if (userID == null) {
+    return false;
+  }
+  
+
+  for (var user in listUser) {
+    if (user.uid == userID) {
+      if (user.SoDienThoai.toString().length == 9 && user.DiaChi.isNotEmpty) {
         return true;
       }
     }
-    return false;
+  }
+  print('false');
+  return false;
   }
 }
 
