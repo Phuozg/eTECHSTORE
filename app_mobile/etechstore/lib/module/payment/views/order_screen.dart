@@ -70,36 +70,22 @@ class OrderScreen extends StatelessWidget {
         child: ElevatedButton(
             onPressed: () async {
               final controller = Get.put(ProductSampleController());
-              if (orderController.checkAddressUser(userID) &&
-                  controller.check(userID)) {
-                if (paymentController.selectedPaymentMethod.value.ten ==
-                    'VNPay') {
-                  await vnpayController.getUrlPayment(
-                      CartController().instance.totalPrice.value.toInt());
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => VNPAYScreen(
-                              url: vnpayController.urlVNPay.value)));
+              if (orderController.checkAddressUser(userID) && controller.check(userID)) {
+                if (paymentController.selectedPaymentMethod.value.ten == 'VNPay') {
+                  await vnpayController.getUrlPayment(CartController().instance.totalPrice.value.toInt());
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => VNPAYScreen(url: vnpayController.urlVNPay.value)));
                 }
-                if (paymentController.selectedPaymentMethod.value.ten ==
-                    'ZaloPay') {
-                  final url = Uri.parse(zalo.createOrder(
-                      CartController().instance.totalPrice.value.toInt()));
+                if (paymentController.selectedPaymentMethod.value.ten == 'ZaloPay') {
+                  final url = Uri.parse(zalo.createOrder(CartController().instance.totalPrice.value.toInt()));
                   final response = await http.get(url);
                   if (response.statusCode == 200) {
                     Map<String, dynamic> data = jsonDecode(response.body);
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                ZaloScreen(url: data['orderurl'])));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => ZaloScreen(url: data['orderurl'])));
                     // print(data['orderurl']);
                   }
-                } if(paymentController.selectedPaymentMethod.value.ten ==
-                    'Thanh toán khi nhận hàng') {
-                  orderController.processOrder(userID,
-                      CartController().instance.totalPrice.value.toInt());
+                }
+                if (paymentController.selectedPaymentMethod.value.ten == 'Thanh toán khi nhận hàng') {
+                  orderController.processOrder(userID, CartController().instance.totalPrice.value.toInt());
                 }
               } else if (controller.check(userID)) {
                 showDialog(
@@ -112,19 +98,18 @@ class OrderScreen extends StatelessWidget {
                           Text('Hết hàng !!!'),
                           Icon(
                             Icons.warning_amber,
-                            size: 30,
+                            size: 40,
+                            color: Colors.red,
                           )
                         ],
                       ),
-                      content: const Text(
-                          'Sản phẩm tạm hết hàng, vui lòng thử lại sau hoặc liên hệ chúng tôi để được hỗ trợ'),
+                      content: const Text('Sản phẩm tạm hết hàng, vui lòng thử lại sau hoặc liên hệ chúng tôi để được hỗ trợ'),
                       actions: [
                         ElevatedButton(
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF383CA0)),
+                          style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF383CA0)),
                           child: const Text(
                             'Close',
                             style: TextStyle(color: Colors.white),
@@ -144,19 +129,18 @@ class OrderScreen extends StatelessWidget {
                           Text('Thiếu thông tin !!!'),
                           Icon(
                             Icons.warning_amber,
-                            size: 30,
+                            size: 40,
+                            color: Colors.red,
                           )
                         ],
                       ),
-                      content: const Text(
-                          'Tài khoản của bạn cần cung cấp thông tin số điện thoại và địa chỉ để mua hàng'),
+                      content: const Text('Tài khoản của bạn cần cung cấp thông tin số điện thoại và địa chỉ để mua hàng'),
                       actions: [
                         ElevatedButton(
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF383CA0)),
+                          style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF383CA0)),
                           child: const Text(
                             'Close',
                             style: TextStyle(color: Colors.white),
@@ -168,8 +152,7 @@ class OrderScreen extends StatelessWidget {
                 );
               }
             },
-            style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF383CA0)),
+            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF383CA0)),
             child: Obx(() {
               return Text(
                 'Đặt hàng \n ${priceFormat(CartController().instance.totalPrice.value.toInt())}',

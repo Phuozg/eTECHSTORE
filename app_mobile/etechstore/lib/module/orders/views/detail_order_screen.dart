@@ -310,8 +310,6 @@ class DetailOrderSreen extends StatelessWidget {
                                                                       ctDonHang.soLuong != null
                                                                           ? Text("${ctDonHang.soLuong}")
                                                                           : const Text("Loading..."),
-                                                                   
-                                                                   
                                                                     ],
                                                                   ),
                                                                 ],
@@ -334,6 +332,7 @@ class DetailOrderSreen extends StatelessWidget {
                                                                         return Container(
                                                                           constraints: const BoxConstraints(maxHeight: double.infinity),
                                                                           child: AlertDialog(
+                                                                            surfaceTintColor: Colors.white,
                                                                             title: const Center(child: Text("Đánh giá sản phẩm")),
                                                                             content: SizedBox(
                                                                               height: MediaQuery.of(context).size.height / 4,
@@ -380,8 +379,8 @@ class DetailOrderSreen extends StatelessWidget {
                                                                                       Navigator.of(context).pop();
                                                                                     },
                                                                                     style: ElevatedButton.styleFrom(
-                                                                                        backgroundColor: Colors.blueAccent,
-                                                                                        shape: const BeveledRectangleBorder()),
+                                                                                      backgroundColor: Colors.blueAccent,
+                                                                                    ),
                                                                                     child: const Text(
                                                                                       "Xác nhận",
                                                                                       style: TextStyle(color: Colors.white),
@@ -392,8 +391,8 @@ class DetailOrderSreen extends StatelessWidget {
                                                                                       Navigator.of(context).pop();
                                                                                     },
                                                                                     style: ElevatedButton.styleFrom(
-                                                                                        backgroundColor: Colors.redAccent,
-                                                                                        shape: const BeveledRectangleBorder()),
+                                                                                      backgroundColor: Colors.redAccent,
+                                                                                    ),
                                                                                     child: const Text(
                                                                                       "Đóng",
                                                                                       style: TextStyle(color: Colors.white),
@@ -441,7 +440,6 @@ class DetailOrderSreen extends StatelessWidget {
                                                       SizedBox(height: 10.w),
                                                       Linehelper(color: const Color.fromARGB(94, 217, 217, 217), height: 1),
                                                       const SizedBox(height: 10),
-                                                 
                                                       Row(
                                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                         children: [

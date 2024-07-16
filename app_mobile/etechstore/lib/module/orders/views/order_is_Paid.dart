@@ -213,15 +213,15 @@ class OrderIsPaid extends StatelessWidget {
                                                       context: context,
                                                       builder: (BuildContext context) {
                                                         return AlertDialog(
-                                                          backgroundColor: Colors.white,
-                                                          shape: const BeveledRectangleBorder(),
+                                                          surfaceTintColor: Colors.white,
                                                           title: const Center(
                                                             child: Column(
                                                               children: [
                                                                 Text('Cẩn thận !!!'),
                                                                 Icon(
                                                                   Icons.warning_amber,
-                                                                  size: 30,
+                                                                  size: 40,
+                                                                  color: Colors.red,
                                                                 )
                                                               ],
                                                             ),
@@ -236,8 +236,7 @@ class OrderIsPaid extends StatelessWidget {
                                                                     controller.deleteOrder(order.id);
                                                                     Navigator.of(context).pop();
                                                                   },
-                                                                  style: ElevatedButton.styleFrom(
-                                                                      backgroundColor: Colors.redAccent, shape: const BeveledRectangleBorder()),
+                                                                  style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
                                                                   child: const Text(
                                                                     "Xác nhận",
                                                                     style: TextStyle(
@@ -249,8 +248,7 @@ class OrderIsPaid extends StatelessWidget {
                                                                     onPressed: () {
                                                                       Navigator.of(context).pop();
                                                                     },
-                                                                    style: ElevatedButton.styleFrom(
-                                                                        backgroundColor: Colors.blueAccent, shape: const BeveledRectangleBorder()),
+                                                                    style: ElevatedButton.styleFrom(backgroundColor: Colors.blueAccent),
                                                                     child: const Text(
                                                                       "Đóng",
                                                                       style: TextStyle(color: Colors.white),
@@ -307,15 +305,15 @@ class OrderIsPaid extends StatelessWidget {
                                           Linehelper(color: const Color.fromARGB(94, 217, 217, 217), height: 1),
                                           Center(
                                             child: GestureDetector(
-                                                onTap: () {
-                                                  controller.loadMore();
-                                                  Get.to(DetailOrderSreen(maDonHang: order.id));
-                                                },
-                                                child:  controller.getQuantity(ctDonHangs,order.id) >= 2
-                                                      ? Text("Xem thêm ${controller.getQuantity(ctDonHangs,order.id) - 1} sản phẩm",
-                                                          style: const TextStyle(color: Colors.grey, fontSize: 11))
-                                                      : const Text("Xem chi tiết", style: TextStyle(color: Colors.grey, fontSize: 11)),
-                                                ),
+                                              onTap: () {
+                                                controller.loadMore();
+                                                Get.to(DetailOrderSreen(maDonHang: order.id));
+                                              },
+                                              child: controller.getQuantity(ctDonHangs, order.id) >= 2
+                                                  ? Text("Xem thêm ${controller.getQuantity(ctDonHangs, order.id) - 1} sản phẩm",
+                                                      style: const TextStyle(color: Colors.grey, fontSize: 11))
+                                                  : const Text("Xem chi tiết", style: TextStyle(color: Colors.grey, fontSize: 11)),
+                                            ),
                                           ),
                                           SizedBox(height: 5.h),
                                           Linehelper(color: const Color.fromARGB(94, 217, 217, 217), height: 1),
@@ -324,10 +322,9 @@ class OrderIsPaid extends StatelessWidget {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               item.soLuong != null
-                                                  ?  Text(
-                                                        "${controller.getQuantity(ctDonHangs,order.id)} sản phẩm",
-                                                        style: TextStyle(color: const Color.fromARGB(255, 41, 40, 40), fontSize: 13.sp),
-                                                   
+                                                  ? Text(
+                                                      "${controller.getQuantity(ctDonHangs, order.id)} sản phẩm",
+                                                      style: TextStyle(color: const Color.fromARGB(255, 41, 40, 40), fontSize: 13.sp),
                                                     )
                                                   : const Text("Loading..."),
                                               Row(
